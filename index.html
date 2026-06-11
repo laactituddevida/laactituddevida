@@ -2364,7 +2364,7 @@ canvas{max-width:100%}
         <input type="password" id="login-password" placeholder="••••••••" style="width:100%;padding:10px 12px;border:0.5px solid #D4C5B0;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;background:#FAF7F2;color:#3D2E1E;box-sizing:border-box">
       </div>
       <p id="login-error" style="font-size:12px;color:#C4713A;margin-bottom:8px;display:none"></p>
-      <button onclick="doLogin()" style="width:100%;padding:12px;border-radius:20px;border:none;background:#D4903A;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Entrar</button>
+      <button id="login-btn" style="width:100%;padding:12px;border-radius:20px;border:none;background:#D4903A;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Entrar</button>
     </div>
     <p style="text-align:center;font-size:11px;color:#7A6652;margin-top:1rem">¿No tenés acceso? Contactá a tu coach.</p>
   </div>
@@ -6607,6 +6607,12 @@ window.save=function(key,val){
 
 // Init on load
 window.addEventListener('load', async ()=>{
+  // Wire up login button
+  const loginBtn=document.getElementById('login-btn');
+  if(loginBtn)loginBtn.addEventListener('click', doLogin);
+  // Wire up Enter key
+  document.getElementById('login-password')?.addEventListener('keydown', e=>{if(e.key==='Enter')doLogin();});
+  document.getElementById('login-email')?.addEventListener('keydown', e=>{if(e.key==='Enter')doLogin();});
   supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
   const {data:{session}}=await supa.auth.getSession();
   if(session){await onLogin(session.user);}
