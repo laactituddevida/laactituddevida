@@ -9565,7 +9565,17 @@ async function syncDatosSupabase(){
 async function cargarDatosUsuario(){
   if(!currentUser)return;
   var r=await supa.from("datos_app").select("datos").eq("user_id",currentUser.id).single();
-  if(r.data&&r.data.datos){Object.entries(r.data.datos).forEach(function(e){localStorage.setItem("lav_"+e[0],e[1]);});}
+  if(r.data&&r.data.datos){
+    var huboNuevoDato=false;
+    Object.entries(r.data.datos).forEach(function(e){
+      var keyLocal="lav_"+e[0];
+      if(localStorage.getItem(keyLocal)!==e[1]){
+        localStorage.setItem(keyLocal,e[1]);
+        huboNuevoDato=true;
+      }
+    });
+    if(huboNuevoDato) location.reload();
+  }
 }
 async function abrirAdmin(){
   if(!isAdmin)return;
