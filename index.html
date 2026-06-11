@@ -6495,7 +6495,125 @@ async function descargarReporte(){
   <h2>Mapa del mes — <em>${mesNombre}</em></h2>
   <p>${estado.usuario||''}</p>
   ${tableHTML}
-  </body></html>`;
+  
+<script>
+// ── AUTH SYSTEM ──
+const SUPA_URL='https://zskbqepcslnadvzjqzfg.supabase.co';
+const SUPA_KEY='sb_publishable_-x6DK0fN7gBaYZ2SDsCbtw_1d0BSo8Y';
+let supa, currentUser, isAdmin=false, saveTimer=null;
+
+function mostrarLogin(){
+  document.getElementById('login-screen').style.display='flex';
+  document.querySelector('.sidebar').style.display='none';
+  document.querySelector('.main').style.display='none';
+}
+function ocultarLogin(){
+  document.getElementById('login-screen').style.display='none';
+  document.querySelector('.sidebar').style.display='';
+  document.querySelector('.main').style.display='';
+}
+function mostrarError(msg){
+  const el=document.getElementById('login-error');
+  if(el){el.textContent=msg;el.style.display='block';}
+}
+
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-password').value;
+  const errEl=document.getElementById('login-error');
+  if(errEl)errEl.style.display='none';
+  if(!email||!pass){mostrarError('Completá email y contraseña.');return;}
+  const {data,error}=await supa.auth.signInWithPassword({email,password:pass});
+  if(error){mostrarError('Email o contraseña incorrectos.');return;}
+  await onLogin(data.user);
+}
+
+async function onLogin(user){
+  currentUser=user;
+  await cargarDatosUsuario();
+  const {data:u}=await supa.from('usuarios').select('es_admin,nombre,activo').eq('id',user.id).single();
+  if(u&&!u.activo){await supa.auth.signOut();mostrarLogin();mostrarError('Tu cuenta está pausada.');return;}
+  isAdmin=u?.es_admin||false;
+  ocultarLogin();
+  if(u?.nombre){const el=document.getElementById('usuario-nombre');if(el)el.textContent=u.nombre;}
+  if(isAdmin){const b=document.getElementById('admin-btn');if(b)b.style.display='block';}
+}
+
+async function cerrarSesion(){
+  await supa.auth.signOut();
+  Object.keys(localStorage).filter(k=>k.startsWith('lav_')).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+async function syncDatosSupabase(){
+  if(!currentUser)return;
+  const datos={};
+  Object.keys(localStorage).filter(k=>k.startsWith('lav_')).forEach(k=>{datos[k.replace('lav_','')]=localStorage.getItem(k);});
+  await supa.from('datos_app').upsert({user_id:currentUser.id,datos,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+}
+
+async function cargarDatosUsuario(){
+  if(!currentUser)return;
+  const {data}=await supa.from('datos_app').select('datos').eq('user_id',currentUser.id).single();
+  if(data?.datos){Object.entries(data.datos).forEach(([k,v])=>localStorage.setItem('lav_'+k,v));}
+}
+
+async function abrirAdmin(){
+  if(!isAdmin)return;
+  document.getElementById('admin-panel').style.display='block';
+  await cargarUsuariosAdmin();
+}
+function cerrarAdmin(){document.getElementById('admin-panel').style.display='none';}
+
+async function cargarUsuariosAdmin(){
+  const {data}=await supa.from('usuarios').select('*').order('created_at');
+  const cont=document.getElementById('admin-users-list');
+  if(!data||!data.length){cont.innerHTML='<p style="font-size:12px;color:#7A6652">No hay usuarios.</p>';return;}
+  cont.innerHTML=data.map(u=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid #F0E8DC">
+    <div style="flex:1"><div style="font-size:13px;font-weight:500">${u.nombre||'Sin nombre'}</div><div style="font-size:11px;color:#7A6652">${u.email}</div></div>
+    <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${u.activo?'#E8F5E9':'#FFF0E8'};color:${u.activo?'#5C7A4E':'#C4713A'}">${u.activo?'Activo':'Pausado'}</span>
+    <button onclick="toggleUsuario('${u.id}',${u.activo})" style="font-size:10px;padding:3px 10px;border-radius:10px;border:0.5px solid #D4C5B0;background:transparent;cursor:pointer">${u.activo?'Pausar':'Activar'}</button>
+  </div>`).join('');
+}
+
+async function crearUsuario(){
+  const nombre=document.getElementById('new-user-nombre').value.trim();
+  const email=document.getElementById('new-user-email').value.trim();
+  const pass=document.getElementById('new-user-password').value;
+  const msg=document.getElementById('admin-msg');
+  if(!nombre||!email||!pass){alert('Completá todos los campos');return;}
+  const {data:d,error:e}=await supa.auth.signUp({email,password:pass,options:{data:{nombre}}});
+  if(e){alert('Error: '+e.message);return;}
+  if(d.user){await supa.from('usuarios').insert({id:d.user.id,email,nombre,activo:true,es_admin:false});}
+  msg.textContent='✓ Usuario creado. Email: '+email+' | Contraseña: '+pass;
+  msg.style.display='block';
+  document.getElementById('new-user-nombre').value='';
+  document.getElementById('new-user-email').value='';
+  document.getElementById('new-user-password').value='';
+  await cargarUsuariosAdmin();
+}
+
+async function toggleUsuario(id,activo){
+  await supa.from('usuarios').update({activo:!activo}).eq('id',id);
+  await cargarUsuariosAdmin();
+}
+
+// Override save
+const _origSave=window.save||function(){};
+window.save=function(key,val){
+  try{localStorage.setItem('lav_'+key,JSON.stringify(val));}catch(e){}
+  if(currentUser){clearTimeout(saveTimer);saveTimer=setTimeout(syncDatosSupabase,2000);}
+};
+
+// Init on load
+window.addEventListener('load', async ()=>{
+  supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+  const {data:{session}}=await supa.auth.getSession();
+  if(session){await onLogin(session.user);}
+  else{mostrarLogin();}
+});
+</script>
+</body></html>`;
 
   // Abrir en ventana nueva para imprimir/guardar como PDF
   const win=window.open('','_blank');
