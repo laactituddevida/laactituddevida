@@ -287,7 +287,7 @@ canvas{max-width:100%}
     <div class="logo-sub">Programa de vida</div>
     <div style="margin-top:8px;display:flex;align-items:center;gap:5px">
       <span style="font-size:10px;color:var(--tmed)">Usuario:</span>
-      <span id="username-display" style="font-size:11px;color:var(--tierra);font-weight:500;cursor:pointer;border-bottom:0.5px dashed var(--bordem)" onclick="editUsername()" title="Hacer clic para editar"></span>
+      <span id="username-display" style="font-size:11px;color:var(--tierra);font-weight:500;cursor:pointer;border-bottom:0.5px dashed var(--bordem)" ></span>
     </div>
     <div style="margin-top:6px">
       <select id="gender-select" onchange="setGender(this.value)" style="width:100%;padding:4px 8px;border:0.5px solid var(--bordem);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:11px;background:transparent;color:var(--tmed);outline:none;cursor:pointer">
@@ -2580,7 +2580,7 @@ let vbImages=load('vbimages',{});
 let purposeData=load('purpose',{});
 
 let username=load('username','');
-if(!username){username=prompt('¡Hola! ¿Cuál es tu nombre?')||'Usuario';save('username',username);}
+if(!username){username='Usuario';}
 function editUsername(){const n=prompt('¿Cuál es tu nombre?',username);if(n&&n.trim()){username=n.trim();save('username',username);const el=document.getElementById('username-display');if(el)el.textContent=username;}}
 // set username on load
 setTimeout(()=>{const el=document.getElementById('username-display');if(el)el.textContent=username;},0);
@@ -9549,7 +9549,7 @@ async function onLogin(user){
   if(u&&!u.activo){await supa.auth.signOut();mostrarLogin();mostrarError("Tu cuenta está pausada.");return;}
   isAdmin=u?u.es_admin:false;
   ocultarLogin();
-  if(u&&u.nombre){var el=document.getElementById("usuario-nombre");if(el)el.textContent=u.nombre;}
+  if(u&&u.nombre){var el=document.getElementById("username-display");if(el)el.textContent=u.nombre;}
   if(isAdmin){var b=document.getElementById("admin-btn");if(b)b.style.display="block";}
 }
 async function cerrarSesion(){
