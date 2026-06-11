@@ -328,7 +328,21 @@ canvas{max-width:100%}
     <button class="nav-btn" onclick="showView('hacks')"><span class="dot"></span>Hacks para el cambio</button>
   </div>
   <div class="frase-sb" id="frase-sb"></div>
-  
+  <div style="margin-top:1rem;border-top:0.5px solid var(--bordem);padding-top:1rem">
+  <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px">
+    <span style="font-size:10px;color:var(--tmed)">Usuario:</span>
+    <span id="username-display" style="font-size:11px;color:var(--tierra);font-weight:500;cursor:pointer;border-bottom:0.5px dashed var(--bordem)"></span>
+  </div>
+  <div style="margin-bottom:6px">
+    <select id="gender-select" onchange="setGender(this.value)" style="width:100%;padding:4px 8px;border:0.5px solid var(--bordem);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:11px;background:transparent;color:var(--tmed);outline:none;cursor:pointer">
+      <option value="">⚥ Género...</option>
+      <option value="mujer">♀ Mujer</option>
+      <option value="hombre">♂ Hombre</option>
+    </select>
+  </div>
+  <button id="admin-btn" onclick="abrirAdmin()" style="display:none;width:100%;margin-bottom:5px;padding:6px;border-radius:10px;border:0.5px solid #D4903A;background:transparent;color:#D4903A;font-size:11px;cursor:pointer;font-family:DM Sans,sans-serif">Panel Admin</button>
+  <button onclick="cerrarSesion()" style="width:100%;padding:6px;border-radius:10px;border:0.5px solid #D4C5B0;background:transparent;color:#7A6652;font-size:11px;cursor:pointer;font-family:DM Sans,sans-serif">Cerrar sesion</button>
+</div>
 </aside>
 
 <main class="main">
