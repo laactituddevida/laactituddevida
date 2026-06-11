@@ -2582,8 +2582,7 @@ let purposeData=load('purpose',{});
 let username=load('username','');
 if(!username){username='Usuario';}
 function editUsername(){const n=prompt('¿Cuál es tu nombre?',username);if(n&&n.trim()){username=n.trim();save('username',username);const el=document.getElementById('username-display');if(el)el.textContent=username;}}
-// set username on load
-setTimeout(()=>{const el=document.getElementById('username-display');if(el)el.textContent=username;},0);
+// username display handled by auth system
 cats.forEach(c=>{if(catOpen[c.id]===undefined)catOpen[c.id]=false;});
 
 /* DÍA PICKER */
@@ -9521,6 +9520,7 @@ function mostrarLogin(){
   document.getElementById("login-screen").style.display="flex";
   var s=document.querySelector(".sidebar");var m=document.querySelector(".main");
   if(s)s.style.display="none";if(m)m.style.display="none";
+  var ud=document.getElementById("username-display");if(ud)ud.textContent="";
 }
 function ocultarLogin(){
   document.getElementById("login-screen").style.display="none";
