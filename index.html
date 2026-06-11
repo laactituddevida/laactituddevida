@@ -2579,8 +2579,7 @@ let gastos=load('gastos',[]);
 let vbImages=load('vbimages',{});
 let purposeData=load('purpose',{});
 
-let username=load('username','');
-if(!username){username='Usuario';}
+let username=load('username','Usuario');
 function editUsername(){const n=prompt('¿Cuál es tu nombre?',username);if(n&&n.trim()){username=n.trim();save('username',username);const el=document.getElementById('username-display');if(el)el.textContent=username;}}
 // username display handled by auth system
 cats.forEach(c=>{if(catOpen[c.id]===undefined)catOpen[c.id]=false;});
@@ -6347,7 +6346,7 @@ function render(){
   if(fl)fl.textContent=d.toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const dp=document.getElementById('day-picker');if(dp){dp.value=curDay;dp.max=today.toISOString().slice(0,10);}
   const dlbl=document.getElementById('day-lbl');if(dlbl)dlbl.textContent=d.toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
-  const unEl=document.getElementById('username-display');if(unEl)unEl.textContent=username;
+  // username-display handled by auth system
   updateGlobalDateBar&&updateGlobalDateBar();
   buildMesGrid();setSem(curSem);updateFrase();
   const ts=document.getElementById('tabla-sub');if(ts)ts.textContent=MESES[curMes]+' · Semana '+(curSem+1);
