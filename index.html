@@ -208,7 +208,7 @@ canvas{max-width:100%}
 .vb-area-label{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--tmed);text-align:center;position:relative;z-index:1}
 .vb-area-add{font-size:22px;color:var(--bordem)}
 .vb-input{display:none}
-.purpose-ikigai{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.purpose-ikigai{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:1.25rem}
 .purpose-card{background:#fff;border:0.5px solid var(--borde);border-radius:12px;padding:1rem}
 .purpose-card h4{font-size:12px;font-weight:500;color:var(--tierra);margin-bottom:.5rem}
 .purpose-card textarea{width:100%;border:0.5px solid var(--bordem);border-radius:8px;padding:7px 9px;font-size:12px;font-family:'DM Sans',sans-serif;resize:none;background:transparent;color:var(--tierra);outline:none}
@@ -504,6 +504,7 @@ canvas{max-width:100%}
         <div style="margin-bottom:12px">
           <div style="font-size:11px;font-weight:600;color:var(--tierra);margin-bottom:6px">EMOCIÓN</div>
           <div id="pres-subem-selected" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;min-height:4px"></div>
+          <div id="pres-em-frase-motiv" style="display:none;font-size:12px;color:var(--ambar);font-style:italic;line-height:1.5;margin-bottom:8px;padding:7px 10px;background:var(--arena);border-radius:8px;border-left:3px solid var(--ambar)"></div>
           <div style="display:flex;gap:6px;align-items:center">
             <select id="pres-em-select" onchange="presAddEmFromSelect(this)" style="flex:1;padding:7px 10px;border:0.5px solid var(--bordem);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;background:#fff;color:var(--tierra);outline:none;cursor:pointer">
               <option value="">— Elegir emoción —</option>
@@ -537,6 +538,21 @@ canvas{max-width:100%}
           <div style="display:none">
             <input type="text" id="pres-new-em-alta"><input type="text" id="pres-new-em-media"><input type="text" id="pres-new-em-baja">
             <input type="text" id="pres-new-trig-alta"><input type="text" id="pres-new-trig-media"><input type="text" id="pres-new-trig-baja">
+          </div>
+        </div>
+
+        <!-- CUERPO DROPDOWN -->
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;font-weight:600;color:var(--tierra);margin-bottom:6px">CUERPO</div>
+          <div style="font-size:11px;color:var(--tmed);margin-bottom:6px">¿En qué parte del cuerpo lo sentís? <span style="font-style:italic">(anotá si podés identificarlo con una sola emoción)</span></div>
+          <div id="pres-cuerpo-selected" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;min-height:4px"></div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <select id="pres-cuerpo-select" onchange="presAddCuerpoFromSelect(this)" style="flex:1;padding:7px 10px;border:0.5px solid var(--bordem);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;background:#fff;color:var(--tierra);outline:none;cursor:pointer">
+              <option value="">— Elegir parte del cuerpo —</option>
+            </select>
+            <select id="pres-cuerpo-edit" onchange="presEditCuerpoFromSelect(this)" style="padding:7px 10px;border:0.5px solid var(--bordem);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:11px;background:#fff;color:var(--tmed);outline:none;cursor:pointer">
+              <option value="">✎</option>
+            </select>
           </div>
         </div>
 
@@ -707,6 +723,26 @@ canvas{max-width:100%}
   </div><!-- /pres-evolucion-section -->
     </div><!-- /pres-mes collapsible -->
   </div>
+
+  <!-- DADO ALEATORIO DE EJERCICIOS (collapsible) -->
+  <div style="margin-bottom:1rem">
+    <div onclick="togglePresSection('pres-dado')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;transition:background .15s;margin:0 -6px" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">🎲 Dado aleatorio de <em style="color:var(--ambar)">ejercicios</em></h2>
+      <button id="btn-pres-dado" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="pres-dado" style="display:none;padding-top:.75rem">
+      <p style="font-size:12px;color:var(--tmed);margin-bottom:1rem;line-height:1.6">Para centrarte, bajar un poco o soltar lo que sentís. Tocá el dado y confiá en lo que te toca — por algo es. Después fijate de qué manera te resuena, o reinventalo a tu manera.</p>
+      <div style="text-align:center;margin-bottom:1rem">
+        <button onclick="dadoEmRuleta()" style="padding:12px 28px;border-radius:30px;border:none;background:var(--tierra);color:var(--fondo);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.02em" onmouseover="this.style.background='var(--ambar)';this.style.color='var(--sol-osc)'" onmouseout="this.style.background='var(--tierra)';this.style.color='var(--fondo)'">🎲 Tirar el dado</button>
+      </div>
+      <div id="dado-em-result" style="display:none;background:#fff;border:0.5px solid var(--borde);border-radius:14px;padding:1.1rem;margin-bottom:1.25rem"></div>
+      <div style="border-top:0.5px dashed var(--bordem);padding-top:.85rem">
+        <div style="font-size:11px;color:var(--tmed);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Mis ejercicios para centrarme</div>
+        <div id="dado-em-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:.6rem"></div>
+        <button onclick="addDadoEmItem()" style="padding:5px 14px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">+ agregar ejercicio</button>
+      </div>
+    </div>
+  </div>
 </div><!-- /view-presencia -->
 <!-- VÍNCULOS -->
 <div id="view-vinculos" class="view">
@@ -742,10 +778,11 @@ canvas{max-width:100%}
     </div>
     <div id="vin-soc" style="display:none;margin-top:.75rem">
       <div style="margin-bottom:.75rem">
-        <div style="padding:.5rem 6px;border-bottom:0.5px solid var(--borde);margin-bottom:.5rem">
-          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;margin:0">Objetivos <em style="color:var(--ambar)">para hacer</em></h3>
+        <div onclick="toggleSection('soc-pendientes-wrap')" style="padding:.55rem .9rem;border-radius:8px;margin-bottom:.5rem;background:#D4903A14;border-left:3px solid var(--ambar);display:flex;align-items:center;gap:8px;cursor:pointer">
+          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;margin:0;flex:1">Objetivos <em style="color:var(--ambar)">para hacer / deseos que tengo</em></h3>
+          <button id="btn-soc-pendientes-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:#fff;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
         </div>
-        <div id="soc-pendientes-wrap" style="display:block;padding-top:.5rem">
+        <div id="soc-pendientes-wrap" style="display:none;padding-top:.5rem">
           <div id="soc-pendientes-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button onclick="addSocObj('pendiente')" style="padding:6px 14px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar objetivo</button>
@@ -754,10 +791,11 @@ canvas{max-width:100%}
         </div>
       </div>
       <div style="margin-bottom:.75rem">
-        <div style="padding:.5rem 6px;border-bottom:0.5px solid var(--borde);margin-bottom:.5rem;margin-top:1rem">
-          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;margin:0">Objetivos <em style="color:var(--vmusgo)">realizados</em></h3>
+        <div onclick="toggleSection('soc-realizados-wrap')" style="padding:.55rem .9rem;border-radius:8px;margin-bottom:.5rem;background:#5C7A4E14;border-left:3px solid var(--vmusgo);display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:1rem">
+          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;margin:0;flex:1">Objetivos <em style="color:var(--vmusgo)">realizados</em></h3>
+          <button id="btn-soc-realizados-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:#fff;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
         </div>
-        <div id="soc-realizados-wrap" style="display:block;padding-top:.5rem">
+        <div id="soc-realizados-wrap" style="display:none;padding-top:.5rem">
           <div id="soc-realizados-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button onclick="addSocObj('realizado')" style="padding:6px 14px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar objetivo</button>
@@ -766,10 +804,11 @@ canvas{max-width:100%}
         </div>
       </div>
       <div style="margin-bottom:.75rem">
-        <div style="padding:.5rem 6px;border-bottom:0.5px solid var(--borde);margin-bottom:.5rem;margin-top:1rem">
-          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;margin:0">Oportunidades que tuve y <em style="color:var(--terra)">no hice / no fui</em></h3>
+        <div onclick="toggleSection('soc-perdidas-wrap')" style="padding:.55rem .9rem;border-radius:8px;margin-bottom:.5rem;background:#C4713A14;border-left:3px solid var(--terra);display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:1rem">
+          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;margin:0;flex:1">Oportunidades que tuve y <em style="color:var(--terra)">no hice / no fui</em></h3>
+          <button id="btn-soc-perdidas-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:#fff;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
         </div>
-        <div id="soc-perdidas-wrap" style="display:block;padding-top:.5rem">
+        <div id="soc-perdidas-wrap" style="display:none;padding-top:.5rem">
           <div id="soc-perdidas-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button onclick="addSocObj('perdida')" style="padding:6px 14px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar</button>
@@ -786,7 +825,7 @@ canvas{max-width:100%}
 <div id="view-soc-pendientes-mes" class="view">
   <div class="ph">
     <button onclick="showView('vinculos')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
-    <h1>Objetivos sociales — <em>para hacer</em></h1>
+    <h1>Objetivos sociales — <em>para hacer / deseos que tengo</em></h1>
     <p id="soc-pend-mes-lbl" style="font-size:12px;color:var(--tmed)"></p>
   </div>
   <div id="soc-pend-mes-content" style="display:flex;flex-direction:column;gap:.75rem"></div>
@@ -1106,12 +1145,22 @@ canvas{max-width:100%}
         <div class="card-top"><h3>Nuevo registro</h3></div>
         <div class="card-body" style="display:flex;flex-direction:column;gap:.75rem">
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            <input type="number" id="g-monto" placeholder="Monto $" class="input-inline" style="border-radius:8px;padding:7px 10px;width:100px">
+            <input type="number" id="g-monto" placeholder="Monto" class="input-inline" style="border-radius:8px;padding:7px 10px;width:90px">
+            <select id="g-moneda" class="input-inline" style="border-radius:8px;padding:7px 8px;width:64px">
+              <option value="ARS">$</option>
+              <option value="USD">USD$</option>
+            </select>
             <div style="position:relative;display:flex;align-items:center;gap:4px">
               <select id="g-cat" class="input-inline" style="border-radius:8px;padding:7px 10px" id="g-cat"></select>
               <button onclick="addGastoCat()" title="Agregar rubro" style="padding:4px 8px;border-radius:8px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+</button>
               <button onclick="delGastoCat()" title="Eliminar rubro seleccionado" style="padding:4px 8px;border-radius:8px;border:0.5px solid var(--tmed);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">✕</button>
             </div>
+            <select id="g-pago" class="input-inline" style="border-radius:8px;padding:7px 10px">
+              <option value="Transferencia">Transferencia</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Débito">Débito</option>
+              <option value="Efectivo">Efectivo</option>
+            </select>
             <input type="text" id="g-desc" placeholder="Descripción" class="input-inline" style="border-radius:8px;padding:7px 10px;flex:1;min-width:100px">
             <div style="display:flex;gap:5px">
               <button onclick="addGasto('egreso')" style="background:var(--terra);border-color:var(--terra);color:#fff;padding:7px 12px;border-radius:8px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none">+ Gasto</button>
@@ -1142,8 +1191,42 @@ canvas{max-width:100%}
         <div class="chart-wrap"><h4>Distribución de gastos</h4><canvas id="chart-gastos-pie" height="200"></canvas></div>
         <div class="chart-wrap"><h4>Distribución de ingresos</h4><canvas id="chart-ingresos-pie" height="200"></canvas></div>
       </div>
+      <div id="gastos-usd-wrap" style="display:none;margin-top:1.25rem;padding-top:1rem;border-top:0.5px dashed var(--bordem)">
+        <div style="font-size:11px;color:var(--tmed);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">En dólares — este mes</div>
+        <div class="stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:1rem">
+          <div class="stat musgo"><div class="sl">Ingresos USD</div><div class="sv" id="g-ing-total-usd">USD$0</div></div>
+          <div class="stat terra"><div class="sl">Gastos USD</div><div class="sv" id="g-eg-total-usd">USD$0</div></div>
+          <div class="stat sol"><div class="sl">Balance USD</div><div class="sv" id="g-balance-usd">USD$0</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="chart-wrap"><h4>Gastos en USD</h4><canvas id="chart-gastos-usd-pie" height="200"></canvas></div>
+          <div class="chart-wrap"><h4>Ingresos en USD</h4><canvas id="chart-ingresos-usd-pie" height="200"></canvas></div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- AHORROS (collapsible) -->
+  <div style="margin-bottom:1rem">
+    <div onclick="toggleSection('ahorros-wrap')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">🐷 <em style="color:var(--ambar)">Ahorros</em></h2>
+      <button id="btn-ahorros-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="ahorros-wrap" style="display:none;padding-top:.75rem">
+      <div id="ahorros-list" style="display:flex;flex-direction:column;gap:.9rem;margin-bottom:.85rem"></div>
+      <button onclick="addAhorroCuenta()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--ambar);background:transparent;color:var(--ambar);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar ahorros</button>
+    </div>
+  </div>
+</div>
+
+<!-- AHORROS REGISTROS -->
+<div id="view-ahorro-registros" class="view">
+  <div class="ph">
+    <button onclick="showView('gastos')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <h1 id="ahorro-reg-titulo">Registros — <em>Ahorros</em></h1>
+    <p id="ahorro-reg-lbl" style="font-size:12px;color:var(--tmed)"></p>
+  </div>
+  <div id="ahorro-reg-content" style="display:flex;flex-direction:column;gap:8px"></div>
 </div>
 
 <!-- MI CICLO -->
@@ -1850,7 +1933,7 @@ canvas{max-width:100%}
     </div>
     <div id="auto-valores" style="display:none;padding-top:.75rem">
       <div style="background:var(--arena);border-radius:0 0 14px 14px;padding:1.1rem">
-        <p style="font-size:11px;color:var(--tmed);margin-bottom:1rem">Lo que me importa, lo que me mueve, lo que me define <span style="font-size:10px;color:var(--tmed);font-style:italic">(Podés arrastrar un valor por encima de otro para darle tu orden)</span></p>
+        <p style="font-size:11px;color:var(--tmed);margin-bottom:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span>Lo que me importa, lo que me mueve, lo que me define <span style="font-size:10px;color:var(--tmed);font-style:italic">(Podés arrastrar un valor por encima de otro para darle tu orden)</span></span><button onclick="showView('valores-notas')" style="padding:3px 12px;border-radius:14px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:10px;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap">Por qué mirar los valores — notas</button></p>
         <div style="margin-bottom:1.25rem">
           <div style="font-size:11px;font-weight:600;color:var(--tmed);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Mapa del mes — ¿Desde qué valores actué hoy?</div>
           <div style="overflow-x:auto">
@@ -1865,7 +1948,7 @@ canvas{max-width:100%}
 
   <div style="margin-bottom:1rem;margin-top:1rem">
     <div onclick="toggleSection('auto-remember')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
-      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Remember — <em style="color:var(--ambar)">esto me hizo bien</em></h2>
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Motivación / Remember — <em style="color:var(--ambar)">esto me hizo bien</em></h2>
       <button id="btn-auto-remember" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="auto-remember" style="display:none;padding-top:.75rem">
@@ -1928,6 +2011,21 @@ canvas{max-width:100%}
         </div>
       </div>
       <button onclick="document.getElementById('terapia-nueva-form').style.display='';document.getElementById('terapia-nueva-titulo').focus()" style="padding:7px 16px;border-radius:20px;border:none;background:var(--tierra);color:var(--fondo);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar terapia</button>
+    </div>
+  </div>
+
+  <div style="margin-bottom:1rem">
+    <div onclick="toggleSection('auto-artista')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Reflexiones / <em style="color:var(--ambar)">camino del artista</em></h2>
+      <button id="btn-auto-artista" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="auto-artista" style="display:none;padding-top:.75rem">
+      <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:13px;color:var(--ambar);line-height:1.6;margin-bottom:1rem">"Escribir un poco cada día, aunque sea una sola frase, le abre la puerta a lo que todavía no sabías que estabas pensando. No tiene que tener sentido ni estar bien escrito — dejá que la mano vaya sola y mirá qué aparece."</p>
+      <div id="artista-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="addArtistaReflexion()" style="padding:7px 16px;border-radius:20px;border:none;background:var(--ambar);color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ reflexiones</button>
+        <button onclick="showView('artista-historial')" style="padding:7px 14px;border-radius:20px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer">Ver reflexiones históricas →</button>
+      </div>
     </div>
   </div>
 
@@ -2041,10 +2139,29 @@ canvas{max-width:100%}
 <div id="view-remember-mes" class="view">
   <div class="ph">
     <button onclick="showView('autoconocimiento')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
-    <h1>Remember — <em>esto me hizo bien</em></h1>
+    <h1>Motivación / Remember — <em>esto me hizo bien</em></h1>
     <p id="remember-mes-lbl" style="font-size:12px;color:var(--tmed)"></p>
   </div>
   <div id="remember-mes-content" style="display:flex;flex-direction:column;gap:1rem"></div>
+</div>
+
+<div id="view-artista-historial" class="view">
+  <div class="ph">
+    <button onclick="showView('autoconocimiento')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <h1>Reflexiones — <em>camino del artista</em></h1>
+    <p style="font-size:12px;color:var(--tmed)">Todas tus reflexiones, de la más reciente a la más antigua</p>
+  </div>
+  <div id="artista-historial-content" style="display:flex;flex-direction:column;gap:1rem"></div>
+</div>
+
+<div id="view-valores-notas" class="view">
+  <div class="ph">
+    <button onclick="showView('autoconocimiento')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <h1>Por qué mirar los <em>valores</em></h1>
+    <p style="font-size:12px;color:var(--tmed)">Reflexiones sobre la importancia de tener tus valores claros</p>
+  </div>
+  <div id="valores-notas-list" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:.85rem"></div>
+  <button onclick="addValorNota()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--ambar);background:transparent;color:var(--ambar);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar caja</button>
 </div>
 
 <!-- TERAPIA DETALLE -->
@@ -2628,7 +2745,7 @@ function cirk(m,a){return 'c_'+m+'_'+a;}
 function emKey(m,day){return 'em_'+m+'_'+day;}
 function todayKey(){return emKey(curMes,curDay);}
 function allH(){const a=[];cats.forEach(c=>{c.habitos.forEach(h=>{a.push(h);if(h.subs)h.subs.forEach(s=>a.push(s));});});return a;}
-function saveAll(){save('cats',cats);save('checks',checks);save('estado',estado);save('emdata',emData);save('circulo',circulo);save('cirlists',cirLists);save('triggers',triggers);save('catopen',catOpen);save('graphflags',graphFlags);save('vinculos',vinculos);save('gastos',gastos);save('vbimages',vbImages);save('purpose',purposeData);}
+function saveAll(){save('cats',cats);save('checks',checks);save('estado',estado);save('emdata',emData);save('circulo',circulo);save('cirlists',cirLists);save('triggers',triggers);save('catopen',catOpen);save('graphflags',graphFlags);save('vinculos',vinculos);save('gastos',gastos);save('ahorros',ahorros);save('vbimages',vbImages);save('purpose',purposeData);}
 
 function uid(){return '_'+Math.random().toString(36).slice(2,8);}
 
@@ -4060,6 +4177,13 @@ const PRES_EM_ALTA=['Amor','Ternura','Compasión','Gratitud','Ilusión','Asombro
 const PRES_EM_MEDIA=['Aburrimiento','Nostalgia','Melancolía','Confusión','Incomprensión','Timidez','Vergüenza','Decepción','Remordimiento','Envidia'];
 const PRES_EM_BAJA=['Frustración','Irritación','Tensión','Inseguridad','Culpa','Desaliento','Desamparo','Soledad','Miedo','Tristeza','Ira','Ansiedad','Enojo'];
 const PRES_SUBEM=[...PRES_EM_ALTA,...PRES_EM_MEDIA,...PRES_EM_BAJA];
+const EMOCION_COLOR_PALETTE=['#C0392B','#E67E22','#D4903A','#B8860B','#27AE60','#16A085','#2980B9','#3498DB','#8E44AD','#9B59B6','#E91E63','#7A6652','#5C7A4E','#34495E','#D35400','#1ABC9C','#C4713A','#7AB87E','#F39C12','#95A5A6','#A04000','#117864','#6C3483','#B03A2E'];
+function getEmocionColor(nombre){
+  const base=[...PRES_EM_ALTA,...PRES_EM_MEDIA,...PRES_EM_BAJA,...(presEmExtra.alta||[]),...(presEmExtra.media||[]),...(presEmExtra.baja||[])];
+  let idx=base.indexOf(nombre);
+  if(idx<0){let h=0;for(let i=0;i<nombre.length;i++)h=(h*31+nombre.charCodeAt(i))>>>0;idx=h;}
+  return EMOCION_COLOR_PALETTE[idx%EMOCION_COLOR_PALETTE.length];
+}
 let presSubemSel=[];
 let presTrigSel={alta:[],media:[],baja:[]};
 let presEmExtra=load('presemextra',{alta:[],media:[],baja:[]});
@@ -4082,6 +4206,87 @@ if(!presTriggers||!Array.isArray(presTriggers)){
   save('prestriggers',presTriggers);
 }
 presTriggers=[...new Set(presTriggers)]; // deduplicate
+
+const CUERPO_DEF=['Cabeza','Frente','Ojos','Mandíbula','Cuello','Garganta','Hombros','Pecho','Corazón','Espalda','Brazos','Manos','Estómago','Panza / vientre','Plexo solar','Piernas','Pies','Todo el cuerpo'];
+let presCuerpos=load('prescuerpos',null);
+if(!presCuerpos||!Array.isArray(presCuerpos)){presCuerpos=[...CUERPO_DEF];save('prescuerpos',presCuerpos);}
+presCuerpos=[...new Set(presCuerpos)];
+let presCuerpoSel=[];
+
+const EMOCION_NEEDS_MAP={
+  'Amor':'Necesito abrirme.','Ternura':'Necesito suavidad.','Compasión':'Necesito comprender.',
+  'Gratitud':'Necesito valorar lo que hay.','Aceptación':'Necesito dejar de resistir.',
+  'Calma':'Necesito estar en el presente.','Ilusión':'Necesito creer.','Asombro':'Necesito estar presente.',
+  'Admiración':'Necesito inspirarme.','Entusiasmo':'Necesito crear y moverme.','Euforia':'Necesito canalizar energía.',
+  'Alegría':'Necesito compartir.','Felicidad':'Necesito disfrutar.','Placer':'Necesito habitar el cuerpo.',
+  'Alivio':'Necesito descansar.','Serenidad':'Necesito presencia.','Satisfacción':'Necesito celebrar lo recorrido.',
+  'Orgullo':'Necesito reconocer mi valor.','Aburrimiento':'Necesito vitalidad.','Nostalgia':'Necesito honrar recuerdos.',
+  'Melancolía':'Necesito conectar conmigo.','Confusión':'Necesito claridad.','Incomprensión':'Necesito sentirme escuchada.',
+  'Timidez':'Necesito animarme.','Vergüenza':'Necesito aceptación.','Decepción':'Necesito aceptar lo que fue.',
+  'Remordimiento':'Necesito aprender y soltar.','Envidia':'Necesito reconocer mis deseos.',
+  'Frustración':'Necesito paciencia.','Irritación':'Necesito espacio o pausa.','Tensión':'Necesito aflojar y respirar.',
+  'Inseguridad':'Necesito confiar en mí.','Culpa':'Necesito perdonarme.','Desaliento':'Necesito recuperar esperanza.',
+  'Desamparo':'Necesito apoyo.','Soledad':'Necesito vínculo.','Miedo':'Necesito seguridad.',
+  'Tristeza':'Necesito contención.','Ira':'Necesito expresar lo que me pasa.','Ansiedad':'Necesito soltar el control.',
+  'Enojo':'Necesito expresar lo que siento.',
+};
+function showEmFraseMotiv(em){
+  const box=document.getElementById('pres-em-frase-motiv');if(!box)return;
+  const frase=EMOCION_NEEDS_MAP[em]||'Necesito escucharme.';
+  box.style.display='block';
+  box.innerHTML=`✨ "${frase}" <span style="color:var(--tmed)">— esto podría estar necesitando tu</span> <b>${em}</b>.`;
+  clearTimeout(window._emFraseTimeout);
+  window._emFraseTimeout=setTimeout(()=>{box.style.display='none';},7000);
+}
+function buildPresCuerpoPills(){
+  const sel=document.getElementById('pres-cuerpo-select');
+  const editSel=document.getElementById('pres-cuerpo-edit');
+  const color='#9B59B6';
+  if(sel){
+    sel.innerHTML='<option value="">— Elegir parte del cuerpo —</option>';
+    presCuerpos.filter(c=>!presCuerpoSel.includes(c)).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
+    const addO=document.createElement('option');addO.value='__nueva__';addO.textContent='＋ Agregar nueva...';sel.appendChild(addO);
+  }
+  if(editSel){
+    editSel.innerHTML='<option value="">✎ Editar</option>';
+    const delOg=document.createElement('optgroup');delOg.label='✕ Eliminar';
+    presCuerpos.forEach(c=>{const o=document.createElement('option');o.value='__del__'+c;o.textContent='✕ '+c;delOg.appendChild(o);});
+    editSel.appendChild(delOg);
+    const addOg=document.createElement('optgroup');addOg.label='＋ Agregar nueva';
+    const addO=document.createElement('option');addO.value='__add__';addO.textContent='＋ Nueva parte';addOg.appendChild(addO);
+    editSel.appendChild(addOg);
+  }
+  const cont=document.getElementById('pres-cuerpo-selected');if(!cont)return;
+  cont.innerHTML=presCuerpoSel.map(c=>`<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:${color};color:#fff;font-size:11px;font-family:'DM Sans',sans-serif">${c} <button onclick="presCuerpoRemove('${c}')" style="font-size:9px;color:#fff;border:none;background:none;cursor:pointer;padding:0">✕</button></span>`).join('');
+}
+function presAddCuerpoFromSelect(sel){
+  const val=sel.value;if(!val)return;sel.value='';
+  if(val==='__nueva__'){const n=prompt('Nueva parte del cuerpo:');if(n&&n.trim())addPresCuerpoFlat(n.trim());return;}
+  if(!presCuerpoSel.includes(val))presCuerpoSel.push(val);
+  buildPresCuerpoPills();
+}
+function presEditCuerpoFromSelect(sel){
+  const val=sel.value;if(!val)return;sel.value='';
+  if(val.startsWith('__del__')){
+    const c=val.replace('__del__','');
+    presCuerpos=presCuerpos.filter(x=>x!==c);
+    save('prescuerpos',presCuerpos);
+    presCuerpoSel=presCuerpoSel.filter(x=>x!==c);
+    buildPresCuerpoPills();return;
+  }
+  if(val==='__add__'){const n=prompt('Nueva parte del cuerpo:');if(n&&n.trim())addPresCuerpoFlat(n.trim());}
+}
+function addPresCuerpoFlat(v){
+  if(!presCuerpos.includes(v))presCuerpos.push(v);
+  presCuerpos=[...new Set(presCuerpos)];
+  save('prescuerpos',presCuerpos);
+  if(!presCuerpoSel.includes(v))presCuerpoSel.push(v);
+  buildPresCuerpoPills();
+}
+function presCuerpoRemove(c){
+  presCuerpoSel=presCuerpoSel.filter(x=>x!==c);
+  buildPresCuerpoPills();
+}
 
 
 function buildPresSubemPills(){
@@ -4121,13 +4326,8 @@ function buildPresSubemPills(){
 
   // Render selected pills
   const cont = document.getElementById('pres-subem-selected'); if(!cont) return;
-  const colMap = {};
-  Object.keys(groups).forEach(nivel => {
-    const deleted = presEmDeleted[nivel]||[];
-    [...groups[nivel].filter(e=>!deleted.includes(e)),...(presEmExtra[nivel]||[])].forEach(e => colMap[e]=colors[nivel]);
-  });
   cont.innerHTML = presSubemSel.map(s => {
-    const col = colMap[s]||'var(--ambar)';
+    const col = getEmocionColor(s);
     return `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:${col};color:#fff;font-size:11px;font-family:'DM Sans',sans-serif">
       ${s} <button onclick="presRemoveEm('${s}')" style="font-size:9px;color:#fff;border:none;background:none;cursor:pointer;padding:0;line-height:1">✕</button>
     </span>`;
@@ -4159,6 +4359,7 @@ function presAddEmFromSelect(sel){
   }
   if(!presSubemSel.includes(val)) presSubemSel.push(val);
   buildPresSubemPills();
+  showEmFraseMotiv(val);
 }
 
 function presRemoveEm(em){
@@ -4174,6 +4375,7 @@ function addPresEmByName(v, nivel){
   save('presemextra',presEmExtra);
   if(!presSubemSel.includes(v)) presSubemSel.push(v);
   buildPresSubemPills();
+  showEmFraseMotiv(v);
 }
 
 
@@ -4583,6 +4785,66 @@ function buildVibracionAnalisis(){
 
 /* PRESENCIA COLLAPSIBLE */
 let presSections=load('pressections',{});
+const DADO_EM_DEFAULT=[
+  {n:'Respiración 4-7-8',desc:'Inhalá 4 segundos, sostené 7, exhalá 8. Repetilo 4 veces.',link:''},
+  {n:'Respiración cuadrada',desc:'Inhalá 4 tiempos, sostené 4, exhalá 4, sostené 4. Como dibujar un cuadrado con el aire.',link:''},
+  {n:'5-4-3-2-1 sensorial',desc:'Nombrá 5 cosas que ves, 4 que escuchás, 3 que tocás, 2 que olés, 1 que saboreás.',link:''},
+  {n:'Sacudida corporal',desc:'Sacudí brazos, piernas y todo el cuerpo durante 30 segundos, como un perro mojado al salir del agua.',link:''},
+  {n:'Grito liberador',desc:'Si podés, gritá — en una almohada, el auto, o donde nadie te escuche. Sacá la presión del cuerpo.',link:''},
+  {n:'Escribir sin parar',desc:'Poné un timer de 5 minutos y escribí todo lo que sentís, sin parar y sin corregir nada.',link:''},
+  {n:'Llamar a alguien de confianza',desc:'Elegí una persona y contale, aunque sea un audio, cómo estás. No tenés que resolverlo, solo nombrarlo.',link:''},
+  {n:'Caminar afuera',desc:'Salí a caminar 10 minutos, aunque sea a la vuelta de la manzana. Mové el cuerpo, cambiá el aire.',link:''},
+  {n:'Agua fría en la cara',desc:'Mojate la cara, la nuca o las manos con agua fría. Ayuda a bajar revoluciones del sistema nervioso.',link:''},
+  {n:'Mano en el pecho y la panza',desc:'Poné una mano en el pecho y otra en la panza. Respirá hondo notando cómo se mueven.',link:''},
+  {n:'Meditación guiada corta',desc:'Buscá un audio de meditación de 5 a 10 minutos y seguilo sin exigirte nada.',link:'https://www.youtube.com/results?search_query=meditacion+guiada+5+minutos'},
+  {n:'Bailar una canción',desc:'Poné una canción que te guste y bailá, aunque sea torpe. El cuerpo necesita moverse para soltar.',link:''},
+  {n:'Tensar y soltar músculos',desc:'Tensá fuerte cada grupo muscular 5 segundos y soltá. Empezá por los pies y subí hasta la cara.',link:''},
+  {n:'Lista de gratitud',desc:'Escribí 3 cosas, aunque sean chiquitas, por las que hoy podés estar agradecida.',link:''},
+  {n:'Buscar contacto físico',desc:'Un abrazo, una manta, una almohada que apretar. El cuerpo necesita contención cuando algo pesa.',link:''},
+  {n:'Dibujar lo que sentís',desc:'Sin pensar en que tenga que quedar lindo: una forma, un color, un garabato que represente la emoción.',link:''},
+  {n:'Ducha consciente',desc:'Bañate prestando atención solo al agua, la temperatura, el sonido. Un reseteo simple.',link:''},
+  {n:'Decir basta en voz alta',desc:'A solas, decí lo que necesites soltar: "basta", "no quiero esto", lo que sea que aparezca.',link:''},
+  {n:'Ordenar un rincón pequeño',desc:'Elegí un cajón, una mesa, un rincón, y ordenalo. A veces ordenar afuera ayuda a ordenar adentro.',link:''},
+  {n:'Tomar algo calentito despacio',desc:'Preparate un té o un mate y tomalo despacio, sin hacer nada más, solo eso por unos minutos.',link:''},
+];
+let dadoEmData=load('dadoemdata',DADO_EM_DEFAULT);
+function buildDadoEm(){
+  const cont=document.getElementById('dado-em-list');if(!cont)return;
+  if(!dadoEmData.length){cont.innerHTML='<p style="font-size:12px;color:var(--tmed)">No hay ejercicios cargados. Agregá el primero.</p>';return;}
+  cont.innerHTML=dadoEmData.map((ej,i)=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:8px;background:var(--fondo);border:0.5px solid var(--bordem)">
+    <div style="flex:1;min-width:0">
+      <input type="text" value="${(ej.n||'').replace(/"/g,'&quot;')}" placeholder="Nombre del ejercicio" oninput="dadoEmData[${i}].n=this.value;save('dadoemdata',dadoEmData)" style="width:100%;font-size:12px;font-weight:500;color:var(--tierra);border:none;background:transparent;outline:none;font-family:'DM Sans',sans-serif;margin-bottom:2px">
+      <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';dadoEmData[${i}].desc=this.value;save('dadoemdata',dadoEmData)" onfocus="this.style.height='auto';this.style.height=this.scrollHeight+'px'" rows="1" placeholder="Descripción / consigna..." style="width:100%;font-size:11px;color:var(--tmed);border:none;background:transparent;outline:none;resize:none;overflow:hidden;font-family:'DM Sans',sans-serif;line-height:1.5">${ej.desc||''}</textarea>
+      <input type="text" value="${(ej.link||'').replace(/"/g,'&quot;')}" placeholder="Link (opcional)" oninput="dadoEmData[${i}].link=this.value;save('dadoemdata',dadoEmData)" style="width:100%;font-size:10px;color:#3498DB;border:none;background:transparent;outline:none;font-family:'DM Sans',sans-serif;margin-top:2px">
+    </div>
+    <button onclick="delDadoEmItem(${i})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer;flex-shrink:0">✕</button>
+  </div>`).join('');
+}
+function addDadoEmItem(){
+  dadoEmData.push({n:'',desc:'',link:''});
+  save('dadoemdata',dadoEmData);buildDadoEm();
+  setTimeout(()=>{const inps=document.querySelectorAll('#dado-em-list input[type=text]');if(inps.length>=2)inps[inps.length-2].focus();},50);
+}
+function delDadoEmItem(i){
+  if(!confirm('¿Eliminar este ejercicio?'))return;
+  dadoEmData.splice(i,1);save('dadoemdata',dadoEmData);buildDadoEm();
+}
+function dadoEmRuleta(){
+  const box=document.getElementById('dado-em-result');if(!box)return;
+  if(!dadoEmData.length){box.style.display='block';box.innerHTML='<p style="font-size:12px;color:var(--tmed)">Agregá al menos un ejercicio para poder tirar el dado.</p>';return;}
+  box.style.display='block';
+  box.innerHTML='<div style="text-align:center;font-size:20px;animation:spin .6s linear infinite">🎲</div>';
+  setTimeout(()=>{
+    const idx=Math.floor(Math.random()*dadoEmData.length);
+    const ej=dadoEmData[idx];
+    box.innerHTML=`
+      <div style="font-size:11px;color:var(--tmed);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">✨ Te tocó esto — confiá, por algo es</div>
+      <div style="font-size:17px;font-weight:700;color:var(--tierra);margin-bottom:6px">${ej.n||'Ejercicio'}</div>
+      <div style="font-size:13px;color:var(--tmed);font-style:italic;line-height:1.6;margin-bottom:${ej.link?'10px':'0'}">${ej.desc||''}</div>
+      ${ej.link?`<a href="${ej.link}" target="_blank" style="font-size:12px;color:#3498DB">Ver enlace ↗</a>`:''}
+      <div style="font-size:11px;color:var(--tmed);font-style:italic;margin-top:10px;border-top:0.5px dashed var(--bordem);padding-top:8px">Fijate de qué manera te resuena hoy, o reinventalo a tu manera — lo importante es que te ayude a vos.</div>`;
+  },600);
+}
 function togglePresSection(id){
   presSections[id]=!presSections[id];
   save('pressections',presSections);
@@ -4591,16 +4853,17 @@ function togglePresSection(id){
   if(el)el.style.display=presSections[id]?'':'none';
   if(btn)btn.textContent=presSections[id]?'Cerrar':'Abrir';
   if(presSections[id]&&id==='pres-mes'){buildVibracionChart();buildVibracionAnalisis();buildPresHeatmap();updatePresEmReporte();buildDormirEmocionesChart();}
-  if(presSections[id]&&id==='pres-emocion'){buildPresSubemPills();buildPresTrigPills();}
+  if(presSections[id]&&id==='pres-dado'){buildDadoEm();}
+  if(presSections[id]&&id==='pres-emocion'){buildPresSubemPills();buildPresTrigPills();buildPresCuerpoPills();}
   if(presSections[id]&&id==='pres-dormir'){initDormirForm();}
-  if(presSections[id]&&id==='pres-hoy'){buildPresSubemPills();buildPresTrigPills();setPresente('si');}
-  if(presSections[id]&&id==='pres-emocion'){buildPresSubemPills();buildPresTrigPills();}
+  if(presSections[id]&&id==='pres-hoy'){buildPresSubemPills();buildPresTrigPills();buildPresCuerpoPills();setPresente('si');}
+  if(presSections[id]&&id==='pres-emocion'){buildPresSubemPills();buildPresTrigPills();buildPresCuerpoPills();}
   if(presSections[id]&&id==='pres-dormir'){initDormirForm();}
-  if(presSections[id]&&id==='pres-emocion'){buildPresSubemPills();buildPresTrigPills();}
+  if(presSections[id]&&id==='pres-emocion'){buildPresSubemPills();buildPresTrigPills();buildPresCuerpoPills();}
   if(presSections[id]&&id==='pres-dormir'){initDormirForm();}
 }
 function initPresSections(){
-  ['pres-hoy','pres-emocion','auto-triggers','pres-dormir','pres-mes'].forEach(id=>{
+  ['pres-hoy','pres-emocion','auto-triggers','pres-dormir','pres-mes','pres-dado'].forEach(id=>{
     const el=document.getElementById(id);
     const btn=document.getElementById('btn-'+id);
     const open=presSections[id]||false;
@@ -4617,16 +4880,15 @@ function cambiarDiaPres(val){
   buildPresencia();
 }
 
-function buildPresencia(){
-  initPresSections();
-  const fl=document.getElementById('pres-fecha');
+function _origBuildPresencia(){
   if(fl)fl.textContent=new Date(curDay+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const picker=document.getElementById('pres-date-picker');
   if(picker)picker.value=curDay;
   presFormState={presente:'si',mente:[]};
-  presSubemSel=[];presTrigSel={alta:[],media:[],baja:[]};
+  presSubemSel=[];presTrigSel={alta:[],media:[],baja:[]};presCuerpoSel=[];
   buildPresSubemPills();
   buildPresTrigPills();
+  buildPresCuerpoPills();
   setPresente('si');
   renderPresLista();
   buildVibracionChart();
@@ -4741,6 +5003,7 @@ function guardarEmocion(){
     trigAlta:[...(presTrigSel.alta||[])],
     trigMedia:[...(presTrigSel.media||[])],
     trigBaja:[...(presTrigSel.baja||[])],
+    cuerpo:[...presCuerpoSel],
     notasElec:notas,
     emNotas:[...emReaccionNotas].filter(n=>n.trim()),
     resp24:document.getElementById('pres-em-resp24')?.value.trim()||'',
@@ -4757,8 +5020,9 @@ function guardarEmocion(){
   ['pres-em-resp24','pres-em-respCambio','pres-em-respProfundo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   emReaccionNotas=[];
   const nc=document.getElementById('pres-emocion-notas');if(nc)nc.innerHTML='';
-  presSubemSel=[];presTrigSel={alta:[],media:[],baja:[]};
-  buildPresSubemPills();buildPresTrigPills();
+  presSubemSel=[];presTrigSel={alta:[],media:[],baja:[]};presCuerpoSel=[];
+  buildPresSubemPills();buildPresTrigPills();buildPresCuerpoPills();
+  const fb=document.getElementById('pres-em-frase-motiv');if(fb)fb.style.display='none';
 }
 
 function renderBarraHoy(){
@@ -5097,12 +5361,12 @@ let socData=load('socdata',{pendientes:[],realizados:[]});
 if(socData.objetivos&&!socData.pendientes){socData.pendientes=socData.objetivos.filter(o=>o.titulo&&o.titulo.trim()).map(o=>({...o,ts:Date.now(),day:curDay}));socData.realizados=[];delete socData.objetivos;save('socdata',socData);}
 if(!socData.pendientes)socData.pendientes=[];if(!socData.realizados)socData.realizados=[];if(!socData.perdidas)socData.perdidas=[];
 
-function buildSocializacion(){buildSocList('pendiente');buildSocList('realizado');buildSocList('perdida');}
+function buildSocializacion(){initSections(['soc-pendientes-wrap','soc-realizados-wrap','soc-perdidas-wrap']);buildSocList('pendiente');buildSocList('realizado');buildSocList('perdida');}
 function _socKey(tipo){return tipo==='pendiente'?'pendientes':tipo==='realizado'?'realizados':'perdidas';}
 function _socCard(tipo,key,obj,oi,total){
   const num=total-oi;
-  const descs=(obj.descripciones||[]).map((d,di)=>{const c2=NOTA_COLORS[di%NOTA_COLORS.length];return `<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;padding:6px 10px;border-radius:8px;background:${c2}12;border-left:2px solid ${c2}"><span style="font-size:12px;color:${c2};flex:1;line-height:1.6">${d}</span><button onclick="delSocDesc('${tipo}',${oi},${di})" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button></div>`;}).join('');
-  return `<div style="background:#fff;border:0.5px solid var(--borde);border-radius:12px;overflow:hidden;margin-bottom:4px"><div style="padding:.7rem 1.1rem;background:var(--arena);border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:8px"><span style="font-size:15px;font-weight:800;color:var(--ambar);min-width:22px;flex-shrink:0">${num}.</span><input type="text" value="${obj.titulo||''}" placeholder="Objetivo..." style="flex:1;font-size:13px;color:var(--tierra);border:none;background:transparent;outline:none;font-family:'DM Sans',sans-serif" oninput="socData['${key}'][${oi}].titulo=this.value;save('socdata',socData)"><button onclick="delSocObj('${tipo}',${oi})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button></div><div style="padding:.75rem 1.1rem">${descs}<button onclick="addSocDesc('${tipo}',${oi})" style="padding:3px 10px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">+ descripción</button></div></div>`;
+  const descs=(obj.descripciones||[]).map((d,di)=>{const c2=NOTA_COLORS[di%NOTA_COLORS.length];return `<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;padding:6px 10px;border-radius:8px;background:${c2}12;border-left:2px solid ${c2}"><textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';socData['${key}'][${oi}].descripciones[${di}]=this.value;save('socdata',socData)" onfocus="this.style.height='auto';this.style.height=this.scrollHeight+'px'" rows="1" style="font-size:12px;color:${c2};flex:1;line-height:1.6;border:none;background:transparent;outline:none;resize:none;overflow:hidden;font-family:'DM Sans',sans-serif;padding:0;cursor:text">${d}</textarea><button onclick="delSocDesc('${tipo}',${oi},${di})" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button></div>`;}).join('');
+  return `<div id="soc-card-${tipo}-${oi}" style="background:#fff;border:0.5px solid var(--borde);border-radius:12px;overflow:hidden;margin-bottom:4px"><div style="padding:.7rem 1.1rem;background:var(--arena);border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:8px"><span style="font-size:15px;font-weight:800;color:var(--ambar);min-width:22px;flex-shrink:0">${num}.</span><input type="text" value="${obj.titulo||''}" placeholder="Objetivo..." style="flex:1;font-size:13px;color:var(--tierra);border:none;background:transparent;outline:none;font-family:'DM Sans',sans-serif" oninput="socData['${key}'][${oi}].titulo=this.value;save('socdata',socData)"><button onclick="delSocObj('${tipo}',${oi})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button></div><div style="padding:.75rem 1.1rem">${descs}<button onclick="addSocDesc('${tipo}',${oi})" style="padding:3px 10px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">+ descripción</button></div></div>`;
 }
 function buildSocList(tipo){
   const key=_socKey(tipo);
@@ -5134,7 +5398,7 @@ function addSocObj(tipo){
   setTimeout(()=>{const cards=document.querySelectorAll('#'+contId+'>div');if(cards.length){const inp=cards[0].querySelector('input');if(inp)inp.focus();}},60);
 }
 function delSocObj(tipo,oi){const key=_socKey(tipo);socData[key].splice(oi,1);save('socdata',socData);buildSocList(tipo);}
-function addSocDesc(tipo,oi){const txt=prompt('Descripción:');if(!txt||!txt.trim())return;const key=_socKey(tipo);socData[key][oi].descripciones.push(txt.trim());save('socdata',socData);buildSocList(tipo);}
+function addSocDesc(tipo,oi){const key=_socKey(tipo);socData[key][oi].descripciones=socData[key][oi].descripciones||[];socData[key][oi].descripciones.push('');save('socdata',socData);buildSocList(tipo);setTimeout(()=>{const card=document.getElementById('soc-card-'+tipo+'-'+oi);if(!card)return;const tas=card.querySelectorAll('textarea');if(tas.length)tas[tas.length-1].focus();},60);}
 function delSocDesc(tipo,oi,di){const key=_socKey(tipo);socData[key][oi].descripciones.splice(di,1);save('socdata',socData);buildSocList(tipo);}
 function buildSocMes(tipo){
   const key=_socKey(tipo);
@@ -5316,15 +5580,34 @@ function buildProposito(){
   ];
   cont.innerHTML='';
   ikigaiAreas.forEach(ia=>{
-    const div=document.createElement('div');div.className='purpose-card';
-    div.innerHTML=`<h4>${ia.q}</h4><textarea rows="4" placeholder="${ia.ph}">${purposeData[ia.key]||''}</textarea>`;
-    div.querySelector('textarea').oninput=(e)=>{purposeData[ia.key]=e.target.value;save('purpose',purposeData);};
+    if(typeof purposeData[ia.key]==='string'){purposeData[ia.key]=purposeData[ia.key].trim()?[purposeData[ia.key]]:[];save('purpose',purposeData);}
+    if(!Array.isArray(purposeData[ia.key]))purposeData[ia.key]=[];
+    const items=purposeData[ia.key];
+    const div=document.createElement('div');div.className='purpose-card';div.id='purpose-card-'+ia.key;
+    const entriesHtml=items.map((txt,idx)=>{
+      const col=NOTA_COLORS[idx%NOTA_COLORS.length];
+      return `<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;padding:6px 10px;border-radius:8px;background:${col}12;border-left:2px solid ${col}"><textarea data-key="${ia.key}" data-idx="${idx}" placeholder="${ia.ph}" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';purposeData['${ia.key}'][${idx}]=this.value;save('purpose',purposeData)" onfocus="this.style.height='auto';this.style.height=this.scrollHeight+'px'" rows="1" style="font-size:12px;color:${col};flex:1;line-height:1.6;border:none;background:transparent;outline:none;resize:none;overflow:hidden;font-family:'DM Sans',sans-serif;padding:0;cursor:text">${txt}</textarea><button onclick="delIkPurposeItem('${ia.key}',${idx})" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button></div>`;
+    }).join('');
+    div.innerHTML=`<h4>${ia.q}</h4><div>${entriesHtml||'<p style="font-size:11px;color:var(--tmed);margin-bottom:6px">Sin nada escrito todavía.</p>'}</div><button onclick="addIkPurposeItem('${ia.key}')" style="margin-top:2px;padding:3px 10px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">+ agregar</button>`;
     cont.appendChild(div);
   });
+  cont.querySelectorAll('textarea').forEach(ta=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';});
   const frases=document.getElementById('purpose-frases');
   if(frases){frases.value=purposeData.frases||'';frases.oninput=(e)=>{purposeData.frases=e.target.value;save('purpose',purposeData);};}
   const personas=document.getElementById('purpose-personas');
   if(personas){personas.value=purposeData.personas||'';personas.oninput=(e)=>{purposeData.personas=e.target.value;save('purpose',purposeData);};}
+}
+function addIkPurposeItem(key){
+  if(!Array.isArray(purposeData[key]))purposeData[key]=[];
+  purposeData[key].push('');
+  save('purpose',purposeData);
+  buildProposito();
+  setTimeout(()=>{const card=document.getElementById('purpose-card-'+key);if(card){const tas=card.querySelectorAll('textarea');if(tas.length)tas[tas.length-1].focus();}},60);
+}
+function delIkPurposeItem(key,idx){
+  purposeData[key].splice(idx,1);
+  save('purpose',purposeData);
+  buildProposito();
 }
 
 
@@ -5333,8 +5616,10 @@ function addGasto(tipo){
   const desc=document.getElementById('g-desc').value.trim();
   const monto=parseFloat(document.getElementById('g-monto').value);
   const catEl=document.getElementById('g-cat');const cat=catEl?catEl.value:'Otro';
+  const monedaEl=document.getElementById('g-moneda');const moneda=monedaEl?monedaEl.value:'ARS';
+  const pagoEl=document.getElementById('g-pago');const pago=pagoEl?pagoEl.value:'Transferencia';
   if(!desc||isNaN(monto)||monto<=0)return;
-  gastos.push({id:uid(),desc,monto,cat,tipo,mes:curMes,fecha:today.toISOString().slice(0,10)});
+  gastos.push({id:uid(),desc,monto,cat,tipo,moneda,pago,mes:curMes,fecha:today.toISOString().slice(0,10)});
   document.getElementById('g-desc').value='';document.getElementById('g-monto').value='';
   save('gastos',gastos);buildGastos();
 }
@@ -5366,15 +5651,24 @@ function buildGastos(){
     list.innerHTML=hoyGastos.length
       ? hoyGastos.map(g=>`<div class="gasto-item">
           <span class="gi-cat">${g.cat}</span><span style="flex:1;font-size:12px">${g.desc}</span>
-          <span class="gi-monto ${g.tipo==='ingreso'?'gi-ing':'gi-eg'}">${g.tipo==='ingreso'?'+':'-'}$${g.monto.toFixed(0)}</span>
+          <span style="font-size:9px;color:var(--tmed)">${g.pago||'Transferencia'}</span>
+          <span class="gi-monto ${g.tipo==='ingreso'?'gi-ing':'gi-eg'}">${g.tipo==='ingreso'?'+':'-'}${(g.moneda==='USD'?'USD$':'$')}${g.monto.toFixed(0)}</span>
           <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
         </div>`).join('')
       : '<p style="font-size:12px;color:var(--tmed)">Sin registros hoy.</p>';
   }
-  const mesGastos=gastos.filter(g=>g.mes===curMes);
+  const mesGastos=gastos.filter(g=>g.mes===curMes&&g.moneda!=='USD');
   let ing=0,eg=0;mesGastos.forEach(g=>{if(g.tipo==='ingreso')ing+=g.monto;else eg+=g.monto;});
   const ie=document.getElementById('g-ing-total');const ee=document.getElementById('g-eg-total');const be=document.getElementById('g-balance');
   if(ie)ie.textContent='$'+ing.toFixed(0);if(ee)ee.textContent='$'+eg.toFixed(0);if(be)be.textContent='$'+(ing-eg).toFixed(0);
+  const mesGastosUsd=gastos.filter(g=>g.mes===curMes&&g.moneda==='USD');
+  const usdWrap=document.getElementById('gastos-usd-wrap');
+  if(usdWrap)usdWrap.style.display=mesGastosUsd.length?'':'none';
+  if(mesGastosUsd.length){
+    let ingU=0,egU=0;mesGastosUsd.forEach(g=>{if(g.tipo==='ingreso')ingU+=g.monto;else egU+=g.monto;});
+    const ieU=document.getElementById('g-ing-total-usd');const eeU=document.getElementById('g-eg-total-usd');const beU=document.getElementById('g-balance-usd');
+    if(ieU)ieU.textContent='USD$'+ingU.toFixed(0);if(eeU)eeU.textContent='USD$'+egU.toFixed(0);if(beU)beU.textContent='USD$'+(ingU-egU).toFixed(0);
+  }
   buildGastosChart();
 }
 
@@ -5385,17 +5679,26 @@ function buildGastosMes(){
   const cont=document.getElementById('gastos-mes-content');if(!cont)return;
   const mesGastos=gastos.filter(g=>g.mes===curMes).slice().reverse();
   if(!mesGastos.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin registros este mes.</p>';return;}
-  cont.innerHTML=mesGastos.map(g=>`
+  const ingresos=mesGastos.filter(g=>g.tipo==='ingreso');
+  const egresos=mesGastos.filter(g=>g.tipo==='egreso');
+  const renderItem=g=>`
     <div class="gasto-item" style="padding:8px 10px;background:#fff;border-radius:8px;border:0.5px solid var(--bordem)">
       <span class="gi-cat">${g.cat}</span>
       <span style="flex:1;font-size:12px;color:var(--tierra)">${g.desc}</span>
+      <span style="font-size:9px;color:var(--tmed)">${g.pago||'Transferencia'}</span>
       <span style="font-size:10px;color:var(--tmed);margin-right:6px">${g.fecha||''}</span>
-      <span class="gi-monto ${g.tipo==='ingreso'?'gi-ing':'gi-eg'}">${g.tipo==='ingreso'?'+':'-'}$${g.monto.toFixed(0)}</span>
+      <span class="gi-monto ${g.tipo==='ingreso'?'gi-ing':'gi-eg'}">${g.tipo==='ingreso'?'+':'-'}${(g.moneda==='USD'?'USD$':'$')}${g.monto.toFixed(0)}</span>
       <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
-    </div>`).join('');
+    </div>`;
+  cont.innerHTML=`
+    <div style="font-size:11px;font-weight:600;color:var(--vmusgo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Ingresos</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:1.1rem">${ingresos.length?ingresos.map(renderItem).join(''):'<p style="font-size:12px;color:var(--tmed)">Sin ingresos este mes.</p>'}</div>
+    <div style="font-size:11px;font-weight:600;color:var(--terra);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Gastos</div>
+    <div style="display:flex;flex-direction:column;gap:6px">${egresos.length?egresos.map(renderItem).join(''):'<p style="font-size:12px;color:var(--tmed)">Sin gastos este mes.</p>'}</div>
+  `;
 }
 
-let chartGastosPie=null;let chartIngresosPie=null;
+let chartGastosPie=null;let chartIngresosPie=null;let chartGastosUsdPie=null;let chartIngresosUsdPie=null;
 function buildGastosChart(){
   const palette=['#E8C44A','#D4903A','#7AB87E','#5C7A4E','#C4713A','#9A8A60','#B4B2A9','#AED6F1','#9B59B6','#3498DB','#1ABC9C','#E91E63'];
 
@@ -5431,6 +5734,123 @@ function buildGastosChart(){
     if(chartIngresosPie)chartIngresosPie.destroy();
     chartIngresosPie=new Chart(ingCtx,{type:'doughnut',data:{labels:ingCats,datasets:[{data:ingData,backgroundColor:ingCols,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8}}}}});
   }
+
+  // USD — gastos
+  const usdHay=gastos.some(g=>g.mes===curMes&&g.moneda==='USD');
+  const usdGastosCtx=document.getElementById('chart-gastos-usd-pie');
+  if(usdGastosCtx){
+    const ugCats=gastoCats.filter(cat=>gastos.some(g=>g.mes===curMes&&g.moneda==='USD'&&g.cat===cat&&g.tipo==='egreso'));
+    if(!usdHay||!ugCats.length){if(chartGastosUsdPie){chartGastosUsdPie.destroy();chartGastosUsdPie=null;}}
+    else{
+      const ugCols=ugCats.map((_,i)=>palette[i%palette.length]);
+      const ugData=ugCats.map(cat=>gastos.filter(g=>g.mes===curMes&&g.moneda==='USD'&&g.cat===cat&&g.tipo==='egreso').reduce((s,g)=>s+g.monto,0));
+      if(chartGastosUsdPie)chartGastosUsdPie.destroy();
+      chartGastosUsdPie=new Chart(usdGastosCtx,{type:'doughnut',data:{labels:ugCats,datasets:[{data:ugData,backgroundColor:ugCols,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8}}}}});
+    }
+  }
+  // USD — ingresos
+  const usdIngCtx=document.getElementById('chart-ingresos-usd-pie');
+  if(usdIngCtx){
+    const uiCats=gastoCats.filter(cat=>gastos.some(g=>g.mes===curMes&&g.moneda==='USD'&&g.cat===cat&&g.tipo==='ingreso'));
+    if(!usdHay||!uiCats.length){if(chartIngresosUsdPie){chartIngresosUsdPie.destroy();chartIngresosUsdPie=null;}}
+    else{
+      const uiCols=uiCats.map((_,i)=>palette[i%palette.length]);
+      const uiData=uiCats.map(cat=>gastos.filter(g=>g.mes===curMes&&g.moneda==='USD'&&g.cat===cat&&g.tipo==='ingreso').reduce((s,g)=>s+g.monto,0));
+      if(chartIngresosUsdPie)chartIngresosUsdPie.destroy();
+      chartIngresosUsdPie=new Chart(usdIngCtx,{type:'doughnut',data:{labels:uiCats,datasets:[{data:uiData,backgroundColor:uiCols,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8}}}}});
+    }
+  }
+}
+
+
+/* AHORROS */
+let ahorros=load('ahorros',[]);
+let ahorroActivoIdx=null;
+function buildAhorros(){
+  const cont=document.getElementById('ahorros-list');if(!cont)return;
+  if(!ahorros.length){cont.innerHTML='<p style="font-size:12px;color:var(--tmed)">Todavía no agregaste ninguna cuenta de ahorro.</p>';return;}
+  cont.innerHTML=ahorros.map((a,ai)=>{
+    const col=a.color||NOTA_COLORS[ai%NOTA_COLORS.length];
+    const simbolo=a.moneda==='USD'?'USD$':'$';
+    const balanceFmt=(a.balance||0).toLocaleString('es-AR',{maximumFractionDigits:0});
+    return `<div style="background:#fff;border:0.5px solid var(--borde);border-radius:14px;overflow:hidden">
+      <div style="padding:.75rem 1.1rem;background:${col}14;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <input type="text" value="${(a.titulo||'').replace(/"/g,'&quot;')}" placeholder="Nombre (ej: Balanz)" oninput="ahorros[${ai}].titulo=this.value;save('ahorros',ahorros)" style="flex:1;min-width:120px;font-size:14px;font-weight:500;color:${col};border:none;background:transparent;outline:none;font-family:'DM Sans',sans-serif">
+        <select onchange="ahorros[${ai}].moneda=this.value;save('ahorros',ahorros);buildAhorros()" style="border-radius:8px;padding:4px 6px;border:0.5px solid var(--bordem);background:#fff;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--tierra)">
+          <option value="ARS" ${a.moneda!=='USD'?'selected':''}>Pesos $</option>
+          <option value="USD" ${a.moneda==='USD'?'selected':''}>Dólares USD$</option>
+        </select>
+        <button onclick="delAhorroCuenta(${ai})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+      </div>
+      <div style="padding:1rem 1.1rem">
+        <div style="font-size:10px;color:var(--tmed);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Monto actual</div>
+        <div style="font-size:28px;font-weight:600;color:${col};margin-bottom:.85rem">${simbolo}${balanceFmt}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:.6rem">
+          <input type="number" id="ah-monto-${ai}" placeholder="Monto" style="border-radius:8px;padding:6px 9px;width:90px;border:0.5px solid var(--bordem);font-family:'DM Sans',sans-serif;font-size:12px;background:transparent;color:var(--tierra);outline:none">
+          <input type="text" id="ah-nota-${ai}" placeholder="Notas (opcional)" style="border-radius:8px;padding:6px 9px;flex:1;min-width:90px;border:0.5px solid var(--bordem);font-family:'DM Sans',sans-serif;font-size:12px;background:transparent;color:var(--tierra);outline:none">
+          <button onclick="addAhorroMov(${ai},'suma')" style="padding:6px 12px;border-radius:8px;border:none;background:var(--vmusgo);color:#fff;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer">+ Sumar</button>
+          <button onclick="addAhorroMov(${ai},'resta')" style="padding:6px 12px;border-radius:8px;border:none;background:var(--terra);color:#fff;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer">− Restar</button>
+        </div>
+        <button onclick="showAhorroRegistros(${ai})" style="padding:5px 14px;border-radius:20px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer">Ver registros →</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function addAhorroCuenta(){
+  ahorros.push({id:uid(),titulo:'',moneda:'ARS',balance:0,color:NOTA_COLORS[ahorros.length%NOTA_COLORS.length],movimientos:[]});
+  save('ahorros',ahorros);buildAhorros();
+  setTimeout(()=>{const cont=document.getElementById('ahorros-list');if(!cont)return;const inps=cont.querySelectorAll('input[type=text]');if(inps.length)inps[inps.length-1].focus();},60);
+}
+function delAhorroCuenta(ai){
+  if(!confirm('¿Eliminar la cuenta de ahorro "'+(ahorros[ai].titulo||'sin nombre')+'" y todo su historial?'))return;
+  ahorros.splice(ai,1);save('ahorros',ahorros);buildAhorros();
+}
+function addAhorroMov(ai,tipo){
+  const montoEl=document.getElementById('ah-monto-'+ai);
+  const notaEl=document.getElementById('ah-nota-'+ai);
+  const monto=parseFloat(montoEl?montoEl.value:'');
+  if(isNaN(monto)||monto<=0)return;
+  const nota=notaEl?notaEl.value.trim():'';
+  if(!ahorros[ai].movimientos)ahorros[ai].movimientos=[];
+  ahorros[ai].movimientos.push({id:uid(),monto,tipo,nota,fecha:today.toISOString().slice(0,10),ts:Date.now()});
+  ahorros[ai].balance=(ahorros[ai].balance||0)+(tipo==='suma'?monto:-monto);
+  save('ahorros',ahorros);
+  buildAhorros();
+}
+function showAhorroRegistros(ai){
+  ahorroActivoIdx=ai;
+  showView('ahorro-registros');
+  buildAhorroRegistros();
+}
+function buildAhorroRegistros(){
+  const ai=ahorroActivoIdx;
+  if(ai===null||!ahorros[ai])return;
+  const a=ahorros[ai];
+  const simbolo=a.moneda==='USD'?'USD$':'$';
+  const tit=document.getElementById('ahorro-reg-titulo');if(tit)tit.innerHTML='Registros — <em>'+(a.titulo||'Ahorro')+'</em>';
+  const lbl=document.getElementById('ahorro-reg-lbl');if(lbl)lbl.textContent='Monto actual: '+simbolo+(a.balance||0).toLocaleString('es-AR',{maximumFractionDigits:0});
+  const cont=document.getElementById('ahorro-reg-content');if(!cont)return;
+  const movs=[...(a.movimientos||[])].reverse();
+  if(!movs.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin registros todavía.</p>';return;}
+  cont.innerHTML=movs.map((m,ri)=>{
+    const mi=a.movimientos.length-1-ri;
+    const col=m.tipo==='suma'?'var(--vmusgo)':'var(--terra)';
+    const fecha=m.fecha?new Date(m.fecha+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short',year:'numeric'}):'';
+    return `<div style="padding:.65rem 1rem;background:#fff;border:0.5px solid var(--borde);border-left:3px solid ${col};border-radius:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:13px;font-weight:600;color:${col}">${m.tipo==='suma'?'+':'−'}${simbolo}${m.monto.toLocaleString('es-AR',{maximumFractionDigits:0})}</span>
+      <span style="font-size:11px;color:var(--tmed)">${fecha}</span>
+      ${m.nota?`<span style="font-size:12px;color:var(--tierra);flex:1">${m.nota}</span>`:'<span style="flex:1"></span>'}
+      <button onclick="delAhorroMov(${ai},${mi})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+    </div>`;
+  }).join('');
+}
+function delAhorroMov(ai,mi){
+  const a=ahorros[ai];if(!a)return;
+  const m=a.movimientos[mi];
+  a.balance=(a.balance||0)-(m.tipo==='suma'?m.monto:-m.monto);
+  a.movimientos.splice(mi,1);
+  save('ahorros',ahorros);
+  buildAhorroRegistros();
 }
 
 
@@ -6272,8 +6692,9 @@ function showView(v){
   if(v==='inspirador-detalle')buildInspDetalle();
   if(v==='ciclo-registros'){buildCicloRegistros();}
   if(v==='mi-ciclo'){initSections(['ciclo-mens','ciclo-luna','ciclo-fases','ciclo-historial']);buildMiCiclo();}
-  if(v==='gastos'){initSections(['gastos-form-wrap','gastos-graficos-wrap']);buildGastos();}
+  if(v==='gastos'){initSections(['gastos-form-wrap','gastos-graficos-wrap','ahorros-wrap']);buildGastos();}
   if(v==='gastos-mes')buildGastosMes();
+  if(v==='ahorro-registros')buildAhorroRegistros();
   if(v==='visionboard'){initVBSections();if(vbOpenSections['vb-board'])buildVisionBoard();if(vbOpenSections['vb-frases'])buildFrasesVB();if(vbOpenSections['vb-valores'])buildValores();if(vbOpenSections['vb-libros'])buildLibros();if(vbOpenSections['vb-links'])buildLinks();}
   if(v==='deporte'){initSections(['dep-actividades-wrap','dep-desafios-wrap','dep-recos-wrap','dep-mapa-wrap','gym-registro-wrap','gym-diarios-wrap','gym-mensual-wrap','gym-anual-wrap']);buildDeporte();buildGym();}
   if(v==='dep-desafios-mes')buildDepDesafiosMes();
@@ -6290,11 +6711,13 @@ function showView(v){
   if(v==='len-avances-mes')buildLenAvancesMes();
   if(v==='len-registros')buildLenRegistros();
   if(v==='ejercicios')buildEjercicios();
-  if(v==='autoconocimiento'){initSections(['auto-remember','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances','auto-valores']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();buildActitudCardsInline();}
+  if(v==='autoconocimiento'){initSections(['auto-remember','auto-artista','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances','auto-valores']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();buildActitudCardsInline();}
   if(v==='terapia-detalle'){}  // built by entrarTerapia
   if(v==='terapia-logros-historial')buildLogrosHistorial();
   if(v==='terapia-sesiones-historial')buildSesionesHistorial();
   if(v==='remember-mes')buildRememberMes();
+  if(v==='artista-historial')buildArtistaHistorial();
+  if(v==='valores-notas')buildValoresNotas();
   if(v==='terapias-mes')buildTerapiasMes();
   if(v==='resumen')buildResumen();
   if(v==='articulos')buildArticulos();
@@ -6373,8 +6796,9 @@ function render(){
   if(curView==='progresos-mes')buildProgresosMes();
   if(curView==='inspiradores-grupos')buildInspGrupos();
   if(curView==='inspirador-detalle')buildInspDetalle();
-  if(curView==='gastos'){initSections(['gastos-form-wrap','gastos-graficos-wrap']);buildGastos();}
+  if(curView==='gastos'){initSections(['gastos-form-wrap','gastos-graficos-wrap','ahorros-wrap']);buildGastos();}
   if(curView==='gastos-mes')buildGastosMes();
+  if(curView==='ahorro-registros')buildAhorroRegistros();
   if(curView==='visionboard'){initVBSections();if(vbOpenSections['vb-board'])buildVisionBoard();if(vbOpenSections['vb-frases'])buildFrasesVB();if(vbOpenSections['vb-valores'])buildValores();if(vbOpenSections['vb-libros'])buildLibros();if(vbOpenSections['vb-links'])buildLinks();}
   if(curView==='deporte'){initSections(['dep-actividades-wrap','dep-desafios-wrap','dep-recos-wrap','dep-mapa-wrap','gym-registro-wrap','gym-diarios-wrap','gym-mensual-wrap','gym-anual-wrap']);buildDeporte();buildGym();}
   if(curView==='dep-desafios-mes')buildDepDesafiosMes();
@@ -6383,7 +6807,7 @@ function render(){
   if(curView==='lenguaje'){initSections(['len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildLenguaje();initActitud();}
   if(curView==='len-registros')buildLenRegistros();
   if(curView==='ejercicios')buildEjercicios();
-  if(curView==='autoconocimiento'){initSections(['auto-remember','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();}
+  if(curView==='autoconocimiento'){initSections(['auto-remember','auto-artista','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();}
   if(curView==='remember-mes')buildRememberMes();
   if(curView==='terapias-mes')buildTerapiasMes();
   if(curView==='resumen')buildResumen();
@@ -6395,8 +6819,8 @@ function exportarJSON(){
   const data={
     version:2,fecha:new Date().toISOString(),usuario:username,
     cats,checks,estado,emData,circulo,cirLists,triggers,catOpen,graphFlags,
-    vinculos,gastos,vbImages,purposeData,lenData,depData,socData,
-    valoresData,mapaData,frasesData,presData,presTriggers
+    vinculos,gastos,ahorros,vbImages,purposeData,lenData,depData,socData,
+    valoresData,mapaData,frasesData,presData,presTriggers,presCuerpos,rememberData,artistaData,dadoEmData,valoresNotasData
   };
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
@@ -6424,6 +6848,7 @@ function importarJSON(evt){
       if(data.catOpen){catOpen=data.catOpen;save('catopen',catOpen);}
       if(data.vinculos){vinculos=data.vinculos;save('vinculos',vinculos);}
       if(data.gastos){gastos=data.gastos;save('gastos',gastos);}
+      if(data.ahorros){ahorros=data.ahorros;save('ahorros',ahorros);}
       if(data.vbImages){vbImages=data.vbImages;save('vbimages',vbImages);}
       if(data.purposeData){purposeData=data.purposeData;save('purpose',purposeData);}
       if(data.lenData){lenData=data.lenData;save('lendata',lenData);}
@@ -6434,6 +6859,11 @@ function importarJSON(evt){
       if(data.frasesData){frasesData=data.frasesData;save('frasesdata',frasesData);}
       if(data.presData){presData=data.presData;save('presdata',presData);}
       if(data.presTriggers){presTriggers=data.presTriggers;save('prestriggers',presTriggers);}
+      if(data.presCuerpos){presCuerpos=data.presCuerpos;save('prescuerpos',presCuerpos);}
+      if(data.rememberData){rememberData=data.rememberData;save('rememberdata',rememberData);}
+      if(data.artistaData){artistaData=data.artistaData;save('artistadata',artistaData);}
+      if(data.dadoEmData){dadoEmData=data.dadoEmData;save('dadoemdata',dadoEmData);}
+      if(data.valoresNotasData){valoresNotasData=data.valoresNotasData;save('valoresnotasdata',valoresNotasData);}
       alert('✓ Datos importados correctamente. Recargando...');
       location.reload();
     }catch(err){alert('Error al importar: '+err.message);}
@@ -7037,8 +7467,9 @@ function buildPresRegistros(){
       const presBg=esRegEmocion?'var(--fondo)':r.presente==='si'?'#F0FAF5':'#FEF6F2';
       const presLabel=esRegEmocion?'':r.presente==='si'?'<span style="color:#2A6B4A;font-weight:500">✓ Presente</span>':'<span style="color:#8B3A1A">✗ No presente</span>';
       const menteStr=r.mente&&r.mente.length?(Array.isArray(r.mente)?r.mente.join(', '):r.mente):'';
-      const subemStr=r.subem&&r.subem.length?r.subem.join(', '):'';
+      const subemBars=(r.subem&&r.subem.length)?r.subem.map(em=>{const col=getEmocionColor(em);return `<div style="display:flex;align-items:center;gap:6px;margin:2px 0;padding:3px 9px;border-left:3px solid ${col};background:${col}12;border-radius:5px"><span style="font-size:11px;font-weight:600;color:${col}">${em}</span></div>`;}).join(''):'';
       const trigStr=[...(r.trigAlta||[]),...(r.trigMedia||[]),...(r.trigBaja||[])].join(', ');
+      const cuerpoStr=(r.cuerpo&&r.cuerpo.length)?r.cuerpo.join(', '):'';
       const mkQ=(campo,label)=>r[campo]
         ?`<div style="border:0.5px solid var(--bordem);border-radius:8px;overflow:hidden;margin-top:4px">
           <div style="padding:5px 8px;background:var(--tsuave);font-size:10px;font-weight:500;color:var(--tierra)">${label}</div>
@@ -7063,8 +7494,9 @@ function buildPresRegistros(){
         ${menteStr?`<div><span style="color:var(--tmed)">Mente:</span> ${menteStr}</div>`:''}
         ${r.menteNotas?`<div style="margin-top:3px;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,0.04);font-style:italic;color:var(--tmed);line-height:1.5">· ${r.menteNotas}</div>`:''}
         ${r.felicidad!=null?`<div><span style="color:var(--tmed)">Felicidad:</span> <span style="color:var(--ambar);font-weight:600">${r.felicidad}/10</span></div>`:''}
-        ${subemStr?`<div><span style="color:var(--tmed)">Emociones:</span> ${subemStr}</div>`:''}
+        ${subemBars?`<div style="margin-top:4px"><div style="font-size:10px;color:var(--tmed);margin-bottom:2px">Emociones:</div>${subemBars}</div>`:''}
         ${trigStr?`<div><span style="color:var(--tmed)">Triggers:</span> ${trigStr}</div>`:''}
+        ${cuerpoStr?`<div><span style="color:var(--tmed)">Cuerpo:</span> ${cuerpoStr}</div>`:''}
         ${r.notasElec?`<div style="margin-top:4px;font-weight:500;color:var(--tierra)">${r.notasElec}</div>`:''}
         ${(r.emNotas&&r.emNotas.length)?r.emNotas.map(n=>`<div style="margin-top:3px;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,0.04);font-style:italic;color:var(--tmed);line-height:1.5">· ${n}</div>`).join(''):''}
         ${esRegEmocion?`<div style="margin-top:4px;display:flex;flex-direction:column;gap:2px">
@@ -7264,7 +7696,6 @@ function buildPresHeatmap(){
 }
 
 // Update buildPresencia to init sat and build heatmap/reporte
-const _origBuildPresencia=buildPresencia;
 function buildPresencia(){
   _origBuildPresencia();
   // Restore sat selection
@@ -7290,23 +7721,7 @@ function updatePresEmReporte(){
   reporte.style.display='';
   const firstEm=allSubem[0];
   // Build needs text
-  const needsMap={
-    'Amor':'Necesito abrirme.','Ternura':'Necesito suavidad.','Compasión':'Necesito comprender.',
-    'Gratitud':'Necesito valorar lo que hay.','Aceptación':'Necesito dejar de resistir.',
-    'Calma':'Necesito estar en el presente.','Ilusión':'Necesito creer.','Asombro':'Necesito estar presente.',
-    'Admiración':'Necesito inspirarme.','Entusiasmo':'Necesito crear y moverme.','Euforia':'Necesito canalizar energía.',
-    'Alegría':'Necesito compartir.','Felicidad':'Necesito disfrutar.','Placer':'Necesito habitar el cuerpo.',
-    'Alivio':'Necesito descansar.','Serenidad':'Necesito presencia.','Satisfacción':'Necesito celebrar lo recorrido.',
-    'Orgullo':'Necesito reconocer mi valor.','Aburrimiento':'Necesito vitalidad.','Nostalgia':'Necesito honrar recuerdos.',
-    'Melancolía':'Necesito conectar conmigo.','Confusión':'Necesito claridad.','Incomprensión':'Necesito sentirme escuchada.',
-    'Timidez':'Necesito animarme.','Vergüenza':'Necesito aceptación.','Decepción':'Necesito aceptar lo que fue.',
-    'Remordimiento':'Necesito aprender y soltar.','Envidia':'Necesito reconocer mis deseos.',
-    'Frustración':'Necesito paciencia.','Irritación':'Necesito espacio o pausa.','Tensión':'Necesito aflojar y respirar.',
-    'Inseguridad':'Necesito confiar en mí.','Culpa':'Necesito perdonarme.','Desaliento':'Necesito recuperar esperanza.',
-    'Desamparo':'Necesito apoyo.','Soledad':'Necesito vínculo.','Miedo':'Necesito seguridad.',
-    'Tristeza':'Necesito contención.','Ira':'Necesito expresar lo que me pasa.','Ansiedad':'Necesito soltar el control.',
-    'Enojo':'Necesito expresar lo que siento.',
-  };
+  const needsMap=EMOCION_NEEDS_MAP;
   const emChips=allSubem.map(e=>{
     const col=PRES_EM_ALTA.includes(e)?'#5C7A4E':PRES_EM_MEDIA.includes(e)?'#D4903A':'#C4713A';
     return `<span style="padding:3px 10px;border-radius:20px;background:${col};color:#fff;font-size:11px;margin:2px">${e}</span>`;
@@ -7523,11 +7938,13 @@ function buildRememberHoy(){
   if(!mesList.length){cont.innerHTML='<p style="font-size:12px;color:var(--tmed)">Todavía no hay reflexiones este mes.</p>';return;}
   cont.innerHTML=mesList.map((r,i)=>{
     const realIdx=rememberData.indexOf(r);
+    const prevRealIdx=i>0?rememberData.indexOf(mesList[i-1]):null;
+    const nextRealIdx=i<mesList.length-1?rememberData.indexOf(mesList[i+1]):null;
     const num=mesList.length-i;
     const notas=(r.notas||[]).map((n,ni)=>{
       const col=NOTA_COLORS[ni%NOTA_COLORS.length];
       return `<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;padding:6px 10px;border-radius:8px;background:${col}12;border-left:2px solid ${col}">
-        <span style="flex:1;font-size:12px;color:${col};line-height:1.6">${n}</span>
+        <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';rememberData[${realIdx}].notas[${ni}]=this.value;save('rememberdata',rememberData)" onfocus="this.style.height='auto';this.style.height=this.scrollHeight+'px'" rows="1" style="font-size:12px;color:${col};flex:1;line-height:1.6;border:none;background:transparent;outline:none;resize:none;overflow:hidden;font-family:'DM Sans',sans-serif;padding:0;cursor:text">${n}</textarea>
         <button onclick="delRememberNota(${realIdx},${ni})" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
       </div>`;
     }).join('');
@@ -7537,6 +7954,10 @@ function buildRememberHoy(){
         <input type="text" value="${r.titulo||''}" placeholder="Título..." style="flex:1;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:var(--ambar);border:none;background:transparent;outline:none"
           oninput="rememberData[${realIdx}].titulo=this.value;save('rememberdata',rememberData)">
         <span style="font-size:10px;color:var(--tmed);flex-shrink:0">${new Date(r.day+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'})}</span>
+        <div style="display:flex;flex-direction:column;gap:1px">
+          <button onclick="moveRememberItem(${realIdx},${prevRealIdx})" ${prevRealIdx===null?'disabled style="opacity:.25;border:none;background:none;cursor:default;font-size:9px;color:var(--tmed)"':'style="border:none;background:none;cursor:pointer;font-size:9px;color:var(--tmed)"'}>▲</button>
+          <button onclick="moveRememberItem(${realIdx},${nextRealIdx})" ${nextRealIdx===null?'disabled style="opacity:.25;border:none;background:none;cursor:default;font-size:9px;color:var(--tmed)"':'style="border:none;background:none;cursor:pointer;font-size:9px;color:var(--tmed)"'}>▼</button>
+        </div>
         <button onclick="delRemember(${realIdx})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
       </div>
       <div style="padding:.75rem 1.1rem">${notas}
@@ -7545,14 +7966,103 @@ function buildRememberHoy(){
     </div>`;
   }).join('');
 }
+function moveRememberItem(a,b){
+  if(a===null||b===null||a===undefined||b===undefined)return;
+  const tmp=rememberData[a];rememberData[a]=rememberData[b];rememberData[b]=tmp;
+  save('rememberdata',rememberData);buildRememberHoy();
+}
 function addRemember(){
   rememberData.push({day:curDay,ts:Date.now(),titulo:'',notas:[]});
   save('rememberdata',rememberData);buildRememberHoy();
   setTimeout(()=>{const inps=document.querySelectorAll('#remember-list input');if(inps.length)inps[inps.length-1].focus();},50);
 }
 function delRemember(idx){rememberData.splice(idx,1);save('rememberdata',rememberData);buildRememberHoy();}
-function addRememberNota(idx){const txt=prompt('Nota:');if(!txt||!txt.trim())return;rememberData[idx].notas.push(txt.trim());save('rememberdata',rememberData);buildRememberHoy();}
+function addRememberNota(idx){rememberData[idx].notas=rememberData[idx].notas||[];rememberData[idx].notas.push('');save('rememberdata',rememberData);buildRememberHoy();setTimeout(()=>{const cards=document.querySelectorAll('#remember-list .card');const card=[...cards].find(c=>c.querySelector('input')&&c.innerHTML.includes('delRemember('+idx+')'));if(card){const tas=card.querySelectorAll('textarea');if(tas.length)tas[tas.length-1].focus();}},60);}
 function delRememberNota(idx,ni){rememberData[idx].notas.splice(ni,1);save('rememberdata',rememberData);buildRememberHoy();}
+
+/* CAMINO DEL ARTISTA */
+let artistaData=load('artistadata',[]);
+function _artistaCard(entry,realIdx,num,fecha){
+  return `<div class="card">
+    <div style="padding:.7rem 1.1rem;background:var(--arena);border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:8px">
+      <span style="font-size:18px;font-weight:800;color:var(--ambar);min-width:22px;flex-shrink:0">${num}</span>
+      <input type="text" value="${(entry.titulo||'').replace(/"/g,'&quot;')}" placeholder="Título..." style="flex:1;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:var(--ambar);border:none;background:transparent;outline:none" oninput="artistaData[${realIdx}].titulo=this.value;save('artistadata',artistaData)">
+      <span style="font-size:10px;color:var(--tmed);flex-shrink:0">${fecha}</span>
+      <button onclick="delArtistaReflexion(${realIdx})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+    </div>
+    <div style="padding:.75rem 1.1rem">
+      <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';artistaData[${realIdx}].texto=this.value;save('artistadata',artistaData)" onfocus="this.style.height='auto';this.style.height=this.scrollHeight+'px'" rows="2" placeholder="Escribí lo que te venga..." style="width:100%;border:0.5px solid var(--bordem);border-radius:8px;padding:8px 10px;font-size:12px;font-family:'DM Sans',sans-serif;background:transparent;color:var(--tierra);outline:none;resize:none;line-height:1.6">${entry.texto||''}</textarea>
+    </div>
+  </div>`;
+}
+function buildArtistaHoy(){
+  const cont=document.getElementById('artista-list');if(!cont)return;
+  const mes=today.getFullYear()+'-'+String(curMes+1).padStart(2,'0');
+  const mesList=[...artistaData].filter(r=>r.day&&r.day.startsWith(mes)).reverse();
+  if(!mesList.length){cont.innerHTML='<p style="font-size:12px;color:var(--tmed)">Todavía no hay reflexiones este mes.</p>';return;}
+  cont.innerHTML=mesList.map((r,i)=>{
+    const realIdx=artistaData.indexOf(r);
+    const num=mesList.length-i;
+    const fecha=new Date(r.day+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'});
+    return _artistaCard(r,realIdx,num,fecha);
+  }).join('');
+}
+function addArtistaReflexion(){
+  artistaData.push({id:uid(),day:curDay,ts:Date.now(),titulo:'',texto:''});
+  save('artistadata',artistaData);buildArtistaHoy();
+  setTimeout(()=>{const inps=document.querySelectorAll('#artista-list input');if(inps.length)inps[inps.length-1].focus();},50);
+}
+function delArtistaReflexion(idx){artistaData.splice(idx,1);save('artistadata',artistaData);buildArtistaHoy();if(curView==='artista-historial')buildArtistaHistorial();}
+function buildArtistaHistorial(){
+  const cont=document.getElementById('artista-historial-content');if(!cont)return;
+  const entries=[...artistaData].reverse();
+  if(!entries.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin reflexiones todavía.</p>';return;}
+  cont.innerHTML=entries.map((r,i)=>{
+    const realIdx=artistaData.indexOf(r);
+    const num=entries.length-i;
+    const fecha=r.day?new Date(r.day+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short',year:'numeric'}):'';
+    return _artistaCard(r,realIdx,num,fecha);
+  }).join('');
+}
+
+/* POR QUÉ MIRAR LOS VALORES — NOTAS */
+let valoresNotasData=load('valoresnotasdata',[{
+  id:'vn_default',
+  titulo:'¿Por qué mirar los valores?',
+  texto:`Esto de recordar cuáles son mis valores es clave para ayudarme a tomar decisiones frente a la confusión y la indecisión.
+
+Ver qué valores están por encima de otros, para saber qué decisión tomar ante la duda. Por ejemplo:
+
+— Orden y estructura en mi vida.
+— El juego, para mí, es top. Entonces ante la duda de si subir o no un posteo con algo de alegría y juego, pensando "pero por ahí es infantil"... mi mejor versión lo subiría, porque es algo que me gustaría enseñarle a mi hija: la actitud positiva, juguetona, y un poco "lo imperfecto como arte".
+
+Entonces creo que mi publicación, aunque parezca infantil, representa un poco lo que me gustaría transmitirle a mi hija — el sabio mago juguetón, Merlín. Estate atenta, María.
+
+En general, se trata de vos. Que se trate del otro cuando hablás con la gente.`
+}]);
+function buildValoresNotas(){
+  const cont=document.getElementById('valores-notas-list');if(!cont)return;
+  if(!valoresNotasData.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Todavía no hay notas.</p>';return;}
+  cont.innerHTML=valoresNotasData.map((n,i)=>`<div class="card">
+    <div style="padding:.7rem 1.1rem;background:var(--arena);border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:8px">
+      <input type="text" value="${(n.titulo||'').replace(/"/g,'&quot;')}" placeholder="Título..." style="flex:1;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:var(--ambar);border:none;background:transparent;outline:none" oninput="valoresNotasData[${i}].titulo=this.value;save('valoresnotasdata',valoresNotasData)">
+      <button onclick="delValorNota(${i})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+    </div>
+    <div style="padding:.85rem 1.1rem">
+      <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';valoresNotasData[${i}].texto=this.value;save('valoresnotasdata',valoresNotasData)" onfocus="this.style.height='auto';this.style.height=this.scrollHeight+'px'" rows="3" placeholder="Escribí tu reflexión..." style="width:100%;border:none;outline:none;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--tierra);resize:none;line-height:1.7;background:transparent;white-space:pre-wrap">${n.texto||''}</textarea>
+    </div>
+  </div>`).join('');
+  setTimeout(()=>{document.querySelectorAll('#valores-notas-list textarea').forEach(t=>{t.style.height='auto';t.style.height=t.scrollHeight+'px';});},10);
+}
+function addValorNota(){
+  valoresNotasData.push({id:uid(),titulo:'',texto:''});
+  save('valoresnotasdata',valoresNotasData);buildValoresNotas();
+  setTimeout(()=>{const inps=document.querySelectorAll('#valores-notas-list input');if(inps.length)inps[inps.length-1].focus();},50);
+}
+function delValorNota(i){
+  if(!confirm('¿Eliminar esta nota?'))return;
+  valoresNotasData.splice(i,1);save('valoresnotasdata',valoresNotasData);buildValoresNotas();
+}
 function buildRememberMes(){
   const lbl=document.getElementById('remember-mes-lbl');if(lbl)lbl.textContent=MESES[curMes]+' '+today.getFullYear();
   const cont=document.getElementById('remember-mes-content');if(!cont)return;
@@ -7564,7 +8074,7 @@ function buildRememberMes(){
     return `<div class="card"><div class="card-top"><h3 style="font-size:12px;font-style:italic;color:var(--ambar)">${r.titulo||'Sin título'}</h3><span style="font-size:10px;color:var(--tmed)">${fecha}</span></div><div class="card-body">${notas||'<p style="font-size:12px;color:var(--tmed)">Sin notas.</p>'}</div></div>`;
   }).join('');
 }
-function buildAutoconocimiento(){buildRememberHoy();buildTerapiasHoy();setTimeout(buildActitudCardsInline,50);}
+function buildAutoconocimiento(){buildRememberHoy();buildArtistaHoy();buildTerapiasHoy();setTimeout(buildActitudCardsInline,50);}
 
 
 let terapias=load('terapias',[]); // new: [{id, nombre, desc, recos:[], logros:[], sesiones:[]}]
@@ -7755,10 +8265,13 @@ function toggleSection(id){
     if(id.startsWith('len-')&&id!=='len-avances')buildLenguaje();
     if(id==='len-avances'){buildLenAvances();}
     if(id==='gastos-graficos-wrap')buildGastosChart();
+    if(id==='ahorros-wrap')buildAhorros();
     if(id==='soc-pendientes-wrap')buildSocList('pendiente');
     if(id==='soc-realizados-wrap')buildSocList('realizado');
+    if(id==='soc-perdidas-wrap')buildSocList('perdida');
     if(id==='soc-objetivos'){buildSocList('pendiente');buildSocList('realizado');}
     if(id==='auto-remember')buildRememberHoy();
+    if(id==='auto-artista')buildArtistaHoy();
     if(id==='auto-triggers')buildReacciones();
     if(id==='auto-triggers')buildReacciones();
     if(id==='auto-terapias')buildTerapiasList();
