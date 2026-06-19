@@ -4881,7 +4881,6 @@ function cambiarDiaPres(val){
 }
 
 function _origBuildPresencia(){
-  if(fl)fl.textContent=new Date(curDay+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const picker=document.getElementById('pres-date-picker');
   if(picker)picker.value=curDay;
   presFormState={presente:'si',mente:[]};
@@ -8074,7 +8073,7 @@ function buildRememberMes(){
     return `<div class="card"><div class="card-top"><h3 style="font-size:12px;font-style:italic;color:var(--ambar)">${r.titulo||'Sin título'}</h3><span style="font-size:10px;color:var(--tmed)">${fecha}</span></div><div class="card-body">${notas||'<p style="font-size:12px;color:var(--tmed)">Sin notas.</p>'}</div></div>`;
   }).join('');
 }
-function buildAutoconocimiento(){buildRememberHoy();buildArtistaHoy();buildTerapiasHoy();setTimeout(buildActitudCardsInline,50);}
+function buildAutoconocimiento(){buildRememberHoy();buildArtistaHoy();setTimeout(buildActitudCardsInline,50);}
 
 
 let terapias=load('terapias',[]); // new: [{id, nombre, desc, recos:[], logros:[], sesiones:[]}]
@@ -10069,6 +10068,7 @@ async function onLogin(user){
 async function cerrarSesion(){
   await supa.auth.signOut();
   Object.keys(localStorage).filter(function(k){return k.startsWith("lav_");}).forEach(function(k){localStorage.removeItem(k);});
+  sessionStorage.removeItem('lav_synced_once');
   location.reload();
 }
 async function syncDatosSupabase(){
@@ -10089,7 +10089,13 @@ async function cargarDatosUsuario(){
         huboNuevoDato=true;
       }
     });
-    if(huboNuevoDato) location.reload();
+    // Solo recargar UNA vez por sesión de pestaña: evita que se encadenen
+    // recargas automáticas (cada recarga vuelve a disparar este chequeo al
+    // cargar la página de nuevo) que cortaban la navegación del usuario.
+    if(huboNuevoDato && !sessionStorage.getItem('lav_synced_once')){
+      sessionStorage.setItem('lav_synced_once','1');
+      location.reload();
+    }
   }
 }
 async function abrirAdmin(){
