@@ -291,10 +291,11 @@ canvas{max-width:100%}
     <button class="nav-btn active" onclick="showView('tracker')"><span class="dot"></span>🌿 Tracker de hábitos</button>
     <button class="nav-btn" onclick="showView('presencia')"><span class="dot"></span>💛 Emociones & Reacciones</button>
     <button class="nav-btn" onclick="showView('autoconocimiento')"><span class="dot"></span>🪞 Registro Autoconocimiento</button>
+    <button class="nav-btn" onclick="showView('motivacion')"><span class="dot"></span>🧭 Motivación / Valores / Remembers</button>
   </div>
   <div class="sb-sec">
     <div class="sb-label">Mi vida</div>
-    <button class="nav-btn" onclick="showView('visionboard')"><span class="dot"></span>🌟 Vision Board / Motivación</button>
+    <button class="nav-btn" onclick="showView('visionboard')"><span class="dot"></span>🌟 Vision Board</button>
     <button class="nav-btn" onclick="showView('vinculos')"><span class="dot"></span>🤝 Vínculos & socialización</button>
     <button class="nav-btn" onclick="showView('proposito')"><span class="dot"></span>🎯 Trabajo — Propósito & Ikigai</button>
     <button class="nav-btn" onclick="showView('deporte')"><span class="dot"></span>🏃 Deporte</button>
@@ -996,7 +997,7 @@ canvas{max-width:100%}
 
 <div id="view-inspiradores-grupos" class="view">
   <div class="ph">
-    <button onclick="showView('visionboard')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <button onclick="showView('motivacion')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
     <h1>Personas que me <em>inspiran</em></h1>
     <p style="font-size:12px;color:var(--tmed)">Grupos de referentes, por área o categoría</p>
   </div>
@@ -1440,7 +1441,7 @@ canvas{max-width:100%}
     <input type="date" id="global-day-picker" style="border:0.5px solid var(--bordem);border-radius:8px;padding:3px 8px;font-family:'DM Sans',sans-serif;font-size:12px;background:transparent;color:var(--tierra);outline:none" onchange="globalSetDay(this.value)">
     <button onclick="globalSetDay('')" style="padding:3px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">Hoy</button>
   </div>
-    <h1>Vision Board / <em>Motivación</em></h1>
+    <h1>Vision Board</h1>
     <p style="font-size:13px;color:var(--tmed);margin:0">Lo que soñás, lo que querés construir</p>
   </div>
 
@@ -1485,56 +1486,6 @@ canvas{max-width:100%}
         </div>
       </div>
 
-    </div>
-  </div>
-
-  <!-- FRASES MOTIVACIONALES (collapsible) -->
-  <div style="margin-bottom:1.5rem">
-    <div onclick="toggleVBSection('vb-frases')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde)">
-      <h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:400;flex:1;margin:0">Frases <em style="color:var(--ambar)">motivacionales</em></h2>
-      <button id="btn-vb-frases" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
-    </div>
-    <div id="vb-frases" style="display:none;padding-top:1rem">
-      <!-- DADO DE PREGUNTAS -->
-      <div style="background:#fff;border:0.5px solid var(--borde);border-radius:14px;padding:1.1rem;margin-bottom:1.25rem;text-align:center">
-        <button onclick="dadoFraseMotiv()" style="background:none;border:none;cursor:pointer;font-size:34px;line-height:1;padding:0;transition:transform .2s" onmouseover="this.style.transform='rotate(-8deg) scale(1.08)'" onmouseout="this.style.transform=''">🎲</button>
-        <div style="font-size:11px;color:var(--tmed);margin-top:4px">Tocá el dado para una pregunta al azar</div>
-        <div id="dado-frase-result" style="display:none;margin-top:1rem;text-align:left;padding:.9rem 1rem;background:var(--arena);border-radius:10px;border-left:3px solid var(--ambar)">
-          <div id="dado-frase-pregunta" style="font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--tierra);margin-bottom:8px"></div>
-          <div id="dado-frase-cta" style="font-size:12px;color:var(--ambar);font-weight:500"></div>
-        </div>
-      </div>
-      <!-- DADO DE FRASES ANOTADAS -->
-      <div style="background:#fff;border:0.5px solid var(--borde);border-radius:14px;padding:1.1rem;margin-bottom:1.25rem;text-align:center">
-        <button onclick="dadoFraseAnotada()" style="background:none;border:none;cursor:pointer;font-size:34px;line-height:1;padding:0;transition:transform .2s" onmouseover="this.style.transform='rotate(8deg) scale(1.08)'" onmouseout="this.style.transform=''">🎲</button>
-        <div style="font-size:11px;color:var(--tmed);margin-top:4px">Tocá el dado para una de tus frases anotadas, al azar</div>
-        <div id="dado-frase-anotada-result" style="display:none;margin-top:1rem;text-align:left;padding:.9rem 1rem;background:var(--arena);border-radius:10px;border-left:3px solid var(--vmusgo)">
-          <div id="dado-frase-anotada-texto" style="font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--tierra)"></div>
-        </div>
-      </div>
-      <p style="font-size:11px;color:var(--tmed);margin-bottom:.75rem">Por segmento — tus palabras que te mueven</p>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem" id="frases-tabs"></div>
-      <div id="frases-content"></div>
-
-      <!-- Frases de gente que quiero -->
-      <div style="margin-top:1.25rem;background:#fff;border:0.5px solid var(--borde);border-radius:14px;overflow:hidden">
-        <div style="padding:.8rem 1.1rem;background:var(--arena);border-bottom:0.5px solid var(--borde);display:flex;align-items:center;justify-content:space-between">
-          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;color:var(--tierra);margin:0">Frases de <em style="color:var(--ambar)">gente que quiero</em></h3>
-          <button onclick="addFrasePers()" style="padding:4px 12px;border-radius:14px;border:0.5px dashed var(--ambar);background:transparent;color:var(--ambar);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">+ Agregar</button>
-        </div>
-        <div id="frases-personas-list" style="padding:.75rem 1.1rem;display:flex;flex-direction:column;gap:.75rem"></div>
-      </div>
-
-      <!-- Personas que me inspiran -->
-      <div style="margin-top:1.25rem;background:#fff;border:0.5px solid var(--borde);border-radius:14px;overflow:hidden">
-        <div style="padding:.8rem 1.1rem;background:#7AB87E1c;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;justify-content:space-between">
-          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;color:var(--tierra);margin:0">Personas que me <em style="color:var(--vmusgo)">inspiran</em></h3>
-        </div>
-        <div style="padding:.85rem 1.1rem;display:flex;flex-direction:column;gap:1rem">
-          <div id="inspg-inline" style="display:flex;flex-direction:column;gap:1rem"></div>
-          <button onclick="addInspGrupo()" style="align-self:flex-start;padding:7px 18px;border-radius:20px;border:0.5px dashed var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar grupo</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1942,42 +1893,6 @@ canvas{max-width:100%}
     </div>
   </div>
 
-  <!-- MIS OBJETIVOS DE VALORES -->
-  <div style="margin-bottom:1rem">
-    <div onclick="toggleSection('auto-valores')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
-      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Mis objetivos de <em style="color:var(--ambar)">valores</em></h2>
-      <button id="btn-auto-valores" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
-    </div>
-    <div id="auto-valores" style="display:none;padding-top:.75rem">
-      <div style="background:var(--arena);border-radius:0 0 14px 14px;padding:1.1rem">
-        <p style="font-size:11px;color:var(--tmed);margin-bottom:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span>Lo que me importa, lo que me mueve, lo que me define <span style="font-size:10px;color:var(--tmed);font-style:italic">(Podés arrastrar un valor por encima de otro para darle tu orden)</span></span><button onclick="showView('valores-notas')" style="padding:3px 12px;border-radius:14px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:10px;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap">Por qué mirar los valores — notas</button></p>
-        <div style="margin-bottom:1.25rem">
-          <div style="font-size:11px;font-weight:600;color:var(--tmed);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Mapa del mes — ¿Desde qué valores actué hoy?</div>
-          <div style="overflow-x:auto">
-            <div id="valores-mapa-auto" style="font-family:'DM Sans',sans-serif;min-width:max-content"></div>
-          </div>
-        </div>
-        <div id="valores-list-auto" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1rem"></div>
-        <button onclick="addValorAuto()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar valor</button>
-      </div>
-    </div>
-  </div>
-
-  <div style="margin-bottom:1rem;margin-top:1rem">
-    <div onclick="toggleSection('auto-remember')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
-      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Motivación / Remember — <em style="color:var(--ambar)">esto me hizo bien</em></h2>
-      <button id="btn-auto-remember" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
-    </div>
-    <div id="auto-remember" style="display:none;padding-top:.75rem">
-      <p style="font-size:11px;color:var(--tmed);margin-bottom:12px">Escribí esos momentos que querés recordar.</p>
-      <div id="remember-list" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:.75rem"></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button onclick="addRemember()" style="padding:7px 16px;border-radius:20px;border:none;background:var(--vmusgo);color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Reflexión</button>
-        <button onclick="showView('remember-mes')" style="padding:7px 14px;border-radius:20px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer">Ver registros del mes →</button>
-      </div>
-    </div>
-  </div>
-
   <div style="margin-bottom:1rem">
     <div onclick="toggleSection('len-avances')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Avances <em style="color:var(--ambar)">para ir registrando</em></h2>
@@ -2058,6 +1973,106 @@ canvas{max-width:100%}
 
 
 
+</div>
+
+<!-- MOTIVACIÓN / VALORES / REMEMBERS -->
+<div id="view-motivacion" class="view">
+  <div class="ph">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+    <span id="global-fecha-lbl" style="font-size:13px;color:var(--tmed);font-style:italic"></span>
+    <input type="date" id="global-day-picker" style="border:0.5px solid var(--bordem);border-radius:8px;padding:3px 8px;font-family:'DM Sans',sans-serif;font-size:12px;background:transparent;color:var(--tierra);outline:none" onchange="globalSetDay(this.value)">
+    <button onclick="globalSetDay('')" style="padding:3px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">Hoy</button>
+  </div>
+    <h1>Motivación / Valores / <em>Remembers</em></h1>
+    <p style="font-size:13px;color:var(--tmed);margin:0">Lo que te mueve, lo que te define, lo que querés recordar</p>
+  </div>
+
+  <!-- MIS OBJETIVOS DE VALORES -->
+  <div style="margin-bottom:1rem">
+    <div onclick="toggleSection('auto-valores')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Mis objetivos de <em style="color:var(--ambar)">valores</em></h2>
+      <button id="btn-auto-valores" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="auto-valores" style="display:none;padding-top:.75rem">
+      <div style="background:var(--arena);border-radius:0 0 14px 14px;padding:1.1rem">
+        <p style="font-size:11px;color:var(--tmed);margin-bottom:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span>Lo que me importa, lo que me mueve, lo que me define <span style="font-size:10px;color:var(--tmed);font-style:italic">(Podés arrastrar un valor por encima de otro para darle tu orden)</span></span><button onclick="showView('valores-notas')" style="padding:3px 12px;border-radius:14px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:10px;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap">Por qué mirar los valores — notas</button></p>
+        <div style="margin-bottom:1.25rem">
+          <div style="font-size:11px;font-weight:600;color:var(--tmed);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Mapa del mes — ¿Desde qué valores actué hoy?</div>
+          <div style="overflow-x:auto">
+            <div id="valores-mapa-auto" style="font-family:'DM Sans',sans-serif;min-width:max-content"></div>
+          </div>
+        </div>
+        <div id="valores-list-auto" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1rem"></div>
+        <button onclick="addValorAuto()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar valor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOTIVACIÓN / REMEMBER -->
+  <div style="margin-bottom:1rem;margin-top:1rem">
+    <div onclick="toggleSection('auto-remember')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Motivación / Remember — <em style="color:var(--ambar)">esto me hizo bien</em></h2>
+      <button id="btn-auto-remember" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="auto-remember" style="display:none;padding-top:.75rem">
+      <p style="font-size:11px;color:var(--tmed);margin-bottom:12px">Escribí esos momentos que querés recordar.</p>
+      <div id="remember-list" style="display:flex;flex-direction:column;gap:1rem;margin-bottom:.75rem"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="addRemember()" style="padding:7px 16px;border-radius:20px;border:none;background:var(--vmusgo);color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Reflexión</button>
+        <button onclick="showView('remember-mes')" style="padding:7px 14px;border-radius:20px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer">Ver registros del mes →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRASES MOTIVACIONALES (collapsible) -->
+  <div style="margin-bottom:1.5rem;margin-top:1rem">
+    <div onclick="toggleVBSection('vb-frases')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde)">
+      <h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:400;flex:1;margin:0">Frases <em style="color:var(--ambar)">motivacionales</em></h2>
+      <button id="btn-vb-frases" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="vb-frases" style="display:none;padding-top:1rem">
+      <!-- DADO DE PREGUNTAS -->
+      <div style="background:#fff;border:0.5px solid var(--borde);border-radius:14px;padding:1.1rem;margin-bottom:1.25rem;text-align:center">
+        <button onclick="dadoFraseMotiv()" style="background:none;border:none;cursor:pointer;font-size:34px;line-height:1;padding:0;transition:transform .2s" onmouseover="this.style.transform='rotate(-8deg) scale(1.08)'" onmouseout="this.style.transform=''">🎲</button>
+        <div style="font-size:11px;color:var(--tmed);margin-top:4px">Tocá el dado para una pregunta al azar</div>
+        <div id="dado-frase-result" style="display:none;margin-top:1rem;text-align:left;padding:.9rem 1rem;background:var(--arena);border-radius:10px;border-left:3px solid var(--ambar)">
+          <div id="dado-frase-pregunta" style="font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--tierra);margin-bottom:8px"></div>
+          <div id="dado-frase-cta" style="font-size:12px;color:var(--ambar);font-weight:500"></div>
+        </div>
+      </div>
+      <!-- DADO DE FRASES ANOTADAS -->
+      <div style="background:#fff;border:0.5px solid var(--borde);border-radius:14px;padding:1.1rem;margin-bottom:1.25rem;text-align:center">
+        <button onclick="dadoFraseAnotada()" style="background:none;border:none;cursor:pointer;font-size:34px;line-height:1;padding:0;transition:transform .2s" onmouseover="this.style.transform='rotate(8deg) scale(1.08)'" onmouseout="this.style.transform=''">🎲</button>
+        <div style="font-size:11px;color:var(--tmed);margin-top:4px">Tocá el dado para una de tus frases anotadas, al azar</div>
+        <div id="dado-frase-anotada-result" style="display:none;margin-top:1rem;text-align:left;padding:.9rem 1rem;background:var(--arena);border-radius:10px;border-left:3px solid var(--vmusgo)">
+          <div id="dado-frase-anotada-texto" style="font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--tierra)"></div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--tmed);margin-bottom:.75rem">Por segmento — tus palabras que te mueven</p>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem" id="frases-tabs"></div>
+      <div id="frases-content"></div>
+
+      <!-- Frases de gente que quiero -->
+      <div style="margin-top:1.25rem;background:#fff;border:0.5px solid var(--borde);border-radius:14px;overflow:hidden">
+        <div style="padding:.8rem 1.1rem;background:var(--arena);border-bottom:0.5px solid var(--borde);display:flex;align-items:center;justify-content:space-between">
+          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;color:var(--tierra);margin:0">Frases de <em style="color:var(--ambar)">gente que quiero</em></h3>
+          <button onclick="addFrasePers()" style="padding:4px 12px;border-radius:14px;border:0.5px dashed var(--ambar);background:transparent;color:var(--ambar);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">+ Agregar</button>
+        </div>
+        <div id="frases-personas-list" style="padding:.75rem 1.1rem;display:flex;flex-direction:column;gap:.75rem"></div>
+      </div>
+
+      <!-- Personas que me inspiran -->
+      <div style="margin-top:1.25rem;background:#fff;border:0.5px solid var(--borde);border-radius:14px;overflow:hidden">
+        <div style="padding:.8rem 1.1rem;background:#7AB87E1c;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;justify-content:space-between">
+          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;color:var(--tierra);margin:0">Personas que me <em style="color:var(--vmusgo)">inspiran</em></h3>
+        </div>
+        <div style="padding:.85rem 1.1rem;display:flex;flex-direction:column;gap:1rem">
+          <div id="inspg-inline" style="display:flex;flex-direction:column;gap:1rem"></div>
+          <button onclick="addInspGrupo()" style="align-self:flex-start;padding:7px 18px;border-radius:20px;border:0.5px dashed var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar grupo</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- EM NECESIDADES -->
@@ -2155,7 +2170,7 @@ canvas{max-width:100%}
 
 <div id="view-remember-mes" class="view">
   <div class="ph">
-    <button onclick="showView('autoconocimiento')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <button onclick="showView('motivacion')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
     <h1>Motivación / Remember — <em>esto me hizo bien</em></h1>
     <p id="remember-mes-lbl" style="font-size:12px;color:var(--tmed)"></p>
   </div>
@@ -2173,7 +2188,7 @@ canvas{max-width:100%}
 
 <div id="view-valores-notas" class="view">
   <div class="ph">
-    <button onclick="showView('autoconocimiento')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <button onclick="showView('motivacion')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
     <h1>Por qué mirar los <em>valores</em></h1>
     <p style="font-size:12px;color:var(--tmed)">Reflexiones sobre la importancia de tener tus valores claros</p>
   </div>
@@ -6851,7 +6866,7 @@ function showView(v){
   if(v==='gastos'){initSections(['gastos-form-wrap','gastos-graficos-wrap','ahorros-wrap']);buildGastos();}
   if(v==='gastos-mes')buildGastosMes();
   if(v==='ahorro-registros')buildAhorroRegistros();
-  if(v==='visionboard'){initVBSections();if(vbOpenSections['vb-board'])buildVisionBoard();if(vbOpenSections['vb-frases'])buildFrasesVB();if(vbOpenSections['vb-valores'])buildValores();if(vbOpenSections['vb-libros'])buildLibros();if(vbOpenSections['vb-links'])buildLinks();}
+  if(v==='visionboard'){initVBSections();if(vbOpenSections['vb-board'])buildVisionBoard();if(vbOpenSections['vb-valores'])buildValores();if(vbOpenSections['vb-libros'])buildLibros();if(vbOpenSections['vb-links'])buildLinks();}
   if(v==='deporte'){initSections(['dep-actividades-wrap','dep-desafios-wrap','dep-recos-wrap','dep-mapa-wrap','gym-registro-wrap','gym-diarios-wrap','gym-mensual-wrap','gym-anual-wrap']);buildDeporte();buildGym();}
   if(v==='dep-desafios-mes')buildDepDesafiosMes();
   if(v==='gym-reporte')buildGymReporte();
@@ -6867,7 +6882,8 @@ function showView(v){
   if(v==='len-avances-mes')buildLenAvancesMes();
   if(v==='len-registros')buildLenRegistros();
   if(v==='ejercicios')buildEjercicios();
-  if(v==='autoconocimiento'){initSections(['auto-remember','auto-artista','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances','auto-valores']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();buildActitudCardsInline();}
+  if(v==='autoconocimiento'){initSections(['auto-artista','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();buildActitudCardsInline();}
+  if(v==='motivacion'){initSections(['auto-valores','auto-remember']);buildValoresAuto();buildRememberHoy();initVBFraseSection();}
   if(v==='terapia-detalle'){}  // built by entrarTerapia
   if(v==='terapia-logros-historial')buildLogrosHistorial();
   if(v==='terapia-sesiones-historial')buildSesionesHistorial();
@@ -6955,7 +6971,7 @@ function render(){
   if(curView==='gastos'){initSections(['gastos-form-wrap','gastos-graficos-wrap','ahorros-wrap']);buildGastos();}
   if(curView==='gastos-mes')buildGastosMes();
   if(curView==='ahorro-registros')buildAhorroRegistros();
-  if(curView==='visionboard'){initVBSections();if(vbOpenSections['vb-board'])buildVisionBoard();if(vbOpenSections['vb-frases'])buildFrasesVB();if(vbOpenSections['vb-valores'])buildValores();if(vbOpenSections['vb-libros'])buildLibros();if(vbOpenSections['vb-links'])buildLinks();}
+  if(curView==='visionboard'){initVBSections();if(vbOpenSections['vb-board'])buildVisionBoard();if(vbOpenSections['vb-valores'])buildValores();if(vbOpenSections['vb-libros'])buildLibros();if(vbOpenSections['vb-links'])buildLinks();}
   if(curView==='deporte'){initSections(['dep-actividades-wrap','dep-desafios-wrap','dep-recos-wrap','dep-mapa-wrap','gym-registro-wrap','gym-diarios-wrap','gym-mensual-wrap','gym-anual-wrap']);buildDeporte();buildGym();}
   if(curView==='dep-desafios-mes')buildDepDesafiosMes();
   if(curView==='dep-notas-mes')buildDepNotasMes();
@@ -6963,7 +6979,8 @@ function render(){
   if(curView==='lenguaje'){initSections(['len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildLenguaje();initActitud();}
   if(curView==='len-registros')buildLenRegistros();
   if(curView==='ejercicios')buildEjercicios();
-  if(curView==='autoconocimiento'){initSections(['auto-remember','auto-artista','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();}
+  if(curView==='autoconocimiento'){initSections(['auto-artista','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();}
+  if(curView==='motivacion'){initSections(['auto-valores','auto-remember']);buildValoresAuto();buildRememberHoy();initVBFraseSection();}
   if(curView==='remember-mes')buildRememberMes();
   if(curView==='terapias-mes')buildTerapiasMes();
   if(curView==='resumen')buildResumen();
@@ -7338,12 +7355,20 @@ function toggleVBSection(id){
   }
 }
 function initVBSections(){
-  ['vb-board','vb-frases','vb-valores','vb-libros'].forEach(id=>{
+  ['vb-board','vb-valores','vb-libros'].forEach(id=>{
     const el=document.getElementById(id);const btn=document.getElementById('btn-'+id);
     const open=vbOpenSections[id]||false;
     if(el)el.style.display=open?'':'none';
     if(btn)btn.textContent=open?'Cerrar':'Abrir';
   });
+}
+function initVBFraseSection(){
+  const id='vb-frases';
+  const el=document.getElementById(id);const btn=document.getElementById('btn-'+id);
+  const open=vbOpenSections[id]||false;
+  if(el)el.style.display=open?'':'none';
+  if(btn)btn.textContent=open?'Cerrar':'Abrir';
+  if(open){buildFrasesVB();buildFrasesPersonas();buildInspGruposPreview();}
 }
 
 /* LIBROS */
@@ -8229,7 +8254,7 @@ function buildRememberMes(){
     return `<div class="card"><div class="card-top"><h3 style="font-size:12px;font-style:italic;color:var(--ambar)">${r.titulo||'Sin título'}</h3><span style="font-size:10px;color:var(--tmed)">${fecha}</span></div><div class="card-body">${notas||'<p style="font-size:12px;color:var(--tmed)">Sin notas.</p>'}</div></div>`;
   }).join('');
 }
-function buildAutoconocimiento(){buildRememberHoy();buildArtistaHoy();setTimeout(buildActitudCardsInline,50);}
+function buildAutoconocimiento(){buildArtistaHoy();setTimeout(buildActitudCardsInline,50);}
 
 
 let terapias=load('terapias',[]); // new: [{id, nombre, desc, recos:[], logros:[], sesiones:[]}]
@@ -9539,7 +9564,7 @@ function globalSetDay(val){
   setSem(curSem);
   updateFrase();
   // Rebuild current view
-  const views = ['tracker','presencia','visionboard','vinculos','proposito','deporte','alimentacion','lenguaje','gastos','autoconocimiento','tracker-notas','alim-registros','alim-obj-historial','mapas-historicos'];
+  const views = ['tracker','presencia','visionboard','vinculos','proposito','deporte','alimentacion','lenguaje','gastos','autoconocimiento','motivacion','tracker-notas','alim-registros','alim-obj-historial','mapas-historicos'];
   if(views.includes(curView)) {
     if(curView==='tracker') render();
     if(curView==='presencia') { buildPresRegistros && buildPresRegistros(); }
