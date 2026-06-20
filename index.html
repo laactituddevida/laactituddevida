@@ -816,6 +816,16 @@ canvas{max-width:100%}
           </div>
         </div>
       </div>
+      <div style="margin-bottom:.75rem">
+        <div onclick="toggleSection('soc-herramientas-wrap')" style="padding:.55rem .9rem;border-radius:8px;margin-bottom:.5rem;background:#7AB87E14;border-left:3px solid var(--vmusgo);display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:1rem">
+          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;margin:0;flex:1">Herramientas para <em style="color:var(--vmusgo)">socializar</em></h3>
+          <button id="btn-soc-herramientas-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:#fff;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+        </div>
+        <div id="soc-herramientas-wrap" style="display:none;padding-top:.5rem">
+          <div id="soc-herramientas-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
+          <button onclick="addSocHerramienta()" style="padding:6px 14px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar herramienta</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1494,6 +1504,14 @@ canvas{max-width:100%}
           <div id="dado-frase-cta" style="font-size:12px;color:var(--ambar);font-weight:500"></div>
         </div>
       </div>
+      <!-- DADO DE FRASES ANOTADAS -->
+      <div style="background:#fff;border:0.5px solid var(--borde);border-radius:14px;padding:1.1rem;margin-bottom:1.25rem;text-align:center">
+        <button onclick="dadoFraseAnotada()" style="background:none;border:none;cursor:pointer;font-size:34px;line-height:1;padding:0;transition:transform .2s" onmouseover="this.style.transform='rotate(8deg) scale(1.08)'" onmouseout="this.style.transform=''">🎲</button>
+        <div style="font-size:11px;color:var(--tmed);margin-top:4px">Tocá el dado para una de tus frases anotadas, al azar</div>
+        <div id="dado-frase-anotada-result" style="display:none;margin-top:1rem;text-align:left;padding:.9rem 1rem;background:var(--arena);border-radius:10px;border-left:3px solid var(--vmusgo)">
+          <div id="dado-frase-anotada-texto" style="font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--tierra)"></div>
+        </div>
+      </div>
       <p style="font-size:11px;color:var(--tmed);margin-bottom:.75rem">Por segmento — tus palabras que te mueven</p>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem" id="frases-tabs"></div>
       <div id="frases-content"></div>
@@ -1507,19 +1525,14 @@ canvas{max-width:100%}
         <div id="frases-personas-list" style="padding:.75rem 1.1rem;display:flex;flex-direction:column;gap:.75rem"></div>
       </div>
 
-      <!-- Inspiraciones -->
-      <div style="margin-top:1.25rem">
-        <h3 style="font-family:'Playfair Display',serif;font-size:16px;font-weight:400;color:var(--tierra);margin-bottom:.75rem">Inspiraciones</h3>
-        <div class="card" style="margin-bottom:1rem">
-          <div class="card-top"><h3>Frases que me inspiran</h3></div>
-          <div class="card-body"><textarea class="nota" id="purpose-frases" rows="4" placeholder="Anotá las frases que te mueven..."></textarea></div>
+      <!-- Personas que me inspiran -->
+      <div style="margin-top:1.25rem;background:#fff;border:0.5px solid var(--borde);border-radius:14px;overflow:hidden">
+        <div style="padding:.8rem 1.1rem;background:#7AB87E1c;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;justify-content:space-between">
+          <h3 style="font-family:'Playfair Display',serif;font-size:15px;font-weight:400;color:var(--tierra);margin:0">Personas que me <em style="color:var(--vmusgo)">inspiran</em></h3>
         </div>
-        <div class="card">
-          <div class="card-top"><h3>Personas que me inspiran</h3></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:1rem">
-            <div id="inspg-inline" style="display:flex;flex-direction:column;gap:1rem"></div>
-            <button onclick="addInspGrupo()" style="align-self:flex-start;padding:7px 18px;border-radius:20px;border:0.5px dashed var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar grupo</button>
-          </div>
+        <div style="padding:.85rem 1.1rem;display:flex;flex-direction:column;gap:1rem">
+          <div id="inspg-inline" style="display:flex;flex-direction:column;gap:1rem"></div>
+          <button onclick="addInspGrupo()" style="align-self:flex-start;padding:7px 18px;border-radius:20px;border:0.5px dashed var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar grupo</button>
         </div>
       </div>
     </div>
@@ -5420,7 +5433,42 @@ let socData=load('socdata',{pendientes:[],realizados:[]});
 if(socData.objetivos&&!socData.pendientes){socData.pendientes=socData.objetivos.filter(o=>o.titulo&&o.titulo.trim()).map(o=>({...o,ts:Date.now(),day:curDay}));socData.realizados=[];delete socData.objetivos;save('socdata',socData);}
 if(!socData.pendientes)socData.pendientes=[];if(!socData.realizados)socData.realizados=[];if(!socData.perdidas)socData.perdidas=[];
 
-function buildSocializacion(){initSections(['soc-pendientes-wrap','soc-realizados-wrap','soc-perdidas-wrap']);buildSocList('pendiente');buildSocList('realizado');buildSocList('perdida');}
+function buildSocializacion(){initSections(['soc-pendientes-wrap','soc-realizados-wrap','soc-perdidas-wrap','soc-herramientas-wrap']);buildSocList('pendiente');buildSocList('realizado');buildSocList('perdida');buildSocHerramientas();}
+
+/* HERRAMIENTAS PARA SOCIALIZAR */
+let socHerramientasData=load('sochermientasdata',[{
+  id:'sh_default',
+  titulo:'Soy amor',
+  texto:`Hola, ¿cómo estás?
+
+Con apertura y amor.
+Y el resto, suelto.
+
+Lo practico.`
+}]);
+function buildSocHerramientas(){
+  const cont=document.getElementById('soc-herramientas-list');if(!cont)return;
+  if(!socHerramientasData.length){cont.innerHTML='<p style="font-size:12px;color:var(--tmed)">Todavía no hay herramientas cargadas.</p>';return;}
+  cont.innerHTML=socHerramientasData.map((h,i)=>`<div class="card">
+    <div style="padding:.7rem 1.1rem;background:var(--arena);border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:8px">
+      <input type="text" value="${(h.titulo||'').replace(/"/g,'&quot;')}" placeholder="Título..." style="flex:1;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:var(--vmusgo);border:none;background:transparent;outline:none" oninput="socHerramientasData[${i}].titulo=this.value;save('sochermientasdata',socHerramientasData)">
+      <button onclick="delSocHerramienta(${i})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+    </div>
+    <div style="padding:.85rem 1.1rem">
+      <textarea oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';socHerramientasData[${i}].texto=this.value;save('sochermientasdata',socHerramientasData)" onfocus="this.style.height='auto';this.style.height=this.scrollHeight+'px'" rows="3" placeholder="Escribí tu herramienta o tip..." style="width:100%;border:none;outline:none;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--tierra);resize:none;line-height:1.7;background:transparent;white-space:pre-wrap;font-style:italic">${h.texto||''}</textarea>
+    </div>
+  </div>`).join('');
+  setTimeout(()=>{document.querySelectorAll('#soc-herramientas-list textarea').forEach(t=>{t.style.height='auto';t.style.height=t.scrollHeight+'px';});},10);
+}
+function addSocHerramienta(){
+  socHerramientasData.push({id:uid(),titulo:'',texto:''});
+  save('sochermientasdata',socHerramientasData);buildSocHerramientas();
+  setTimeout(()=>{const inps=document.querySelectorAll('#soc-herramientas-list input');if(inps.length)inps[inps.length-1].focus();},50);
+}
+function delSocHerramienta(i){
+  if(!confirm('¿Eliminar esta herramienta?'))return;
+  socHerramientasData.splice(i,1);save('sochermientasdata',socHerramientasData);buildSocHerramientas();
+}
 function _socKey(tipo){return tipo==='pendiente'?'pendientes':tipo==='realizado'?'realizados':'perdidas';}
 function _socCard(tipo,key,obj,oi,total){
   const num=total-oi;
@@ -6259,6 +6307,24 @@ function dadoFraseMotiv(){
   box.style.display='none';
   pEl.textContent='"'+item.q+'"';
   cEl.textContent=item.cta;
+  void box.offsetWidth;
+  box.style.display='block';
+}
+function dadoFraseAnotada(){
+  const box=document.getElementById('dado-frase-anotada-result');
+  const tEl=document.getElementById('dado-frase-anotada-texto');
+  if(!box||!tEl)return;
+  let pool=[];
+  Object.values(frasesData||{}).forEach(arr=>{(arr||[]).forEach(f=>{if(f&&f.trim())pool.push({texto:f.trim()});});});
+  (frasesPersonas||[]).forEach(p=>{(p.frases||[]).forEach(f=>{if(f&&f.trim())pool.push({texto:f.trim(),autor:p.titulo});});});
+  box.style.display='none';
+  if(!pool.length){
+    tEl.textContent='Todavía no anotaste ninguna frase aquí abajo. ¡Agregá la primera!';
+  }else{
+    const idx=Math.floor(Math.random()*pool.length);
+    const item=pool[idx];
+    tEl.textContent='"'+item.texto+'"'+(item.autor?' — '+item.autor:'');
+  }
   void box.offsetWidth;
   box.style.display='block';
 }
@@ -7883,8 +7949,6 @@ function buildInspGrupos(){
 }
 
 function buildInspGruposPreview(){
-  const frases=document.getElementById('purpose-frases');
-  if(frases){frases.value=purposeData.frases||'';frases.oninput=(e)=>{purposeData.frases=e.target.value;save('purpose',purposeData);};}
   buildInspGruposInline();
 }
 
@@ -8360,6 +8424,7 @@ function toggleSection(id){
     if(id==='soc-pendientes-wrap')buildSocList('pendiente');
     if(id==='soc-realizados-wrap')buildSocList('realizado');
     if(id==='soc-perdidas-wrap')buildSocList('perdida');
+    if(id==='soc-herramientas-wrap')buildSocHerramientas();
     if(id==='soc-objetivos'){buildSocList('pendiente');buildSocList('realizado');}
     if(id==='auto-remember')buildRememberHoy();
     if(id==='auto-artista')buildArtistaHoy();
@@ -8697,7 +8762,87 @@ const ABC_DEFAULT_AREAS = [
   {id:'abc_fin', nombre:'Finanzas', color:'#5C7A4E'},
   {id:'abc_disf', nombre:'Disfrute & Juego', color:'#C4713A'},
 ];
-let abcData = load('abcdata', ABC_DEFAULT_AREAS.map(a=>({...a, A:[], B:[], C:[], detalle:{A:{fotos:[],links:[],frases:[],descripciones:[]},B:{fotos:[],links:[],frases:[],descripciones:[]},C:{fotos:[],links:[],frases:[],descripciones:[]}}})));
+let abcData = load('abcdata', ABC_DEFAULT_AREAS.map(a=>({...a, A:[], B:[], C:[], detalle:{A:[],B:[],C:[]}})));
+let abcDetalleIdx = null;
+function _abcEnsureDetalle(area){
+  if(!area.detalle || Array.isArray(area.detalle) || !Array.isArray(area.detalle.A)){
+    area.detalle = {A:[],B:[],C:[]};
+  }
+}
+function abrirAbcDetalle(ai){
+  abcDetalleIdx = ai;
+  _abcEnsureDetalle(abcData[ai]);
+  showView('abc-detalle');
+}
+function buildAbcDetalle(){
+  if(abcDetalleIdx===null || !abcData[abcDetalleIdx]) return;
+  const area=abcData[abcDetalleIdx];
+  _abcEnsureDetalle(area);
+  const tit=document.getElementById('abc-det-titulo'); if(tit)tit.textContent=area.nombre||'Área';
+  const cont=document.getElementById('abc-det-content'); if(!cont) return;
+  const letras=[
+    {l:'A',label:'El punto de partida',col:'#5C7A4E'},
+    {l:'B',label:'A dónde llegué',col:'#D4903A'},
+    {l:'C',label:'Mi meta ideal',col:'#C4713A'},
+  ];
+  cont.innerHTML=letras.map(({l,label,col})=>{
+    const secciones=area.detalle[l]||[];
+    const cards=secciones.map((sec,si)=>{
+      const notas=(sec.notas||[]).map((n,ni)=>{
+        const ncol=NOTA_COLORS[ni%NOTA_COLORS.length];
+        return `<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;padding:6px 10px;border-radius:8px;background:${ncol}12;border-left:2px solid ${ncol}">
+          <span style="font-size:12px;color:${ncol};flex:1;line-height:1.6">${n}</span>
+          <button onclick="delAbcDetNota('${l}',${si},${ni})" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+        </div>`;
+      }).join('');
+      const linkHtml=sec.link?`<a href="${sec.link}" target="_blank" style="font-size:11px;color:${col};word-break:break-all;display:block;margin-bottom:6px">🔗 ${sec.link}</a>`:'';
+      return `<div style="background:#fff;border:0.5px solid var(--borde);border-radius:12px;overflow:hidden;margin-bottom:8px">
+        <div style="padding:.65rem 1rem;background:var(--arena);border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:8px">
+          <input type="text" value="${(sec.titulo||'').replace(/"/g,'&quot;')}" placeholder="Título..." style="flex:1;font-family:'Playfair Display',serif;font-style:italic;font-size:13px;color:${col};border:none;background:transparent;outline:none" oninput="abcData[${abcDetalleIdx}].detalle['${l}'][${si}].titulo=this.value;save('abcdata',abcData)">
+          <button onclick="addAbcDetLink('${l}',${si})" style="font-size:10px;padding:2px 8px;border-radius:8px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);cursor:pointer;font-family:'DM Sans',sans-serif">+ link</button>
+          <button onclick="delAbcDetSeccion('${l}',${si})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+        </div>
+        <div style="padding:.7rem 1rem">
+          ${linkHtml}${notas}
+          <button onclick="addAbcDetNota('${l}',${si})" style="padding:3px 10px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">+ nota</button>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div style="margin-bottom:1.5rem">
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:.75rem">
+        <span style="font-size:17px;font-weight:800;color:${col}">${l}</span>
+        <span style="font-size:12px;color:var(--tmed)">${label}</span>
+      </div>
+      ${cards || '<p style="font-size:12px;color:var(--tmed);margin-bottom:.5rem">Todavía no hay nada acá.</p>'}
+      <button onclick="addAbcDetSeccion('${l}')" style="padding:5px 14px;border-radius:20px;border:0.5px dashed ${col};background:transparent;color:${col};font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">+ Agregar</button>
+    </div>`;
+  }).join('');
+}
+function addAbcDetSeccion(letra){
+  if(abcDetalleIdx===null)return;
+  const area=abcData[abcDetalleIdx];_abcEnsureDetalle(area);
+  area.detalle[letra].push({titulo:'',notas:[],link:''});
+  save('abcdata',abcData);buildAbcDetalle();
+  setTimeout(()=>{const inps=document.querySelectorAll('#abc-det-content input[type="text"]');if(inps.length)inps[inps.length-1].focus();},50);
+}
+function delAbcDetSeccion(letra,si){
+  abcData[abcDetalleIdx].detalle[letra].splice(si,1);
+  save('abcdata',abcData);buildAbcDetalle();
+}
+function addAbcDetNota(letra,si){
+  const txt=prompt('Nota o descripción:');if(!txt||!txt.trim())return;
+  abcData[abcDetalleIdx].detalle[letra][si].notas.push(txt.trim());
+  save('abcdata',abcData);buildAbcDetalle();
+}
+function delAbcDetNota(letra,si,ni){
+  abcData[abcDetalleIdx].detalle[letra][si].notas.splice(ni,1);
+  save('abcdata',abcData);buildAbcDetalle();
+}
+function addAbcDetLink(letra,si){
+  const url=prompt('URL del link (ej: https://...):');if(!url||!url.trim())return;
+  abcData[abcDetalleIdx].detalle[letra][si].link=url.trim();
+  save('abcdata',abcData);buildAbcDetalle();
+}
 
 function buildAbcAreas(){
   const cont=document.getElementById('abc-areas-list'); if(!cont)return;
@@ -8821,35 +8966,6 @@ function addAbcRefDescInline(i){
   },50);
 }
 function delAbcRefDesc(i,di){abcRefData[i].descs.splice(di,1);save('abcrefdata',abcRefData);buildAbcReflexiones();}
-
-function addAbcDet(letra,campo){
-  if(abcDetalleIdx===null) return;
-  if(!abcData[abcDetalleIdx].detalle) abcData[abcDetalleIdx].detalle={A:{fotos:[],links:[],frases:[],descripciones:[]},B:{fotos:[],links:[],frases:[],descripciones:[]},C:{fotos:[],links:[],frases:[],descripciones:[]}};
-  abcData[abcDetalleIdx].detalle[letra][campo].push('');
-  save('abcdata',abcData); buildAbcDetalle();
-  setTimeout(()=>{const inps=document.querySelectorAll('#abc-det-content input[type="text"]');if(inps.length)inps[inps.length-1].focus();},50);
-}
-function addAbcDetPrompt(letra,campo,msg){
-  const val=prompt(msg); if(!val||!val.trim()) return;
-  if(!abcData[abcDetalleIdx].detalle) abcData[abcDetalleIdx].detalle={A:{fotos:[],links:[],frases:[],descripciones:[]},B:{fotos:[],links:[],frases:[],descripciones:[]},C:{fotos:[],links:[],frases:[],descripciones:[]}};
-  abcData[abcDetalleIdx].detalle[letra][campo].push(val.trim());
-  save('abcdata',abcData); buildAbcDetalle();
-}
-function delAbcDet(letra,campo,idx){
-  abcData[abcDetalleIdx].detalle[letra][campo].splice(idx,1);
-  save('abcdata',abcData); buildAbcDetalle();
-}
-function addAbcFoto(letra,input){
-  const file=input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    if(!abcData[abcDetalleIdx].detalle[letra].fotos) abcData[abcDetalleIdx].detalle[letra].fotos=[];
-    abcData[abcDetalleIdx].detalle[letra].fotos.push(e.target.result);
-    save('abcdata',abcData); buildAbcDetalle();
-  };
-  reader.readAsDataURL(file);
-}
-
 
 /* IKIGAI EXTRA ITEMS */
 let ikData=load('ikdata',{'no-salido':[],'si-salido':[]});
