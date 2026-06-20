@@ -911,27 +911,6 @@ canvas{max-width:100%}
     </div>
   </div>
 
-  <!-- INSPIRACIÓN (collapsible) -->
-  <div style="margin-bottom:1rem">
-    <div onclick="togglePropSection('prop-inspiracion')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
-      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Inspiración</h2>
-      <button id="btn-prop-inspiracion" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
-    </div>
-    <div id="prop-inspiracion" style="display:none;padding-top:.75rem">
-      <div class="card" style="margin-bottom:1rem">
-        <div class="card-top"><h3>Frases que me inspiran</h3></div>
-        <div class="card-body"><textarea class="nota" id="purpose-frases" rows="4" placeholder="Anotá las frases que te mueven..."></textarea></div>
-      </div>
-      <div class="card">
-        <div class="card-top"><h3>Personas que me inspiran</h3></div>
-        <div class="card-body" style="display:flex;flex-direction:column;gap:1rem">
-          <div id="inspg-inline" style="display:flex;flex-direction:column;gap:1rem"></div>
-          <button onclick="addInspGrupo()" style="align-self:flex-start;padding:7px 18px;border-radius:20px;border:0.5px dashed var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar grupo</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- TAREAS (collapsible) -->
   <div style="margin-bottom:1rem">
     <div onclick="togglePropSection('prop-tareas')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
@@ -1007,7 +986,7 @@ canvas{max-width:100%}
 
 <div id="view-inspiradores-grupos" class="view">
   <div class="ph">
-    <button onclick="showView('proposito')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <button onclick="showView('visionboard')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
     <h1>Personas que me <em>inspiran</em></h1>
     <p style="font-size:12px;color:var(--tmed)">Grupos de referentes, por área o categoría</p>
   </div>
@@ -1151,7 +1130,7 @@ canvas{max-width:100%}
               <option value="USD">USD$</option>
             </select>
             <div style="position:relative;display:flex;align-items:center;gap:4px">
-              <select id="g-cat" class="input-inline" style="border-radius:8px;padding:7px 10px" id="g-cat"></select>
+              <select id="g-cat" class="input-inline" style="border-radius:8px;padding:7px 10px"></select>
               <button onclick="addGastoCat()" title="Agregar rubro" style="padding:4px 8px;border-radius:8px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+</button>
               <button onclick="delGastoCat()" title="Eliminar rubro seleccionado" style="padding:4px 8px;border-radius:8px;border:0.5px solid var(--tmed);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">✕</button>
             </div>
@@ -1506,6 +1485,15 @@ canvas{max-width:100%}
       <button id="btn-vb-frases" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="vb-frases" style="display:none;padding-top:1rem">
+      <!-- DADO DE PREGUNTAS -->
+      <div style="background:#fff;border:0.5px solid var(--borde);border-radius:14px;padding:1.1rem;margin-bottom:1.25rem;text-align:center">
+        <button onclick="dadoFraseMotiv()" style="background:none;border:none;cursor:pointer;font-size:34px;line-height:1;padding:0;transition:transform .2s" onmouseover="this.style.transform='rotate(-8deg) scale(1.08)'" onmouseout="this.style.transform=''">🎲</button>
+        <div style="font-size:11px;color:var(--tmed);margin-top:4px">Tocá el dado para una pregunta al azar</div>
+        <div id="dado-frase-result" style="display:none;margin-top:1rem;text-align:left;padding:.9rem 1rem;background:var(--arena);border-radius:10px;border-left:3px solid var(--ambar)">
+          <div id="dado-frase-pregunta" style="font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--tierra);margin-bottom:8px"></div>
+          <div id="dado-frase-cta" style="font-size:12px;color:var(--ambar);font-weight:500"></div>
+        </div>
+      </div>
       <p style="font-size:11px;color:var(--tmed);margin-bottom:.75rem">Por segmento — tus palabras que te mueven</p>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem" id="frases-tabs"></div>
       <div id="frases-content"></div>
@@ -1517,6 +1505,22 @@ canvas{max-width:100%}
           <button onclick="addFrasePers()" style="padding:4px 12px;border-radius:14px;border:0.5px dashed var(--ambar);background:transparent;color:var(--ambar);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">+ Agregar</button>
         </div>
         <div id="frases-personas-list" style="padding:.75rem 1.1rem;display:flex;flex-direction:column;gap:.75rem"></div>
+      </div>
+
+      <!-- Inspiraciones -->
+      <div style="margin-top:1.25rem">
+        <h3 style="font-family:'Playfair Display',serif;font-size:16px;font-weight:400;color:var(--tierra);margin-bottom:.75rem">Inspiraciones</h3>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-top"><h3>Frases que me inspiran</h3></div>
+          <div class="card-body"><textarea class="nota" id="purpose-frases" rows="4" placeholder="Anotá las frases que te mueven..."></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-top"><h3>Personas que me inspiran</h3></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:1rem">
+            <div id="inspg-inline" style="display:flex;flex-direction:column;gap:1rem"></div>
+            <button onclick="addInspGrupo()" style="align-self:flex-start;padding:7px 18px;border-radius:20px;border:0.5px dashed var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar grupo</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -3732,20 +3736,77 @@ function buildAnualChart(){
   return {labels,data};
 }
 
+/* Color shading helpers: give each habit within a category a distinct shade of that category's color */
+function _hexToRgbArr(hex){
+  return [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)];
+}
+function _rgbToHsl(r,g,b){
+  r/=255;g/=255;b/=255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}
+  else{
+    const d=max-min;
+    s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){
+      case r: h=(g-b)/d+(g<b?6:0); break;
+      case g: h=(b-r)/d+2; break;
+      default: h=(r-g)/d+4;
+    }
+    h/=6;
+  }
+  return [h*360,s*100,l*100];
+}
+function _hslToHex(h,s,l){
+  h=((h%360)+360)%360; h/=360; s/=100; l/=100;
+  let r,g,b;
+  if(s===0){r=g=b=l;}
+  else{
+    const hue2rgb=(p,q,t)=>{
+      if(t<0)t+=1; if(t>1)t-=1;
+      if(t<1/6)return p+(q-p)*6*t;
+      if(t<1/2)return q;
+      if(t<2/3)return p+(q-p)*(2/3-t)*6;
+      return p;
+    };
+    const q=l<0.5?l*(1+s):l+s-l*s;
+    const p=2*l-q;
+    r=hue2rgb(p,q,h+1/3);
+    g=hue2rgb(p,q,h);
+    b=hue2rgb(p,q,h-1/3);
+  }
+  const toHex=x=>{const v=Math.round(x*255);return v.toString(16).padStart(2,'0');};
+  return '#'+toHex(r)+toHex(g)+toHex(b);
+}
+function habitShadeColor(catColor,idx,total){
+  if(total<=1) return catColor;
+  const [r,g,b]=_hexToRgbArr(catColor);
+  const [h,s]=_rgbToHsl(r,g,b);
+  const sUse=Math.max(s,45);
+  const L_MIN=30,L_MAX=74;
+  const L=L_MAX-(idx*(L_MAX-L_MIN)/(total-1));
+  return _hslToHex(h,sUse,L);
+}
+// Returns {habitoId: shadeHex} — each habit gets a distinct shade of its category's color
+function computeHabitShades(){
+  const map={};
+  cats.forEach(cat=>{
+    const ids=[];
+    cat.habitos.forEach(h=>{ids.push(h.id);if(h.subs)h.subs.forEach(s=>ids.push(s.id));});
+    const n=ids.length;
+    ids.forEach((id,idx)=>{map[id]=habitShadeColor(cat.color,idx,n);});
+  });
+  return map;
+}
+
 function buildHeatmap(){
   const cont=document.getElementById('heatmap-mes');if(!cont)return;
   const all=allH();
   const year=today.getFullYear();
   const daysInMonth=new Date(year,curMes+1,0).getDate();
 
-  // Build a map: habito id -> category color
-  const habCatColor={};
-  cats.forEach(cat=>{
-    cat.habitos.forEach(h=>{
-      habCatColor[h.id]=cat.color;
-      if(h.subs)h.subs.forEach(s=>{habCatColor[s.id]=cat.color;});
-    });
-  });
+  // Build a map: habito id -> distinct shade of its category's color
+  const habCatColor=computeHabitShades();
 
   // Generate light and dark versions of a hex color
   function hexToRgb(hex){
@@ -3772,8 +3833,7 @@ function buildHeatmap(){
   }
   html+='</tr>';
   all.forEach(h=>{
-    const cat=cats.find(c=>c.habitos.some(hh=>hh.id===h.id||(hh.subs&&hh.subs.some(s=>s.id===h.id))));
-    const col=cat?cat.color:'#9A8A60';
+    const col=habCatColor[h.id]||'#9A8A60';
     html+=`<tr><td style="padding:3px 6px;white-space:nowrap;overflow:hidden;max-width:140px;text-overflow:ellipsis;color:var(--tierra);border-left:2px solid ${col}">${h.n}</td>`;
     const catColor=habCatColor[h.id]||null;
     const firstDowH=(new Date(year,curMes,1).getDay()+6)%7;
@@ -5591,8 +5651,6 @@ function buildProposito(){
     cont.appendChild(div);
   });
   cont.querySelectorAll('textarea').forEach(ta=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';});
-  const frases=document.getElementById('purpose-frases');
-  if(frases){frases.value=purposeData.frases||'';frases.oninput=(e)=>{purposeData.frases=e.target.value;save('purpose',purposeData);};}
   const personas=document.getElementById('purpose-personas');
   if(personas){personas.value=purposeData.personas||'';personas.oninput=(e)=>{purposeData.personas=e.target.value;save('purpose',purposeData);};}
 }
@@ -5771,7 +5829,6 @@ function buildAhorros(){
   cont.innerHTML=ahorros.map((a,ai)=>{
     const col=a.color||NOTA_COLORS[ai%NOTA_COLORS.length];
     const simbolo=a.moneda==='USD'?'USD$':'$';
-    const balanceFmt=(a.balance||0).toLocaleString('es-AR',{maximumFractionDigits:0});
     return `<div style="background:#fff;border:0.5px solid var(--borde);border-radius:14px;overflow:hidden">
       <div style="padding:.75rem 1.1rem;background:${col}14;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <input type="text" value="${(a.titulo||'').replace(/"/g,'&quot;')}" placeholder="Nombre (ej: Balanz)" oninput="ahorros[${ai}].titulo=this.value;save('ahorros',ahorros)" style="flex:1;min-width:120px;font-size:14px;font-weight:500;color:${col};border:none;background:transparent;outline:none;font-family:'DM Sans',sans-serif">
@@ -5782,8 +5839,11 @@ function buildAhorros(){
         <button onclick="delAhorroCuenta(${ai})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
       </div>
       <div style="padding:1rem 1.1rem">
-        <div style="font-size:10px;color:var(--tmed);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Monto actual</div>
-        <div style="font-size:28px;font-weight:600;color:${col};margin-bottom:.85rem">${simbolo}${balanceFmt}</div>
+        <div style="font-size:10px;color:var(--tmed);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Monto actual <span style="font-style:italic;text-transform:none;opacity:.75">(editable)</span></div>
+        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:.85rem">
+          <span style="font-size:28px;font-weight:600;color:${col}">${simbolo}</span>
+          <input type="number" value="${(a.balance||0)}" onchange="ahorros[${ai}].balance=parseFloat(this.value)||0;save('ahorros',ahorros);buildAhorros()" style="font-size:28px;font-weight:600;color:${col};border:none;border-bottom:1.5px dashed ${col}55;background:transparent;outline:none;font-family:'DM Sans',sans-serif;width:160px;padding:0 0 1px 0">
+        </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:.6rem">
           <input type="number" id="ah-monto-${ai}" placeholder="Monto" style="border-radius:8px;padding:6px 9px;width:90px;border:0.5px solid var(--bordem);font-family:'DM Sans',sans-serif;font-size:12px;background:transparent;color:var(--tierra);outline:none">
           <input type="text" id="ah-nota-${ai}" placeholder="Notas (opcional)" style="border-radius:8px;padding:6px 9px;flex:1;min-width:90px;border:0.5px solid var(--bordem);font-family:'DM Sans',sans-serif;font-size:12px;background:transparent;color:var(--tierra);outline:none">
@@ -6171,6 +6231,37 @@ const FRASES_DEFAULT={
   Deporte:['Hacé ejercicio por cómo te hace sentir, no solo por cómo te hace ver.','El movimiento es medicina. El descanso también.','Pequeñas acciones repetidas crean grandes cambios.'],
 };
 let frasesData=load('frasesdata',JSON.parse(JSON.stringify(FRASES_DEFAULT)));
+
+const FRASES_DADO=[
+  {q:"¿Qué haría mi versión más sabia ahora?",cta:"Dale, andá! Ya sabés la respuesta, vos podés!"},
+  {q:"Si no tuviera miedo, ¿qué elegiría hacer hoy?",cta:"El miedo no se va pensando, se va caminando. ¡Vamos!"},
+  {q:"¿Qué le diría a alguien que quiero si estuviera en mi lugar?",cta:"Esa misma ternura, dátela a vos también."},
+  {q:"¿Qué necesito soltar para sentirme más libre?",cta:"Soltar también es avanzar. Animate."},
+  {q:"¿De qué me voy a alegrar haber hecho hoy, dentro de un año?",cta:"Tu yo futuro ya te está agradeciendo. ¡Hacelo!"},
+  {q:"¿Qué parte de mí necesita más compasión ahora?",cta:"Tratate como tratarías a quien más amás."},
+  {q:"¿Estoy actuando desde el miedo o desde mis valores?",cta:"Volvé al valor. Ahí está tu mejor versión."},
+  {q:"¿Qué pasaría si confiara un poco más en mí?",cta:"Confiá. Ya llegaste hasta acá vos sola/o."},
+  {q:"¿Qué es lo más honesto que podría hacer en este momento?",cta:"La verdad pesa menos que cargarla escondida. ¡Animate!"},
+  {q:"¿Qué necesito escuchar hoy que nadie me está diciendo?",cta:"Decítelo vos. Empezá ahora."},
+  {q:"¿Qué haría si supiera que no puedo fallar?",cta:"Ya lo sabés. Andá por eso."},
+  {q:"¿Qué pequeño paso puedo dar hoy hacia lo que quiero?",cta:"No hace falta el salto entero. Un paso alcanza. ¡Dale!"},
+  {q:"¿Qué estoy postergando por miedo, no por falta de ganas?",cta:"El momento perfecto es un mito. Este es el momento."},
+  {q:"¿Cómo se vería mi día si lo viviera con más juego?",cta:"Jugá un poco más hoy. Te lo merecés."},
+  {q:"¿Qué necesita escuchar mi niño/a interior hoy?",cta:"Decíselo. Está esperando que vos se lo digas."},
+];
+function dadoFraseMotiv(){
+  const box=document.getElementById('dado-frase-result');
+  const pEl=document.getElementById('dado-frase-pregunta');
+  const cEl=document.getElementById('dado-frase-cta');
+  if(!box||!pEl||!cEl)return;
+  const idx=Math.floor(Math.random()*FRASES_DADO.length);
+  const item=FRASES_DADO[idx];
+  box.style.display='none';
+  pEl.textContent='"'+item.q+'"';
+  cEl.textContent=item.cta;
+  void box.offsetWidth;
+  box.style.display='block';
+}
 let frasesTabActivo='Mix';
 function buildFrasesVB(){
   const tabsCont=document.getElementById('frases-tabs');const content=document.getElementById('frases-content');
@@ -6685,7 +6776,7 @@ function showView(v){
   if(v==='soc-pendientes-mes')buildSocMes('pendiente');
   if(v==='soc-realizados-mes')buildSocMes('realizado');
   if(v==='soc-perdidas-mes')buildSocMes('perdida');
-  if(v==='proposito'){initPropSections();buildProposito();buildMapa();buildTareas();buildInspGruposPreview();buildIkExtra();}
+  if(v==='proposito'){initPropSections();buildProposito();buildMapa();buildTareas();buildIkExtra();}
   if(v==='progresos-mes')buildProgresosMes();
   if(v==='inspiradores-grupos')buildInspGrupos();
   if(v==='inspirador-detalle')buildInspDetalle();
@@ -6791,7 +6882,7 @@ function render(){
   if(curView==='vinculos'){initVinSections();if(vinSections.grupos)buildVinculos();if(vinSections.soc)buildSocializacion();}
   if(curView==='soc-pendientes-mes')buildSocMes('pendiente');
   if(curView==='soc-realizados-mes')buildSocMes('realizado');
-  if(curView==='proposito'){initPropSections();buildProposito();buildMapa();buildTareas();buildInspGruposPreview();buildIkExtra();}
+  if(curView==='proposito'){initPropSections();buildProposito();buildMapa();buildTareas();buildIkExtra();}
   if(curView==='progresos-mes')buildProgresosMes();
   if(curView==='inspiradores-grupos')buildInspGrupos();
   if(curView==='inspirador-detalle')buildInspDetalle();
@@ -7174,7 +7265,7 @@ function toggleVBSection(id){
     if(id==='vb-abc'){initVBSubSections();buildAbcAreas();buildAbcReflexiones();}
     if(id==='abc-ver-areas')buildAbcAreas();
     if(id==='abc-reflexiones-sec')buildAbcReflexiones();
-    if(id==='vb-frases'){buildFrasesVB();buildFrasesPersonas();}
+    if(id==='vb-frases'){buildFrasesVB();buildFrasesPersonas();buildInspGruposPreview();}
     if(id==='vb-valores'){buildValores();buildValoresMapa();}
     if(id==='vb-libros')buildLibros();
     if(id==='vb-links')buildLinks();
@@ -7741,14 +7832,13 @@ function togglePropSection(id){
   if(el)el.style.display=propSections[id]?'':'none';
   if(btn)btn.textContent=propSections[id]?'Cerrar':'Abrir';
   if(propSections[id]&&id==='prop-ikigai'){buildProposito();buildIkExtra();buildMapa();}
-  if(propSections[id]&&id==='prop-inspiracion'){buildInspGruposPreview();}
   if(propSections[id]&&id==='prop-tareas')buildTareas();
   if(propSections[id]&&id==='prop-mapa')buildMapa();
   if(propSections[id]&&id==='prop-progresos')buildProgresosHoy();
   if(propSections[id]&&id==='prop-ideas')buildIdeas();
 }
 function initPropSections(){
-  ['prop-ikigai','prop-inspiracion','prop-tareas','prop-mapa','prop-progresos','prop-ideas'].forEach(id=>{
+  ['prop-ikigai','prop-tareas','prop-mapa','prop-progresos','prop-ideas'].forEach(id=>{
     const el=document.getElementById(id);const btn=document.getElementById('btn-'+id);
     const open=propSections[id]||false;
     if(el)el.style.display=open?'':'none';
@@ -7793,6 +7883,8 @@ function buildInspGrupos(){
 }
 
 function buildInspGruposPreview(){
+  const frases=document.getElementById('purpose-frases');
+  if(frases){frases.value=purposeData.frases||'';frases.oninput=(e)=>{purposeData.frases=e.target.value;save('purpose',purposeData);};}
   buildInspGruposInline();
 }
 
@@ -9528,9 +9620,8 @@ function buildMapasHistoricos(){
   const MESES_NOMBRES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   const all=allH();
 
-  // Build habito cat color map
-  const habCatColor={};
-  cats.forEach(cat=>{ cat.habitos.forEach(h=>{ habCatColor[h.id]=cat.color; if(h.subs)h.subs.forEach(s=>{habCatColor[s.id]=cat.color;}); }); });
+  // Build habito cat color map — distinct shade per habit within its category
+  const habCatColor=computeHabitShades();
 
   function hexToRgb(hex){ return[parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)]; }
   function mixWith(hex,ratio,r2,g2,b2){ const[r,g,b]=hexToRgb(hex); return 'rgb('+Math.round(r*ratio+r2*(1-ratio))+','+Math.round(g*ratio+g2*(1-ratio))+','+Math.round(b*ratio+b2*(1-ratio))+')'; }
@@ -9593,8 +9684,7 @@ function buildMapasHistoricos(){
 
     all.forEach(h=>{
       const col=habCatColor[h.id]||null;
-      const catObj=cats.find(c=>c.habitos.some(hh=>hh.id===h.id||(hh.subs&&hh.subs.some(s=>s.id===h.id))));
-      const catCol=catObj?catObj.color:'#9A8A60';
+      const catCol=col||'#9A8A60';
       grid+=`<tr><td style="padding:2px 6px 2px 0;white-space:nowrap;overflow:hidden;max-width:120px;text-overflow:ellipsis;color:var(--tierra);border-left:2px solid ${catCol};font-size:9px" title="${h.n}">${h.n}</td>`;
       for(let d=1;d<=daysInMonth;d++){
         const diff=d-firstMonday;
@@ -10151,8 +10241,22 @@ async function toggleUsuario(id,activo){
 var _origSave=window.save;
 window.save=function(key,val){
   try{localStorage.setItem("lav_"+key,JSON.stringify(val));}catch(e){}
-  if(currentUser){clearTimeout(saveTimer);saveTimer=setTimeout(syncDatosSupabase,2000);}
+  if(currentUser){clearTimeout(saveTimer);saveTimer=setTimeout(syncDatosSupabase,800);}
 };
+function flushSyncIfPending(){
+  if(currentUser&&saveTimer){
+    clearTimeout(saveTimer);
+    saveTimer=null;
+    syncDatosSupabase();
+  }
+}
+// Si el usuario cambia de pestaña/app o cierra el navegador justo después de
+// guardar algo (ej: agregar un rubro nuevo), esto evita que ese cambio se
+// pierda por no haber llegado a subirse a la nube todavía.
+document.addEventListener("visibilitychange",function(){
+  if(document.visibilityState==="hidden")flushSyncIfPending();
+});
+window.addEventListener("pagehide",flushSyncIfPending);
 window.addEventListener("load",async function(){
   supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
   var loginBtn=document.getElementById("login-btn");
