@@ -6210,6 +6210,7 @@ function buildValoresAuto(){
   buildValoresMapa('valores-mapa-auto');
   const cont=document.getElementById('valores-list-auto');if(!cont)return;
   cont.innerHTML='';
+  let visibleNum=0;
   valoresData.forEach((v,vi)=>{
     const card=document.createElement('div');
     card.style.cssText='background:rgba(255,255,255,0.6);border:0.5px solid var(--bordem);border-radius:10px;overflow:hidden;cursor:grab';
@@ -6223,10 +6224,11 @@ function buildValoresAuto(){
       if(fromIdx===toIdx)return;const [moved]=valoresData.splice(fromIdx,1);valoresData.splice(toIdx,0,moved);
       save('valoresdata',valoresData);buildValores();buildValoresAuto();});
     // Skip empty entries unless it's the one just added
-    if((!v.nombre||!v.nombre.trim())&&vi!==_showNewValorIdx){cont.appendChild(document.createElement('span'));cont.lastChild.remove();return;}
+    if((!v.nombre||!v.nombre.trim())&&vi!==_showNewValorIdx){return;}
+    visibleNum++;
     card.innerHTML=`
       <div style="padding:.85rem 1.1rem;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:10px">
-        <span style="font-size:18px;font-weight:800;color:var(--ambar);min-width:22px;flex-shrink:0">${vi+1}</span>
+        <span style="font-size:18px;font-weight:800;color:var(--ambar);min-width:22px;flex-shrink:0">${visibleNum}</span>
         <input type="text" value="${v.nombre}" placeholder="Nombre del valor"
           style="font-size:15px;font-weight:500;color:var(--tierra);border:none;background:transparent;font-family:'Playfair Display',serif;outline:none;flex:1"
           oninput="valoresData[${vi}].nombre=this.value;save('valoresdata',valoresData);buildValores()">
@@ -8295,7 +8297,7 @@ function buildPresHeatmap(){
       dayEms.some(e=>matchEms.includes(e)&&![...deletedAlta,...deletedMedia,...deletedBaja].includes(e))
     );
     if(!tieneAlgunDia)return;
-    html+=`<tr><td style="padding:3px 8px;display:flex;align-items:center;gap:5px;min-width:200px;cursor:pointer" onclick="verRegistrosEmocion('${em.label.replace(/'/g,"\\'")}',${JSON.stringify(matchEms)})" title="Ver registros de ${em.label}"><span style="width:12px;height:12px;border-radius:3px;background:${em.bg};display:inline-block;flex-shrink:0"></span><span style="text-decoration:underline dotted;color:var(--tierra)">${em.label}</span></td>`;
+    html+=`<tr><td style="padding:3px 8px;display:flex;align-items:center;gap:5px;min-width:200px;cursor:pointer" onclick="verRegistrosEmocion('${em.label.replace(/'/g,"\\'")}',${JSON.stringify(em._em?[em._em]:[em.id])})" title="Ver registros de ${em.label}"><span style="width:12px;height:12px;border-radius:3px;background:${em.bg};display:inline-block;flex-shrink:0"></span><span style="text-decoration:underline dotted;color:var(--tierra)">${em.label}</span></td>`;
     for(let d=1;d<=daysInMonth;d++){
       const dayEms=daySubemMap[d]||[];
       const hasIt=dayEms.some(e=>matchEms.includes(e)&&![...deletedAlta,...deletedMedia,...deletedBaja].includes(e));
