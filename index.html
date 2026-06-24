@@ -2032,6 +2032,8 @@ canvas{max-width:100%}
   </div>
 
 </div>
+
+<div id="view-em-necesidades" class="view">
   <div class="ph">
     <button onclick="showView('presencia')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
     <h1>Guía — <em>¿Qué necesita cada emoción?</em></h1>
@@ -2111,6 +2113,16 @@ canvas{max-width:100%}
 </div>
 
 <!-- PRES REGISTROS -->
+<!-- EMOTION FILTER VIEW -->
+<div id="view-em-registros-filtro" class="view">
+  <div class="ph">
+    <button onclick="showView('presencia')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <h1>Registros de <em id="em-filtro-lbl" style="color:var(--ambar)"></em></h1>
+    <p style="font-size:12px;color:var(--tmed);margin-top:4px">Todos los días donde registraste esta emoción</p>
+  </div>
+  <div id="em-filtro-content" style="display:flex;flex-direction:column;gap:.5rem"></div>
+</div>
+
 <div id="view-pres-registros" class="view">
   <div class="ph">
     <button onclick="showView('presencia')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver a Presencia</button>
@@ -2423,28 +2435,58 @@ canvas{max-width:100%}
 <div id="view-resumen" class="view">
   <div class="ph"><h1>Resumen del <em>mes</em></h1><p id="resumen-lbl"></p></div>
   <div id="resumen-top5" style="margin-bottom:1.5rem"></div>
-  <div style="margin-top:1rem;display:flex;flex-direction:column;gap:10px">
-    <button onclick="descargarReporte()" id="btn-descargar-reporte"
-      style="display:flex;align-items:center;gap:8px;padding:12px 24px;border-radius:12px;border:none;background:var(--tierra);color:var(--fondo);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;align-self:flex-start"
-      onmouseover="this.style.background='var(--ambar)';this.style.color='var(--sol-osc)'"
-      onmouseout="this.style.background='var(--tierra)';this.style.color='var(--fondo)'">
-      ⬇ Descargar Reporte PDF — <span id="reporte-mes-lbl">este mes</span>
-    </button>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <button onclick="exportarJSON()"
-        style="padding:9px 18px;border-radius:12px;border:0.5px solid var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer"
-        onmouseover="this.style.background='var(--vmusgo)';this.style.color='#fff'"
-        onmouseout="this.style.background='transparent';this.style.color='var(--vmusgo)'">
-        💾 Exportar datos (JSON)
-      </button>
-      <label style="padding:9px 18px;border-radius:12px;border:0.5px solid var(--tmed);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer"
-        onmouseover="this.style.background='var(--tsuave)';this.style.color='var(--tierra)'"
-        onmouseout="this.style.background='transparent';this.style.color='var(--tmed)'">
-        📂 Importar datos (JSON)
-        <input type="file" accept=".json" onchange="importarJSON(event)" style="display:none">
-      </label>
-      <span style="font-size:11px;color:var(--tmed)">Backup completo de todos tus datos</span>
+
+  <!-- DADO DE REMEMBERS -->
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-top"><h3>🎲 Remembers del día</h3><span style="font-size:11px;color:var(--tmed)">Tirá el dado — hasta 5 recordatorios</span></div>
+    <div class="card-body">
+      <div style="text-align:center;margin-bottom:1rem">
+        <button onclick="tirarDadoRemember()" style="background:none;border:none;cursor:pointer;font-size:42px;line-height:1;padding:0;transition:transform .2s" onmouseover="this.style.transform='rotate(-10deg) scale(1.1)'" onmouseout="this.style.transform=''">🎲</button>
+        <div style="font-size:11px;color:var(--tmed);margin-top:4px">Tocá para remembers de hoy</div>
+      </div>
+      <div id="dado-remember-result" style="display:none;display:flex;flex-direction:column;gap:8px"></div>
     </div>
+  </div>
+
+  <!-- REPORTES POR SECTOR -->
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-top"><h3>📋 Reportes por sector</h3></div>
+    <div class="card-body">
+      <p style="font-size:12px;color:var(--tmed);margin-bottom:1rem">Descargá un reporte específico para compartir con tu profe, terapeuta, o guardar.</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button onclick="descargarReporteSector('deporte')" style="padding:10px 18px;border-radius:12px;border:0.5px solid var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--vmusgo)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--vmusgo)'">
+          🏃 Reporte Deporte — <span style="font-size:11px;opacity:.8">para tu profe</span>
+        </button>
+        <button onclick="descargarReporteSector('autoconocimiento')" style="padding:10px 18px;border-radius:12px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='var(--ambar)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--ambar)'">
+          🪞 Reporte Autoconocimiento — <span style="font-size:11px;opacity:.8">para tu terapeuta</span>
+        </button>
+        <button onclick="descargarReporteSector('emociones')" style="padding:10px 18px;border-radius:12px;border:0.5px solid #9B59B6;background:transparent;color:#9B59B6;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px" onmouseover="this.style.background='#9B59B6';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#9B59B6'">
+          💛 Reporte Emociones — <span style="font-size:11px;opacity:.8">registro del mes</span>
+        </button>
+        <button onclick="descargarReporte()" id="btn-descargar-reporte"
+          style="padding:10px 18px;border-radius:12px;border:none;background:var(--tierra);color:var(--fondo);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px"
+          onmouseover="this.style.background='var(--ambar)';this.style.color='var(--sol-osc)'"
+          onmouseout="this.style.background='var(--tierra)';this.style.color='var(--fondo)'">
+          ⬇ Reporte completo PDF — <span id="reporte-mes-lbl" style="font-size:11px;opacity:.8">este mes</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1rem">
+    <button onclick="exportarJSON()"
+      style="padding:9px 18px;border-radius:12px;border:0.5px solid var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer"
+      onmouseover="this.style.background='var(--vmusgo)';this.style.color='#fff'"
+      onmouseout="this.style.background='transparent';this.style.color='var(--vmusgo)'">
+      💾 Exportar datos (JSON)
+    </button>
+    <label style="padding:9px 18px;border-radius:12px;border:0.5px solid var(--tmed);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer"
+      onmouseover="this.style.background='var(--tsuave)';this.style.color='var(--tierra)'"
+      onmouseout="this.style.background='transparent';this.style.color='var(--tmed)'">
+      📂 Importar datos (JSON)
+      <input type="file" accept=".json" onchange="importarJSON(event)" style="display:none">
+    </label>
+    <span style="font-size:11px;color:var(--tmed)">Backup completo de todos tus datos</span>
   </div>
 </div>
 
@@ -2709,6 +2751,7 @@ let catOpen=load('catopen',{});
 let graphFlags=load('graphflags',{});
 let vinculos=load('vinculos',VIN_AREAS_DEFAULT);
 let gastos=load('gastos',[]);
+let gastosMesCatFiltro=null; // filter for gastos-mes view when clicking chart
 let vbImages=load('vbimages',{});
 let purposeData=load('purpose',{});
 
@@ -5779,24 +5822,75 @@ function delGasto(id){gastos=gastos.filter(g=>g.id!==id);save('gastos',gastos);b
 function buildGastosMes(){
   const lbl=document.getElementById('gastos-mes-lbl');if(lbl)lbl.textContent=MESES[curMes]+' '+today.getFullYear();
   const cont=document.getElementById('gastos-mes-content');if(!cont)return;
-  const mesGastos=gastos.filter(g=>g.mes===curMes).slice().reverse();
-  if(!mesGastos.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin registros este mes.</p>';return;}
+  let mesGastos=gastos.filter(g=>g.mes===curMes).slice().reverse();
+  if(!mesGastos.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin registros este mes.</p>';gastosMesCatFiltro=null;return;}
+
+  // Category filter banner
+  let filterBanner='';
+  if(gastosMesCatFiltro){
+    mesGastos=mesGastos.filter(g=>g.cat===gastosMesCatFiltro);
+    filterBanner=`<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--sol);border-radius:10px;margin-bottom:1rem">
+      <span style="font-size:12px;font-weight:500;color:var(--sol-osc);flex:1">📊 Filtrando por: <strong>${gastosMesCatFiltro}</strong></span>
+      <button onclick="gastosMesCatFiltro=null;buildGastosMes()" style="padding:3px 10px;border-radius:14px;border:0.5px solid var(--sol-osc);background:transparent;color:var(--sol-osc);font-size:11px;cursor:pointer">Ver todo ✕</button>
+    </div>`;
+  }
+
   const ingresos=mesGastos.filter(g=>g.tipo==='ingreso');
   const egresos=mesGastos.filter(g=>g.tipo==='egreso');
-  const renderItem=g=>`
-    <div class="gasto-item" style="padding:8px 10px;background:#fff;border-radius:8px;border:0.5px solid var(--bordem)">
-      <span class="gi-cat">${g.cat}</span>
-      <span style="flex:1;font-size:12px;color:var(--tierra)">${g.desc}</span>
-      <span style="font-size:9px;color:var(--tmed)">${g.pago||'Transferencia'}</span>
-      <span style="font-size:10px;color:var(--tmed);margin-right:6px">${g.fecha||''}</span>
-      <span class="gi-monto ${g.tipo==='ingreso'?'gi-ing':'gi-eg'}">${g.tipo==='ingreso'?'+':'-'}${(g.moneda==='USD'?'USD$':'$')}${g.monto.toFixed(0)}</span>
-      <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
-    </div>`;
-  cont.innerHTML=`
-    <div style="font-size:11px;font-weight:600;color:var(--vmusgo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Ingresos</div>
-    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:1.1rem">${ingresos.length?ingresos.map(renderItem).join(''):'<p style="font-size:12px;color:var(--tmed)">Sin ingresos este mes.</p>'}</div>
-    <div style="font-size:11px;font-weight:600;color:var(--terra);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Gastos</div>
-    <div style="display:flex;flex-direction:column;gap:6px">${egresos.length?egresos.map(renderItem).join(''):'<p style="font-size:12px;color:var(--tmed)">Sin gastos este mes.</p>'}</div>
+
+  const CAT_PALETTE=['#E8C44A','#D4903A','#7AB87E','#5C7A4E','#C4713A','#9B59B6','#3498DB','#1ABC9C','#E91E63','#9A8A60'];
+  const catColorMap={};
+  [...new Set(egresos.map(g=>g.cat))].forEach((c,i)=>catColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
+  const ingColorMap={};
+  [...new Set(ingresos.map(g=>g.cat))].forEach((c,i)=>ingColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
+
+  function groupByName(list,colorMap){
+    const groups={};
+    list.forEach(g=>{
+      const key=g.desc||g.cat;
+      if(!groups[key])groups[key]=[];
+      groups[key].push(g);
+    });
+    let html='';
+    Object.entries(groups).forEach(([name,items])=>{
+      const col=colorMap[items[0].cat]||'#9A8A60';
+      const total=items.reduce((s,g)=>s+g.monto,0);
+      if(items.length>1){
+        html+=`<div style="border:1.5px solid ${col}30;border-radius:10px;overflow:hidden;margin-bottom:6px">
+          <div style="background:${col}15;border-left:3px solid ${col};padding:6px 10px;display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;font-weight:600;color:${col};flex:1">${name}</span>
+            <span style="font-size:10px;color:var(--tmed)">${items.length} registros</span>
+            <span style="font-size:12px;font-weight:600;color:${col}">${items[0].tipo==='ingreso'?'+':'-'}$${total.toFixed(0)}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0">
+            ${items.map(g=>`<div style="padding:6px 10px 6px 14px;display:flex;align-items:center;gap:6px;border-top:0.5px solid ${col}20;background:#fff">
+              <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
+              <span style="font-size:11px;color:var(--tmed);flex:1">${g.cat}${g.pago?' · '+g.pago:''}</span>
+              <span style="font-size:11px;font-weight:500;color:var(--tierra)">${g.tipo==='ingreso'?'+':'-'}$${g.monto.toFixed(0)}</span>
+              <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+            </div>`).join('')}
+          </div>
+        </div>`;
+      } else {
+        const g=items[0];
+        html+=`<div style="padding:8px 10px;background:#fff;border-radius:8px;border:0.5px solid ${col}40;border-left:3px solid ${col};display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
+          <span style="font-size:11px;font-weight:500;color:${col};min-width:80px">${g.cat}</span>
+          <span style="flex:1;font-size:12px;color:var(--tierra)">${g.desc}</span>
+          <span style="font-size:9px;color:var(--tmed)">${g.pago||''}</span>
+          <span style="font-size:11px;font-weight:600;color:var(--tierra);margin-left:6px">${g.tipo==='ingreso'?'+':'-'}$${g.monto.toFixed(0)}</span>
+          <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+        </div>`;
+      }
+    });
+    return html;
+  }
+
+  cont.innerHTML=filterBanner+`
+    <div style="font-size:11px;font-weight:600;color:var(--vmusgo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Ingresos</div>
+    <div style="margin-bottom:1.1rem">${ingresos.length?groupByName(ingresos,ingColorMap):'<p style="font-size:12px;color:var(--tmed)">Sin ingresos este mes.</p>'}</div>
+    <div style="font-size:11px;font-weight:600;color:var(--terra);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Gastos</div>
+    <div>${egresos.length?groupByName(egresos,catColorMap):'<p style="font-size:12px;color:var(--tmed)">Sin gastos este mes.</p>'}</div>
   `;
 }
 
@@ -5812,7 +5906,7 @@ function buildGastosChart(){
     const cols=cats2.map((_,i)=>palette[i%palette.length]);
     const data=cats2.map(cat=>gastos.filter(g=>g.mes===curMes&&g.cat===cat&&g.tipo==='egreso').reduce((s,g)=>s+g.monto,0));
     if(chartGastos)chartGastos.destroy();
-    chartGastos=new Chart(ctx,{type:'bar',data:{labels:cats2,datasets:[{label:'Gastos $',data,backgroundColor:cols,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10}}}}}});
+    chartGastos=new Chart(ctx,{type:'bar',data:{labels:cats2,datasets:[{label:'Gastos $',data,backgroundColor:cols,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx2=>'$'+ctx2.parsed.y.toFixed(0)}}},scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10}}}},onClick:(e,els)=>{if(els.length){const cat=cats2[els[0].index];gastosMesCatFiltro=cat;showView('gastos-mes');}}}});
   }
 
   // Pie — gastos
@@ -6059,7 +6153,6 @@ function buildValoresAuto(){
   const cont=document.getElementById('valores-list-auto');if(!cont)return;
   cont.innerHTML='';
   valoresData.forEach((v,vi)=>{
-    if(!v.nombre||!v.nombre.trim())return;
     const card=document.createElement('div');
     card.style.cssText='background:rgba(255,255,255,0.6);border:0.5px solid var(--bordem);border-radius:10px;overflow:hidden;cursor:grab';
     card.draggable=true;card.dataset.vi=vi;
@@ -6145,9 +6238,8 @@ function addValorAuto(){
   }
   valoresData.push({id:'v'+Date.now(),nombre:'',frase:'',notas:['']});
   save('valoresdata',valoresData);
-  // Build showing ALL including empty new ones
-  buildValoresAutoAll();buildValores();
-  setTimeout(()=>{const inputs=document.querySelectorAll('#valores-list-auto input[type=text]');if(inputs.length)inputs[inputs.length-2]?.focus();},80);
+  buildValoresAuto();
+  setTimeout(()=>{const inputs=document.querySelectorAll('#valores-list-auto input[type=text]');if(inputs.length)inputs[inputs.length-1].focus();},80);
 }
 function delValorAuto(vi){
   if(!confirm('¿Eliminar este valor?'))return;
@@ -6865,6 +6957,115 @@ function openEjercicio(idx){
 }
 function saveEjNota(){const nota=document.getElementById('ej-det-nota');if(nota){ejNotas[curEjId]=nota.value;save('ejnotas',ejNotas);alert('Reflexión guardada ✓');}}
 
+// DADO DE REMEMBERS
+const REMEMBERS_FIJOS=[
+  'Hacer programas con Tomi y Pachu 🫶',
+  '¿Sacaste entrada para algún show o evento?',
+  '¿Algo nuevo que hiciste esta semana?',
+  '¿Te desafiaste a hacer deporte en grupo?',
+  '¿Hubo un momento de conexión real con alguien?',
+  '¿Qué cosa pequeña te hizo sonreír hoy?',
+  '¿Actuaste desde tus valores esta semana?',
+  '¿Hay algo pendiente que podés resolver hoy?',
+  '¿Cómo estás con tus vínculos cercanos?',
+  '¿Estás descansando bien?',
+];
+function tirarDadoRemember(){
+  const cont=document.getElementById('dado-remember-result');if(!cont)return;
+  // Pull some from fixed list, some from saved data
+  const pool=[...REMEMBERS_FIJOS];
+  // Add remembers from motivacion
+  try{(load('rememberdata',[])||[]).forEach(r=>{if(r.texto)pool.push(r.texto);});}catch(e){}
+  // Add dolores / quiebres
+  try{const ld=load('lendata',{});(ld.dolores||[]).forEach(d=>{if(d.titulo)pool.push('¿Cómo estás con tu quiebre "'+d.titulo+'"? ¿Qué posibilidad nueva encontraste?');});} catch(e){}
+  // Shuffle and pick up to 5
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  const picks=pool.slice(0,5);
+  const colors=['var(--sol)','var(--arena)','#F0FAF4','#F4F0FF','#FFF0F0'];
+  const borders=['var(--ambar)','var(--bordem)','var(--vmusgo)','#9B59B6','var(--terra)'];
+  cont.style.display='flex';
+  cont.innerHTML=picks.map((p,i)=>`
+    <div style="padding:10px 14px;border-radius:10px;background:${colors[i]};border-left:3px solid ${borders[i]};font-size:13px;color:var(--tierra);line-height:1.6">
+      ${p}
+    </div>`).join('');
+}
+
+// REPORTES POR SECTOR
+function descargarReporteSector(sector){
+  const mes=MESES[curMes]+' '+today.getFullYear();
+  let html='<style>body{font-family:sans-serif;color:#2A2010;padding:20px;max-width:800px;margin:0 auto}h1{color:#D4903A}h2{color:#5C7A4E;border-bottom:1px solid #eee;padding-bottom:4px}p,li{font-size:13px;line-height:1.7}table{width:100%;border-collapse:collapse}td,th{border:0.5px solid #ddd;padding:6px 10px;font-size:12px}.verde{color:#5C7A4E}.rojo{color:#C4713A}</style>';
+  html+=`<h1>La Actitud de Vida</h1>`;
+
+  if(sector==='deporte'){
+    html+=`<h2>🏃 Reporte Deporte — ${mes}</h2>`;
+    const depData=load('depactividades',{});
+    const desafios=load('depdesafios',{});
+    // Current month activities
+    const monthKey=String(curMes+1).padStart(2,'0');
+    const daysInMonth=new Date(today.getFullYear(),curMes+1,0).getDate();
+    html+='<h3>Actividades del mes</h3><table><tr><th>Día</th><th>Actividades</th></tr>';
+    for(let d=1;d<=daysInMonth;d++){
+      const dk=today.getFullYear()+'-'+monthKey+'-'+String(d).padStart(2,'0');
+      const acts=depData[dk];
+      if(acts&&acts.length) html+=`<tr><td>${d}</td><td>${Array.isArray(acts)?acts.join(', '):acts}</td></tr>`;
+    }
+    html+='</table>';
+    // Desafios
+    const desafiosMes=Object.entries(desafios).filter(([k])=>k.includes(today.getFullYear()+'-'+monthKey));
+    if(desafiosMes.length){
+      html+='<h3>Desafíos</h3><ul>';
+      desafiosMes.forEach(([k,v])=>html+=`<li>${k}: ${v}</li>`);
+      html+='</ul>';
+    }
+  } else if(sector==='autoconocimiento'){
+    html+=`<h2>🪞 Reporte Autoconocimiento — ${mes}</h2>`;
+    const lenData=load('lendata',{});
+    if((lenData.dolores||[]).length){
+      html+='<h3>Dolores / Trabas del mes</h3>';
+      lenData.dolores.forEach((d,i)=>{
+        html+=`<div style="margin-bottom:16px;padding:10px;background:#FFF9F0;border-left:3px solid #D4903A">`;
+        html+=`<strong>${i+1}. ${d.titulo||'Sin título'}</strong><br>`;
+        if(d.q1) html+=`<p><em>Situación:</em> ${d.q1}</p>`;
+        if(d.q2) html+=`<p><em>¿Qué depende de mí?</em> ${d.q2}</p>`;
+        if(d.q3) html+=`<p><em>Acción que tomo:</em> ${d.q3}</p>`;
+        if(d.q4) html+=`<p><em>Herramienta:</em> ${d.q4}</p>`;
+        html+='</div>';
+      });
+    }
+    const terapias=load('terapias',[]);
+    if(terapias.length){
+      html+='<h3>Sesiones de terapia</h3>';
+      terapias.forEach(t=>{
+        const sesiones=(t.sesiones||[]).filter(s=>s.day&&s.day.includes(today.getFullYear()+'-'+String(curMes+1).padStart(2,'0')));
+        if(sesiones.length){
+          html+=`<h4>${t.nombre}</h4><ul>`;
+          sesiones.forEach(s=>html+=`<li><strong>${s.titulo}</strong> (${s.day})${s.descs&&s.descs.length?': '+s.descs.join(' / '):''}</li>`);
+          html+='</ul>';
+        }
+      });
+    }
+  } else if(sector==='emociones'){
+    html+=`<h2>💛 Reporte Emociones — ${mes}</h2>`;
+    const pd=load('presdata',{});
+    const daysInMonth=new Date(today.getFullYear(),curMes+1,0).getDate();
+    html+='<table><tr><th>Día</th><th>Estado</th><th>Emociones</th><th>Triggers</th></tr>';
+    for(let d=1;d<=daysInMonth;d++){
+      const mm=String(curMes+1).padStart(2,'0');const dd=String(d).padStart(2,'0');
+      const dayStr=today.getFullYear()+'-'+mm+'-'+dd;
+      const regs=pd['p_'+dayStr]||[];
+      if(regs.length) regs.forEach(r=>html+=`<tr><td>${d}</td><td>${r.estadoEM||''}</td><td>${(r.subem||[]).join(', ')}</td><td>${(r.triggers||[]).join(', ')}</td></tr>`);
+    }
+    html+='</table>';
+  }
+
+  // Open in new window for print
+  const win=window.open('','_blank');
+  if(win){
+    win.document.write('<html><body>'+html+'<br><br><button onclick="window.print()" style="padding:8px 16px;cursor:pointer">Imprimir / Guardar PDF</button></body></html>');
+    win.document.close();
+  }
+}
+
 /* RESUMEN */
 function buildResumen(){
   const lbl=document.getElementById('resumen-lbl');if(lbl)lbl.textContent=MESES[curMes]+' '+today.getFullYear();
@@ -6946,6 +7147,7 @@ function showView(v){
     if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+v+"'")) b.classList.add('active');
   });
   if(v==='emociones')buildEmociones();
+  if(v==='em-registros-filtro')buildEmRegistrosFiltro();
   if(v==='em-registros')buildEmRegistros();
   if(v==='pres-registros')buildPresRegistros();
   if(v==='reacciones-mes')buildReaccionesMes();
@@ -7719,6 +7921,44 @@ function buildEmRegistros(){
   }).join('');
 }
 
+let _emFiltroLabel='', _emFiltroIds=[];
+function verRegistrosEmocion(label, emIds){
+  _emFiltroLabel=label;
+  _emFiltroIds=emIds;
+  showView('em-registros-filtro');
+}
+
+function buildEmRegistrosFiltro(){
+  const lbl=document.getElementById('em-filtro-lbl');
+  if(lbl)lbl.textContent=_emFiltroLabel;
+  const cont=document.getElementById('em-filtro-content');if(!cont)return;
+  const year=today.getFullYear();
+  const daysInMonth=new Date(year,curMes+1,0).getDate();
+  let html='';
+  for(let d=1;d<=daysInMonth;d++){
+    const mm=String(curMes+1).padStart(2,'0');const dd=String(d).padStart(2,'0');
+    const dayStr=year+'-'+mm+'-'+dd;
+    const regs=presData[presKey(dayStr)]||[];
+    regs.forEach(r=>{
+      const subems=r.subem||[];
+      if(subems.some(e=>_emFiltroIds.includes(e))){
+        const fecha=new Date(dayStr+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+        html+=`<div class="card" style="margin-bottom:.75rem">
+          <div class="card-top"><h3>${fecha}</h3><span style="font-size:11px;color:var(--tmed)">${r.momento||''}</span></div>
+          <div class="card-body" style="font-size:12px;color:var(--tierra);line-height:1.7">
+            ${r.estadoEM?`<div style="margin-bottom:4px"><strong>Estado:</strong> ${r.estadoEM}</div>`:''}
+            ${subems.length?`<div style="margin-bottom:4px"><strong>Emociones:</strong> ${subems.join(', ')}</div>`:''}
+            ${r.triggers&&r.triggers.length?`<div style="margin-bottom:4px"><strong>Triggers:</strong> ${r.triggers.join(', ')}</div>`:''}
+            ${r.nota?`<div style="color:var(--tmed);font-style:italic">${r.nota}</div>`:''}
+            ${r.respProfundo?`<div style="margin-top:4px;color:var(--tmed)"><em>${r.respProfundo}</em></div>`:''}
+          </div>
+        </div>`;
+      }
+    });
+  }
+  cont.innerHTML=html||`<p style="font-size:13px;color:var(--tmed)">No hay registros de "${_emFiltroLabel}" este mes.</p>`;
+}
+
 /* PRESENCIA — ver registros mensuales */
 function buildPresRegistros(){
   const lbl=document.getElementById('pres-reg-mes-lbl');if(lbl)lbl.textContent=MESES[curMes]+' '+today.getFullYear();
@@ -7964,7 +8204,7 @@ function buildPresHeatmap(){
       dayEms.some(e=>matchEms.includes(e)&&![...deletedAlta,...deletedMedia,...deletedBaja].includes(e))
     );
     if(!tieneAlgunDia)return;
-    html+=`<tr><td style="padding:3px 8px;display:flex;align-items:center;gap:5px;min-width:200px"><span style="width:12px;height:12px;border-radius:3px;background:${em.bg};display:inline-block;flex-shrink:0"></span>${em.label}</td>`;
+    html+=`<tr><td style="padding:3px 8px;display:flex;align-items:center;gap:5px;min-width:200px;cursor:pointer" onclick="verRegistrosEmocion('${em.label.replace(/'/g,"\\'")}',${JSON.stringify(matchEms)})" title="Ver registros de ${em.label}"><span style="width:12px;height:12px;border-radius:3px;background:${em.bg};display:inline-block;flex-shrink:0"></span><span style="text-decoration:underline dotted;color:var(--tierra)">${em.label}</span></td>`;
     for(let d=1;d<=daysInMonth;d++){
       const dayEms=daySubemMap[d]||[];
       const hasIt=dayEms.some(e=>matchEms.includes(e)&&![...deletedAlta,...deletedMedia,...deletedBaja].includes(e));
@@ -10552,10 +10792,10 @@ async function toggleUsuario(id,activo){
 // Override save for Supabase sync
 var _origSave=window.save;
 window.save=function(key,val){
-  // The base save function already handles undo stack; just add Supabase sync
-  try{localStorage.setItem("lav_"+key,JSON.stringify(val));}catch(e){}
+  // Call original save which handles undo stack + localStorage
+  _origSave(key,val);
+  // Also sync to Supabase
   if(currentUser){clearTimeout(saveTimer);saveTimer=setTimeout(syncDatosSupabase,800);}
-  updateUndoBtn&&updateUndoBtn();
 };
 function flushSyncIfPending(){
   if(currentUser&&saveTimer){
