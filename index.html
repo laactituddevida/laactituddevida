@@ -666,7 +666,6 @@ canvas{max-width:100%}
     <div id="pres-mes" style="display:none">
 
   <div id="pres-evolucion-section"><!-- Evolución mensual -->
-  <div class="ph" style="margin-bottom:1rem"><h1>Evolución <em>mensual</em></h1></div>
 
   <!-- Mapa emocional del mes -->
   <div class="card" style="margin-bottom:1.25rem">
@@ -1221,6 +1220,10 @@ canvas{max-width:100%}
           <input type="number" id="mapa-duracion" min="21" max="45" value="28" style="width:48px;border:0.5px solid var(--bordem);border-radius:6px;padding:3px 6px;font-family:'DM Sans',sans-serif;font-size:12px;background:#fff;color:var(--tierra);outline:none;text-align:center" oninput="cicloData.duracion=parseInt(this.value)||28;save('ciclodata',cicloData);buildCicloHistorial()">
           <span style="font-size:11px;color:var(--tmed)">días</span>
         </div>
+        <div style="display:flex;align-items:center;gap:6px;padding-left:12px;border-left:1px solid var(--bordem)">
+          <span style="font-size:11px;color:var(--tmed);white-space:nowrap">Día del ciclo actual</span>
+          <span id="ciclo-dia-actual" style="font-size:14px;font-weight:700;color:#6C3483">—</span>
+        </div>
         <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
           <span style="font-size:11px;color:var(--tmed)">Ciclo promedio histórico:</span>
           <span id="mapa-promedio" style="font-size:14px;font-weight:700;color:#6C3483">—</span>
@@ -1402,6 +1405,25 @@ canvas{max-width:100%}
     <button onclick="showView('gastos')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
     <h1>Registros del mes — <em>Gastos & ingresos</em></h1>
     <p id="gastos-mes-lbl" style="font-size:12px;color:var(--tmed)"></p>
+  </div>
+  <!-- FILTER BAR -->
+  <div style="margin-bottom:1rem">
+    <div style="font-size:11px;font-weight:500;color:var(--tmed);margin-bottom:6px">Filtrar por categoría:</div>
+    <div id="gastos-mes-filtros" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
+    <div id="gastos-mes-tipo" style="display:flex;gap:6px">
+      <button onclick="gastosMesTipoFiltro=null;buildGastosMes()" id="gf-tipo-todo"
+        style="padding:4px 12px;border-radius:14px;border:0.5px solid var(--bordem);background:var(--tierra);color:#fff;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">
+        Todo
+      </button>
+      <button onclick="gastosMesTipoFiltro='egreso';buildGastosMes()" id="gf-tipo-gasto"
+        style="padding:4px 12px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">
+        Solo gastos
+      </button>
+      <button onclick="gastosMesTipoFiltro='ingreso';buildGastosMes()" id="gf-tipo-ing"
+        style="padding:4px 12px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">
+        Solo ingresos
+      </button>
+    </div>
   </div>
   <div id="gastos-mes-content" style="display:flex;flex-direction:column;gap:6px"></div>
 </div>
@@ -2721,14 +2743,31 @@ function updateUndoBtn(){
 function undoLastChange(){
   if(!_undoStack.length){alert('No hay cambios para deshacer.');return;}
   const last=_undoStack.pop();
-  try{if(last.val===null){localStorage.removeItem('lav_'+last.key);}else{localStorage.setItem('lav_'+last.key,JSON.stringify(last.val));}}catch(e){}
+  // Restore to localStorage WITHOUT pushing to undo stack again
+  try{
+    if(last.val===null){localStorage.removeItem('lav_'+last.key);}
+    else{localStorage.setItem('lav_'+last.key,JSON.stringify(last.val));}
+  }catch(e){}
   updateUndoBtn();
+  // Reload ALL in-memory variables from localStorage so UI reflects the restored data
+  try{cats=load('cats',DEFAULT_CATS);}catch(e){}
+  try{checks=load('checks',{});}catch(e){}
+  try{emData=load('emdata',{});}catch(e){}
+  try{gastos=load('gastos',[]);}catch(e){}
+  try{presData=load('presdata',{});}catch(e){}
+  try{vinculos=load('vinculos',{grupos:[],personas:[]});}catch(e){}
+  try{valoresData=load('valoresdata',[]);}catch(e){}
+  try{lenData=load('lendata',{objetivos:[],creencias:[],declaraciones:'',limites:'',diario:{},dolores:[]});}catch(e){}
+  try{terapias=load('terapias',[]);}catch(e){}
+  try{librosData=load('librosdata',[]);}catch(e){}
+  try{linksData=load('linksdata',[]);}catch(e){}
+  try{abcData=load('abcdata',{areas:[],reflexiones:[]});}catch(e){}
+  try{propData=load('propdata',{ideas:[]});}catch(e){}
+  try{ahorros=load('ahorros',[]);}catch(e){}
+  // Sync back to Supabase
+  try{if(currentUser){clearTimeout(saveTimer);saveTimer=setTimeout(syncDatosSupabase,800);}}catch(e){}
   // Refresh current view
   try{showView(curView);}catch(e){}
-  // Re-sync variables from localStorage
-  try{cats=load('cats',DEFAULT_CATS);checks=load('checks',{});emData=load('emdata',{});gastos=load('gastos',[]);vinculos=load('vinculos',{grupos:[],personas:[]});}catch(e){}
-  // Trigger rebuild
-  try{if(window.save&&window.save._supaEnabled&&currentUser){clearTimeout(saveTimer);saveTimer=setTimeout(syncDatosSupabase,800);}}catch(e){}
 }
 
 function save(key,val){
@@ -2736,7 +2775,6 @@ function save(key,val){
   try{const prev=localStorage.getItem('lav_'+key);_undoPush(key,prev===null?null:JSON.parse(prev));}catch(e){}
   try{localStorage.setItem('lav_'+key,JSON.stringify(val));}catch(e){}
 }
-function load(key,def){try{const v=localStorage.getItem('lav_'+key);return v?JSON.parse(v):def;}catch(e){return def;}}
 function load(key,def){try{const v=localStorage.getItem('lav_'+key);return v?JSON.parse(v):def;}catch(e){return def;}}
 
 let cats=load('cats',DEFAULT_CATS);
@@ -2751,7 +2789,8 @@ let catOpen=load('catopen',{});
 let graphFlags=load('graphflags',{});
 let vinculos=load('vinculos',VIN_AREAS_DEFAULT);
 let gastos=load('gastos',[]);
-let gastosMesCatFiltro=null; // filter for gastos-mes view when clicking chart
+let gastosMesCatFiltro=null;
+let gastosMesTipoFiltro=null;
 let vbImages=load('vbimages',{});
 let purposeData=load('purpose',{});
 
@@ -4001,11 +4040,22 @@ function buildHeatmapEmociones(){
 
   // One row per emotion
   ESCALA_EM.forEach(em=>{
+    // Build aliasMap for this row to pass to click handler
+    const aliasMap={
+      alegria:['alegria'],pasion:['amor','entusiasmo'],entusiasmo:['entusiasmo'],
+      optimismo:['gratitud','calma'],esperanza:['gratitud'],satisfaccion:['calma','gratitud'],
+      aburrimiento:['confusion'],pesimismo:['tristeza','melancolia'],
+      frustracion:['frustracion'],abrumada:['ansiedad'],decepcion:['tristeza'],
+      duda:['confusion'],preocupacion:['ansiedad','miedo'],culpabilizar:['frustracion'],
+      desaliento:['tristeza','melancolia'],enfado:['enojo'],odio:['enojo'],
+      celos:['enojo'],inseguridad:['miedo','confusion'],miedo:['miedo','tristeza'],
+    };
+    const aliases=aliasMap[em.id]||[em.id];
     html+=`<tr>`;
-    // Label cell with left color stripe
-    html+=`<td style="padding:2px 8px;white-space:nowrap;color:var(--tierra);font-size:10px;display:flex;align-items:center;gap:5px">
+    // Label cell — clickable
+    html+=`<td style="padding:2px 8px;white-space:nowrap;color:var(--tierra);font-size:10px;display:flex;align-items:center;gap:5px;cursor:pointer" onclick="verRegistrosEmMacro('${em.label.replace(/'/g,"\\'")}',${JSON.stringify(aliases)})" title="Ver registros de ${em.label}">
       <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${em.bg};flex-shrink:0"></span>
-      <span style="overflow:hidden;text-overflow:ellipsis;max-width:185px">${em.label}</span>
+      <span style="overflow:hidden;text-overflow:ellipsis;max-width:185px;text-decoration:underline dotted">${em.label}</span>
     </td>`;
 
     // Day cells
@@ -5825,32 +5875,37 @@ function buildGastosMes(){
   let mesGastos=gastos.filter(g=>g.mes===curMes).slice().reverse();
   if(!mesGastos.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin registros este mes.</p>';gastosMesCatFiltro=null;return;}
 
-  // Category filter banner
-  let filterBanner='';
-  if(gastosMesCatFiltro){
-    mesGastos=mesGastos.filter(g=>g.cat===gastosMesCatFiltro);
-    filterBanner=`<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--sol);border-radius:10px;margin-bottom:1rem">
-      <span style="font-size:12px;font-weight:500;color:var(--sol-osc);flex:1">📊 Filtrando por: <strong>${gastosMesCatFiltro}</strong></span>
-      <button onclick="gastosMesCatFiltro=null;buildGastosMes()" style="padding:3px 10px;border-radius:14px;border:0.5px solid var(--sol-osc);background:transparent;color:var(--sol-osc);font-size:11px;cursor:pointer">Ver todo ✕</button>
-    </div>`;
+  // Build category pills
+  const pillsCont=document.getElementById('gastos-mes-filtros');
+  if(pillsCont){
+    const allCats=[...new Set(mesGastos.map(g=>g.cat))];
+    pillsCont.innerHTML=`<button onclick="gastosMesCatFiltro=null;buildGastosMes()" style="padding:3px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:${!gastosMesCatFiltro?'var(--tierra)':'transparent'};color:${!gastosMesCatFiltro?'#fff':'var(--tmed)'};font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Todas</button>`+
+    allCats.map(c=>`<button onclick="gastosMesCatFiltro='${c}';buildGastosMes()" style="padding:3px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:${gastosMesCatFiltro===c?'var(--ambar)':'transparent'};color:${gastosMesCatFiltro===c?'#fff':'var(--tmed)'};font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">${c}</button>`).join('');
   }
+  // Update tipo buttons highlight
+  ['todo','gasto','ing'].forEach(t=>{
+    const b=document.getElementById('gf-tipo-'+t);if(!b)return;
+    const active=(t==='todo'&&!gastosMesTipoFiltro)||(t==='gasto'&&gastosMesTipoFiltro==='egreso')||(t==='ing'&&gastosMesTipoFiltro==='ingreso');
+    b.style.background=active?'var(--tierra)':'transparent';
+    b.style.color=active?'#fff':'var(--tmed)';
+  });
+
+  // Apply filters
+  if(gastosMesCatFiltro) mesGastos=mesGastos.filter(g=>g.cat===gastosMesCatFiltro);
+  if(gastosMesTipoFiltro) mesGastos=mesGastos.filter(g=>g.tipo===gastosMesTipoFiltro);
 
   const ingresos=mesGastos.filter(g=>g.tipo==='ingreso');
   const egresos=mesGastos.filter(g=>g.tipo==='egreso');
 
   const CAT_PALETTE=['#E8C44A','#D4903A','#7AB87E','#5C7A4E','#C4713A','#9B59B6','#3498DB','#1ABC9C','#E91E63','#9A8A60'];
   const catColorMap={};
-  [...new Set(egresos.map(g=>g.cat))].forEach((c,i)=>catColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
+  [...new Set(gastos.filter(g=>g.mes===curMes&&g.tipo==='egreso').map(g=>g.cat))].forEach((c,i)=>catColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
   const ingColorMap={};
-  [...new Set(ingresos.map(g=>g.cat))].forEach((c,i)=>ingColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
+  [...new Set(gastos.filter(g=>g.mes===curMes&&g.tipo==='ingreso').map(g=>g.cat))].forEach((c,i)=>ingColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
 
   function groupByName(list,colorMap){
     const groups={};
-    list.forEach(g=>{
-      const key=g.desc||g.cat;
-      if(!groups[key])groups[key]=[];
-      groups[key].push(g);
-    });
+    list.forEach(g=>{const key=g.desc||g.cat;if(!groups[key])groups[key]=[];groups[key].push(g);});
     let html='';
     Object.entries(groups).forEach(([name,items])=>{
       const col=colorMap[items[0].cat]||'#9A8A60';
@@ -5862,14 +5917,12 @@ function buildGastosMes(){
             <span style="font-size:10px;color:var(--tmed)">${items.length} registros</span>
             <span style="font-size:12px;font-weight:600;color:${col}">${items[0].tipo==='ingreso'?'+':'-'}$${total.toFixed(0)}</span>
           </div>
-          <div style="display:flex;flex-direction:column;gap:0">
-            ${items.map(g=>`<div style="padding:6px 10px 6px 14px;display:flex;align-items:center;gap:6px;border-top:0.5px solid ${col}20;background:#fff">
-              <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
-              <span style="font-size:11px;color:var(--tmed);flex:1">${g.cat}${g.pago?' · '+g.pago:''}</span>
-              <span style="font-size:11px;font-weight:500;color:var(--tierra)">${g.tipo==='ingreso'?'+':'-'}$${g.monto.toFixed(0)}</span>
-              <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
-            </div>`).join('')}
-          </div>
+          <div>${items.map(g=>`<div style="padding:6px 10px 6px 14px;display:flex;align-items:center;gap:6px;border-top:0.5px solid ${col}20;background:#fff">
+            <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
+            <span style="font-size:11px;color:var(--tmed);flex:1">${g.cat}${g.pago?' · '+g.pago:''}</span>
+            <span style="font-size:11px;font-weight:500;color:var(--tierra)">${g.tipo==='ingreso'?'+':'-'}$${g.monto.toFixed(0)}</span>
+            <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+          </div>`).join('')}</div>
         </div>`;
       } else {
         const g=items[0];
@@ -5883,15 +5936,18 @@ function buildGastosMes(){
         </div>`;
       }
     });
-    return html;
+    return html||'<p style="font-size:12px;color:var(--tmed)">Sin registros con este filtro.</p>';
   }
 
-  cont.innerHTML=filterBanner+`
+  const showIngresos=!gastosMesTipoFiltro||gastosMesTipoFiltro==='ingreso';
+  const showEgresos=!gastosMesTipoFiltro||gastosMesTipoFiltro==='egreso';
+
+  cont.innerHTML=(showIngresos?`
     <div style="font-size:11px;font-weight:600;color:var(--vmusgo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Ingresos</div>
-    <div style="margin-bottom:1.1rem">${ingresos.length?groupByName(ingresos,ingColorMap):'<p style="font-size:12px;color:var(--tmed)">Sin ingresos este mes.</p>'}</div>
+    <div style="margin-bottom:1.1rem">${ingresos.length?groupByName(ingresos,ingColorMap):'<p style="font-size:12px;color:var(--tmed)">Sin ingresos.</p>'}</div>`:'')+
+  (showEgresos?`
     <div style="font-size:11px;font-weight:600;color:var(--terra);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Gastos</div>
-    <div>${egresos.length?groupByName(egresos,catColorMap):'<p style="font-size:12px;color:var(--tmed)">Sin gastos este mes.</p>'}</div>
-  `;
+    <div>${egresos.length?groupByName(egresos,catColorMap):'<p style="font-size:12px;color:var(--tmed)">Sin gastos.</p>'}</div>`:'');
 }
 
 let chartGastosPie=null;let chartIngresosPie=null;let chartGastosUsdPie=null;let chartIngresosUsdPie=null;
@@ -6147,6 +6203,8 @@ function buildValoresAutoAll(){
   });
 }
 
+let _showNewValorIdx=null; // index of just-added valor to show even if empty
+
 function buildValoresAuto(){
   // Mapa
   buildValoresMapa('valores-mapa-auto');
@@ -6164,6 +6222,8 @@ function buildValoresAuto(){
       const fromIdx=parseInt(e.dataTransfer.getData('text/plain'));const toIdx=vi;
       if(fromIdx===toIdx)return;const [moved]=valoresData.splice(fromIdx,1);valoresData.splice(toIdx,0,moved);
       save('valoresdata',valoresData);buildValores();buildValoresAuto();});
+    // Skip empty entries unless it's the one just added
+    if((!v.nombre||!v.nombre.trim())&&vi!==_showNewValorIdx){cont.appendChild(document.createElement('span'));cont.lastChild.remove();return;}
     card.innerHTML=`
       <div style="padding:.85rem 1.1rem;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:10px">
         <span style="font-size:18px;font-weight:800;color:var(--ambar);min-width:22px;flex-shrink:0">${vi+1}</span>
@@ -6229,7 +6289,6 @@ function buildValoresAuto(){
   });
 }
 function addValorAuto(){
-  // Ensure 'auto-valores' section is open
   const sec=document.getElementById('auto-valores');
   if(sec&&sec.style.display==='none'){
     const btn=document.getElementById('btn-auto-valores');
@@ -6237,9 +6296,15 @@ function addValorAuto(){
     sec.style.display='';
   }
   valoresData.push({id:'v'+Date.now(),nombre:'',frase:'',notas:['']});
+  _showNewValorIdx=valoresData.length-1;
   save('valoresdata',valoresData);
   buildValoresAuto();
-  setTimeout(()=>{const inputs=document.querySelectorAll('#valores-list-auto input[type=text]');if(inputs.length)inputs[inputs.length-1].focus();},80);
+  setTimeout(()=>{
+    const inputs=document.querySelectorAll('#valores-list-auto input[type=text]');
+    if(inputs.length)inputs[inputs.length-1].focus();
+    // Once user starts typing, clear the flag
+    if(inputs.length){inputs[inputs.length-1].addEventListener('blur',()=>{_showNewValorIdx=null;},{ once:true });}
+  },80);
 }
 function delValorAuto(vi){
   if(!confirm('¿Eliminar este valor?'))return;
@@ -7921,10 +7986,13 @@ function buildEmRegistros(){
   }).join('');
 }
 
-let _emFiltroLabel='', _emFiltroIds=[];
+let _emFiltroLabel='', _emFiltroIds=[], _emFiltroMode='pres';
 function verRegistrosEmocion(label, emIds){
-  _emFiltroLabel=label;
-  _emFiltroIds=emIds;
+  _emFiltroLabel=label;_emFiltroIds=emIds;_emFiltroMode='pres';
+  showView('em-registros-filtro');
+}
+function verRegistrosEmMacro(label, macroIds){
+  _emFiltroLabel=label;_emFiltroIds=macroIds;_emFiltroMode='macro';
   showView('em-registros-filtro');
 }
 
@@ -7935,26 +8003,49 @@ function buildEmRegistrosFiltro(){
   const year=today.getFullYear();
   const daysInMonth=new Date(year,curMes+1,0).getDate();
   let html='';
-  for(let d=1;d<=daysInMonth;d++){
-    const mm=String(curMes+1).padStart(2,'0');const dd=String(d).padStart(2,'0');
-    const dayStr=year+'-'+mm+'-'+dd;
-    const regs=presData[presKey(dayStr)]||[];
-    regs.forEach(r=>{
-      const subems=r.subem||[];
-      if(subems.some(e=>_emFiltroIds.includes(e))){
+
+  if(_emFiltroMode==='macro'){
+    // emData mode — used by Emociones & Reacciones heatmap
+    for(let d=1;d<=daysInMonth;d++){
+      const mm=String(curMes+1).padStart(2,'0');const dd=String(d).padStart(2,'0');
+      const dayStr=year+'-'+mm+'-'+dd;
+      const em=emData['em_'+curMes+'_'+dayStr];
+      if(em&&em.macro&&_emFiltroIds.includes(em.macro)){
         const fecha=new Date(dayStr+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+        const EM_LABEL_LOCAL={alegria:'Alegría/Gratitud',pasion:'Amor/Entusiasmo',entusiasmo:'Entusiasmo',optimismo:'Optimismo',esperanza:'Esperanza',satisfaccion:'Satisfacción',aburrimiento:'Aburrimiento',pesimismo:'Pesimismo',frustracion:'Frustración',abrumada:'Abrumada',decepcion:'Decepción',duda:'Duda',preocupacion:'Preocupación',culpabilizar:'Culpa',desaliento:'Desaliento',enfado:'Enfado',odio:'Ira',celos:'Celos',inseguridad:'Inseguridad',miedo:'Miedo/Tristeza'};
         html+=`<div class="card" style="margin-bottom:.75rem">
-          <div class="card-top"><h3>${fecha}</h3><span style="font-size:11px;color:var(--tmed)">${r.momento||''}</span></div>
+          <div class="card-top"><h3>${fecha}</h3><span style="font-size:11px;color:var(--tmed)">Emoción del día</span></div>
           <div class="card-body" style="font-size:12px;color:var(--tierra);line-height:1.7">
-            ${r.estadoEM?`<div style="margin-bottom:4px"><strong>Estado:</strong> ${r.estadoEM}</div>`:''}
-            ${subems.length?`<div style="margin-bottom:4px"><strong>Emociones:</strong> ${subems.join(', ')}</div>`:''}
-            ${r.triggers&&r.triggers.length?`<div style="margin-bottom:4px"><strong>Triggers:</strong> ${r.triggers.join(', ')}</div>`:''}
-            ${r.nota?`<div style="color:var(--tmed);font-style:italic">${r.nota}</div>`:''}
-            ${r.respProfundo?`<div style="margin-top:4px;color:var(--tmed)"><em>${r.respProfundo}</em></div>`:''}
+            <div><strong>Emoción:</strong> ${EM_LABEL_LOCAL[em.macro]||em.macro}</div>
+            ${em.nota?`<div style="color:var(--tmed);font-style:italic;margin-top:4px">${em.nota}</div>`:''}
+            ${em.trigger?`<div style="margin-top:4px"><strong>Trigger:</strong> ${em.trigger}</div>`:''}
           </div>
         </div>`;
       }
-    });
+    }
+  } else {
+    // pres mode — used by Presencia heatmap (subem array)
+    for(let d=1;d<=daysInMonth;d++){
+      const mm=String(curMes+1).padStart(2,'0');const dd=String(d).padStart(2,'0');
+      const dayStr=year+'-'+mm+'-'+dd;
+      const regs=presData[presKey(dayStr)]||[];
+      regs.forEach(r=>{
+        const subems=r.subem||[];
+        if(subems.some(e=>_emFiltroIds.includes(e))){
+          const fecha=new Date(dayStr+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+          html+=`<div class="card" style="margin-bottom:.75rem">
+            <div class="card-top"><h3>${fecha}</h3><span style="font-size:11px;color:var(--tmed)">${r.momento||''}</span></div>
+            <div class="card-body" style="font-size:12px;color:var(--tierra);line-height:1.7">
+              ${r.estadoEM?`<div style="margin-bottom:4px"><strong>Estado:</strong> ${r.estadoEM}</div>`:''}
+              ${subems.length?`<div style="margin-bottom:4px"><strong>Emociones:</strong> ${subems.join(', ')}</div>`:''}
+              ${r.triggers&&r.triggers.length?`<div style="margin-bottom:4px"><strong>Triggers:</strong> ${r.triggers.join(', ')}</div>`:''}
+              ${r.nota?`<div style="color:var(--tmed);font-style:italic">${r.nota}</div>`:''}
+              ${r.respProfundo?`<div style="margin-top:4px;color:var(--tmed)"><em>${r.respProfundo}</em></div>`:''}
+            </div>
+          </div>`;
+        }
+      });
+    }
   }
   cont.innerHTML=html||`<p style="font-size:13px;color:var(--tmed)">No hay registros de "${_emFiltroLabel}" este mes.</p>`;
 }
@@ -10476,6 +10567,18 @@ function buildCicloHistorial(){
     }
   }
 
+  // Calculate current cycle day (days since last period start)
+  const diaActualEl=document.getElementById('ciclo-dia-actual');
+  if(diaActualEl){
+    if(starts.length>0){
+      const lastStart=starts[starts.length-1];
+      const todayDate=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+      const diffDays=Math.round((todayDate-lastStart)/(1000*60*60*24))+1;
+      diaActualEl.textContent=diffDays>0?'día '+diffDays:'—';
+    } else {
+      diaActualEl.textContent='—';
+    }
+  }
 
   // Build list of months: last 12 months up to current
   const now=today;
