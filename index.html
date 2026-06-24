@@ -295,7 +295,7 @@ canvas{max-width:100%}
   </div>
   <div class="sb-sec">
     <div class="sb-label">Mi vida</div>
-    <button class="nav-btn" onclick="showView('visionboard')"><span class="dot"></span>🌟 Vision Board</button>
+
     <button class="nav-btn" onclick="showView('vinculos')"><span class="dot"></span>🤝 Vínculos & socialización</button>
     <button class="nav-btn" onclick="showView('proposito')"><span class="dot"></span>🎯 Trabajo — Propósito & Ikigai</button>
     <button class="nav-btn" onclick="showView('deporte')"><span class="dot"></span>🏃 Deporte</button>
@@ -431,20 +431,7 @@ canvas{max-width:100%}
     <button onclick="showView('mapas-historicos')" style="padding:7px 16px;border-radius:20px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">Ver mapas históricos →</button>
   </div>
 </div>
-<!-- CÍRCULO DEL BIENESTAR EN TRACKER -->
-  <div style="margin-bottom:1.25rem">
-    <div class="ph" style="margin-bottom:1rem"><h1>Círculo del <em>bienestar</em></h1><p>Puntuás cada categoría en la barra de arriba — acá lo ves en el radar</p></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div class="card" style="padding:1rem">
-        <div style="font-size:12px;font-weight:500;color:var(--tierra);margin-bottom:.75rem;text-align:center">Hoy</div>
-        <canvas id="tracker-circle-hoy" width="260" height="260" style="max-width:100%;border-radius:8px;background:#fff"></canvas>
-      </div>
-      <div class="card" style="padding:1rem">
-        <div style="font-size:12px;font-weight:500;color:var(--tierra);margin-bottom:.75rem;text-align:center">Promedio del mes</div>
-        <canvas id="tracker-circle-mes" width="260" height="260" style="max-width:100%;border-radius:8px;background:#fff"></canvas>
-      </div>
-    </div>
-  </div>
+
     </div>
   </div>
 </div>
@@ -681,35 +668,19 @@ canvas{max-width:100%}
   <div id="pres-evolucion-section"><!-- Evolución mensual -->
   <div class="ph" style="margin-bottom:1rem"><h1>Evolución <em>mensual</em></h1></div>
 
-  <!-- Relación emociones & triggers — solo vibración con datos -->
-  <div class="card" style="margin-bottom:1.25rem">
-    <div class="card-top"><h3>Relación emociones & triggers</h3></div>
-    <div class="card-body" id="pres-vibracion-analisis" style="display:flex;flex-direction:column;gap:8px"></div>
-  </div>
-
   <!-- Mapa emocional del mes -->
   <div class="card" style="margin-bottom:1.25rem">
     <div class="card-top"><h3>Mapa emocional del mes</h3><span style="font-size:11px;color:var(--tmed)">Emociones registradas por día</span></div>
     <div class="card-body" id="pres-heatmap-emociones" style="overflow-x:auto"></div>
   </div>
 
-  <!-- Gráfico vibración -->
-  <div class="chart-wrap" style="margin-bottom:1.25rem">
-    <h4>Emociones por vibración & triggers — este mes</h4>
-    <canvas id="chart-vibracion" height="100"></canvas>
+  <!-- Relación emociones & triggers — solo vibración con datos -->
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-top"><h3>Relación emociones & triggers</h3></div>
+    <div class="card-body" id="pres-vibracion-analisis" style="display:flex;flex-direction:column;gap:8px"></div>
   </div>
 
-  <!-- NUEVO: Cómo me fui a dormir vs emociones del día -->
-  <div class="card" style="margin-bottom:1.25rem">
-    <div class="card-top"><h3>Cómo me fui a dormir — vs emociones del día</h3></div>
-    <div class="card-body">
-      <p style="font-size:11px;color:var(--tmed);margin-bottom:12px">Cada día del mes: calidad del sueño y las emociones registradas ese día.</p>
-      <div id="chart-dormir-emociones-wrap" style="overflow-x:auto">
-        <canvas id="chart-dormir-emociones" height="120"></canvas>
-      </div>
-      <div id="chart-dormir-emociones-leyenda" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:10px;color:var(--tmed)"></div>
-    </div>
-  </div>
+
 
   <!-- Lo que tu emoción necesita -->
   <div class="reporte" id="pres-em-reporte" style="margin-bottom:1.25rem">
@@ -823,6 +794,9 @@ canvas{max-width:100%}
           <button id="btn-soc-herramientas-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:#fff;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
         </div>
         <div id="soc-herramientas-wrap" style="display:none;padding-top:.5rem">
+          <div style="background:#7AB87E18;border-left:3px solid var(--vmusgo);border-radius:8px;padding:.75rem 1rem;margin-bottom:.75rem;font-size:12px;color:var(--vmusgo);font-style:italic;line-height:1.7">
+            💬 <strong style="font-style:normal">Acordate de usar como herramienta:</strong> desafiar juicios que tengas sobre lo que te cuesta. Preguntate: ¿<em>con quién sí</em>?, ¿<em>cuándo sí</em>?, ¿<em>quién sí</em>? Explorá desde la curiosidad.
+          </div>
           <div id="soc-herramientas-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
           <button onclick="addSocHerramienta()" style="padding:6px 14px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar herramienta</button>
         </div>
@@ -1434,89 +1408,10 @@ canvas{max-width:100%}
 
 
 <!-- VISION BOARD -->
-<div id="view-visionboard" class="view">
-  <div class="ph">
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
-    <span id="global-fecha-lbl" style="font-size:13px;color:var(--tmed);font-style:italic"></span>
-    <input type="date" id="global-day-picker" style="border:0.5px solid var(--bordem);border-radius:8px;padding:3px 8px;font-family:'DM Sans',sans-serif;font-size:12px;background:transparent;color:var(--tierra);outline:none" onchange="globalSetDay(this.value)">
-    <button onclick="globalSetDay('')" style="padding:3px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer">Hoy</button>
-  </div>
-    <h1>Vision Board</h1>
-    <p style="font-size:13px;color:var(--tmed);margin:0">Lo que soñás, lo que querés construir</p>
-  </div>
-
-
-  <!-- MI A > B > C (collapsible) -->
-  <div style="margin-bottom:1.5rem">
-    <div onclick="toggleVBSection('vb-abc')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde)">
-      <h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:400;flex:1;margin:0">Mi <em style="color:var(--ambar)">A → B → C</em></h2>
-      <button id="btn-vb-abc" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
-    </div>
-    <div id="vb-abc" style="display:none;padding-top:1rem">
-
-      <!-- Sub-colapsible: Ver Áreas -->
-      <div style="margin-bottom:.75rem">
-        <div style="padding:.55rem 6px;border-bottom:0.5px solid var(--borde)">
-          <h3 style="font-family:'Playfair Display',serif;font-size:16px;font-weight:400;margin:0">Ver <em style="color:#B05C3A">Áreas</em></h3>
-        </div>
-        <div id="abc-ver-areas" style="display:block;padding-top:.75rem">
-          <p style="font-size:12px;color:var(--tmed);margin-bottom:.75rem;font-style:italic">Definí tu punto de partida (A), tu destino (B) y tu meta ideal (C) en cada área.</p>
-          <div id="abc-areas-list" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem"></div>
-          <button onclick="addAbcArea()" style="padding:6px 16px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar área</button>
-        </div>
-      </div>
-
-      <!-- Sub-colapsible: Reflexiones -->
-      <div style="margin-bottom:.75rem">
-        <div style="padding:.55rem 6px;border-bottom:0.5px solid var(--borde)">
-          <h3 style="font-family:'Playfair Display',serif;font-size:16px;font-weight:400;margin:0">Reflexiones de <em style="color:#B05C3A">cosas que quiero</em></h3>
-        </div>
-        <div id="abc-reflexiones-sec" style="display:block;padding-top:.75rem">
-          <div id="abc-reflexiones-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
-          <div id="abc-ref-form" style="display:none;background:#fff;border:0.5px solid var(--borde);border-radius:12px;padding:1rem;margin-bottom:.75rem">
-            <input type="text" id="abc-ref-titulo" placeholder="Título..." maxlength="120" style="width:100%;border:0.5px solid var(--bordem);border-radius:8px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;background:transparent;color:var(--tierra);outline:none;margin-bottom:6px" onfocus="this.style.borderColor='var(--ambar)'" onblur="this.style.borderColor='var(--bordem)'">
-            <div id="abc-ref-descs" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
-            <button onclick="addAbcRefDesc()" style="padding:3px 10px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;margin-bottom:8px">+ agregar descripción</button>
-            <div style="display:flex;gap:8px">
-              <button onclick="guardarAbcRef()" style="padding:6px 14px;border-radius:20px;border:none;background:var(--sol);color:var(--sol-osc);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">Guardar</button>
-              <button onclick="document.getElementById('abc-ref-form').style.display='none';abcRefDescs=[]" style="padding:6px 12px;border-radius:20px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">Cancelar</button>
-            </div>
-          </div>
-          <button onclick="document.getElementById('abc-ref-form').style.display='';document.getElementById('abc-ref-titulo').focus();abcRefDescs=[];document.getElementById('abc-ref-descs').innerHTML=''" style="padding:7px 16px;border-radius:20px;border:none;background:var(--vmusgo);color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar reflexión de algo que quiero</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- MIS LIBROS (collapsible) -->
-  <div style="margin-bottom:1.5rem">
-    <div onclick="toggleVBSection('vb-libros')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde)">
-      <h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:400;flex:1;margin:0">Mis <em style="color:var(--ambar)">libros</em></h2>
-      <button id="btn-vb-libros" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
-    </div>
-    <div id="vb-libros" style="display:none;padding-top:.75rem">
-      <div id="libros-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:1rem"></div>
-      <button onclick="addLibro();event.stopPropagation()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar libro</button>
-    </div>
-  </div>
-
-  <div style="margin-bottom:1.5rem">
-      <div onclick="toggleVBSection('vb-links')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde)">
-        <h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:400;flex:1;margin:0">Mis <em style="color:var(--ambar)">links</em></h2>
-        <button id="btn-vb-links" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
-      </div>
-      <div id="vb-links" style="display:none;padding-top:.75rem">
-        <div id="links-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:1rem"></div>
-        <button onclick="addLink();event.stopPropagation()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar link</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- LINK TIPS SUBVIEW -->
+<!-- LINK TIPS SUBVIEW -->
   <div id="view-link-tips" class="view">
     <div class="ph">
-      <button onclick="showView('visionboard')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+      <button onclick="showView('motivacion')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
       <h1 id="link-tips-titulo">Más tips</h1>
     </div>
     <div id="link-tips-content" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem"></div>
@@ -1536,7 +1431,7 @@ canvas{max-width:100%}
 <!-- ABC DETALLE SUBVIEW -->
 <div id="view-abc-detalle" class="view">
   <div class="ph">
-    <button onclick="showView('visionboard')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <button onclick="showView('motivacion')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
     <h1 id="abc-det-titulo" style="margin-bottom:.25rem">Área</h1>
     <p style="font-size:12px;color:var(--tmed)">Tu camino: A → B → C</p>
   </div>
@@ -1544,10 +1439,9 @@ canvas{max-width:100%}
 </div>
 
 <!-- LIBRO TIPS SUBVIEW -->
-<!-- LIBRO TIPS SUBVIEW -->
 <div id="view-libro-tips" class="view">
   <div class="ph">
-    <button onclick="showView('visionboard')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <button onclick="showView('motivacion')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
     <h1 id="libro-tips-titulo" style="font-family:'Playfair Display',serif">Tips del libro</h1>
     <p id="libro-tips-subtitulo" style="font-size:12px;color:var(--tmed)"></p>
   </div>
@@ -1727,6 +1621,39 @@ canvas{max-width:100%}
 </div>
 
 
+<!-- JUGANDO CON TUS QUIEBRES -->
+<div id="view-jugando-quiebre" class="view">
+  <div class="ph">
+    <button onclick="showView('autoconocimiento')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
+    <h1>🎲 Jugando con <em>tus quiebres</em></h1>
+    <p id="jq-titulo" style="font-size:13px;color:var(--ambar);font-style:italic;margin-top:4px"></p>
+  </div>
+
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-top" style="background:linear-gradient(135deg,#FFF9E6,#FDF6E3)">
+      <h3 style="font-family:'Playfair Display',serif;font-weight:400">✨ Todas las posibilidades</h3>
+      <span style="font-size:11px;color:var(--tmed)">La mayoría positivas — ¡jugá!</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:12px;color:var(--tmed);margin-bottom:1rem;line-height:1.6">Escribí todas las posibilidades que pueden suceder frente a este quiebre. Obligate a que la mayoría sean positivas. Jugá con la idea de que <em>todas</em> puedan serlo. ¿Qué podría pasar que no imaginás?</p>
+      <div id="jq-posibilidades-list" style="display:flex;flex-direction:column;gap:4px;margin-bottom:.75rem"></div>
+      <button onclick="addJugandoPosibilidad()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--ambar);background:transparent;color:var(--ambar);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar posibilidad</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-top" style="background:linear-gradient(135deg,#F0FAF4,#EAF5EC)">
+      <h3 style="font-family:'Playfair Display',serif;font-weight:400">📖 Históricos reales de quiebres</h3>
+      <span style="font-size:11px;color:var(--tmed)">Lo que te dieron</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:12px;color:var(--tmed);margin-bottom:1rem;line-height:1.6">Escribí quiebres reales que atravesaste. Enfocate en lo positivo que te dieron — los aprendizajes, las aperturas, las personas, las partes de vos que emergieron.</p>
+      <div id="jq-historicos-list" style="display:flex;flex-direction:column;gap:4px;margin-bottom:.75rem"></div>
+      <button onclick="addJugandoHistorico()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--vmusgo);background:transparent;color:var(--vmusgo);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar histórico</button>
+    </div>
+  </div>
+</div>
+
 <!-- LEN AVANCES MES -->
 <div id="view-len-avances-mes" class="view">
   <div class="ph">
@@ -1783,92 +1710,52 @@ canvas{max-width:100%}
       <button id="btn-len-dolores-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="len-dolores-wrap" style="display:none;padding-top:.75rem">
-  <!-- DOS CUADROS EXPLICATIVOS -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem">
+
+  <!-- INFO COLAPSABLE -->
+  <div style="margin-bottom:1rem">
+    <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'':'none';this.querySelector('.info-arrow').style.transform=this.nextElementSibling.style.display===''?'rotate(90deg)':''"
+      style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:.5rem .75rem;background:var(--arena);border-radius:10px;border:0.5px solid var(--bordem)">
+      <span style="font-size:12px;font-weight:500;color:var(--tierra);flex:1">📖 Ver guías: Desafiar el juicio & Mini estructura práctica</span>
+      <span class="info-arrow" style="font-size:10px;color:var(--tmed);transition:transform .2s">▶</span>
+    </div>
+    <div style="display:none">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:.75rem;margin-bottom:.5rem">
 
     <!-- CUADRO 1: Desafiar el juicio -->
     <div style="background:#fff;border:0.5px solid var(--borde);border-radius:14px;padding:1.1rem;font-size:12px;line-height:1.7">
       <div style="font-size:15px;font-weight:700;color:var(--ambar);font-family:'Playfair Display',serif;margin-bottom:10px">Desafiar el juicio</div>
-
       <div style="font-weight:600;color:var(--tierra);margin-bottom:3px">Verificar si es realmente cierto</div>
-      <div style="color:var(--tmed);padding-left:10px;margin-bottom:8px">
-        ¿Esto es un hecho o una interpretación?<br>
-        ¿Qué evidencia tengo a favor?<br>
-        ¿Qué evidencia tengo en contra?
-      </div>
-
+      <div style="color:var(--tmed);padding-left:10px;margin-bottom:8px">¿Esto es un hecho o una interpretación?<br>¿Qué evidencia tengo a favor?<br>¿Qué evidencia tengo en contra?</div>
       <div style="font-weight:600;color:var(--tierra);margin-bottom:3px">Abrir otras posibilidades</div>
-      <div style="color:var(--tmed);padding-left:10px;margin-bottom:8px">
-        ¿Qué otra explicación podría existir?<br>
-        ¿Qué más podría estar pasando que no estoy viendo?<br>
-        <span style="font-style:italic">Recordar los 4 acuerdos → No tomarme nada personal.</span>
-      </div>
-
+      <div style="color:var(--tmed);padding-left:10px;margin-bottom:8px">¿Qué otra explicación podría existir?<br>¿Qué más podría estar pasando que no estoy viendo?<br><span style="font-style:italic">Recordar los 4 acuerdos → No tomarme nada personal.</span></div>
       <div style="font-weight:600;color:var(--tierra);margin-bottom:3px">Observar el impacto del juicio</div>
-      <div style="color:var(--tmed);padding-left:10px;margin-bottom:8px">
-        ¿Cómo me hace sentir este pensamiento?<br>
-        ¿Cómo actúo cuando creo esto?<br>
-        ¿Este juicio me acerca o me aleja de la vida/vínculo/persona que quiero ser?<br>
-        ¿Qué emoción hay debajo del juicio?
-      </div>
-
-      <div style="font-weight:600;color:var(--tierra);margin-bottom:3px">Ir a la necesidad profunda <span style="font-weight:400;font-style:italic">(y revisar si hay un Miedo)</span></div>
-      <div style="color:var(--tmed);padding-left:10px;margin-bottom:8px">
-        ¿Qué necesidad no está siendo atendida?<br>
-        ¿Qué estoy necesitando realmente?<br>
-        ¿Estoy buscando aprobación, seguridad, pertenencia, control, amor?<br>
-        ¿Qué parte mía se siente amenazada?<br>
-        ¿Por qué esto es un problema para mí?<br>
-        ¿Qué es lo peor que podría pasar?
-      </div>
-
-      <div style="font-weight:600;color:var(--tierra);margin-bottom:3px">Volver a una mirada más consciente</div>
-      <div style="color:var(--tmed);padding-left:10px">
-        ¿Cómo podría mirar esto con más compasión?<br>
-        ¿Qué sería una interpretación más equilibrada?<br>
-        ¿Qué puedo elegir hacer en vez de reaccionar?<br>
-        ¿Quién quiero ser frente a esto?
-      </div>
+      <div style="color:var(--tmed);padding-left:10px;margin-bottom:8px">¿Cómo me hace sentir este pensamiento?<br>¿Cómo actúo cuando creo esto?<br>¿Este juicio me acerca o me aleja de la vida que quiero?</div>
+      <div style="font-weight:600;color:var(--tierra);margin-bottom:3px">Ir a la necesidad profunda</div>
+      <div style="color:var(--tmed);padding-left:10px">¿Qué necesidad no está siendo atendida?<br>¿Qué estoy necesitando realmente?<br>¿Por qué esto es un problema para mí?</div>
     </div>
 
     <!-- CUADRO 2: Mini estructura práctica -->
     <div style="background:var(--arena);border:0.5px solid var(--bordem);border-radius:14px;padding:1.1rem;font-size:12px;line-height:1.7">
       <div style="font-size:15px;font-weight:700;color:var(--tierra);font-family:'Playfair Display',serif;margin-bottom:10px">Mini estructura práctica</div>
       <div style="font-size:11px;color:var(--tmed);margin-bottom:8px;font-style:italic">Cuando aparezca un juicio:</div>
-
       <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
-        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">1</span><span style="color:var(--tierra)"><b>Pausa</b> — Respirar.</span></div>
-        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">2</span><span style="color:var(--tierra)"><b>Detectar</b> — "Estoy pensando que…"</span></div>
-        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">3</span><span style="color:var(--tierra)"><b>Cuestionar</b> — "¿Es 100% cierto?"</span></div>
-        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">4</span><span style="color:var(--tierra)"><b>Abrir</b> — "¿Qué otra posibilidad existe?"</span></div>
-        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">5</span><span style="color:var(--tierra)"><b>Elegir</b> — "¿Cómo quiero responder?"</span></div>
+        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">1</span><span><b>Pausa</b> — Respirar.</span></div>
+        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">2</span><span><b>Detectar</b> — "Estoy pensando que…"</span></div>
+        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">3</span><span><b>Cuestionar</b> — "¿Es 100% cierto?"</span></div>
+        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">4</span><span><b>Abrir</b> — "¿Qué otra posibilidad existe?"</span></div>
+        <div style="display:flex;gap:8px"><span style="background:var(--sol);color:var(--sol-osc);font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">5</span><span><b>Elegir</b> — "¿Cómo quiero responder?"</span></div>
       </div>
-
-      <div style="background:#fff;border-radius:10px;padding:.8rem;border-left:2px solid var(--ambar);margin-bottom:10px">
-        <div style="font-size:11px;font-weight:600;color:var(--tmed);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">Ejemplo</div>
+      <div style="background:#fff;border-radius:10px;padding:.8rem;border-left:2px solid var(--ambar)">
         <div style="font-style:italic;color:var(--tierra);margin-bottom:8px;font-size:12px">"Lucha no me contestó → seguro no me quiere ver."</div>
-        <div style="font-weight:600;color:var(--tierra);font-size:11px;margin-bottom:4px">Desafío:</div>
-        <div style="color:var(--tmed);font-size:11px;padding-left:8px">
-          ¿Es un hecho o una interpretación?<br>
-          ¿Qué otras posibilidades existen?<br>
-          ¿Qué emoción aparece?<br>
-          ¿Qué necesito realmente?<br>
-          ¿Cómo quiero actuar yo, más allá de su respuesta?
-        </div>
-      </div>
-
-      <div style="background:var(--terra-cl);border-radius:10px;padding:.8rem;border-left:2px solid var(--terra)">
-        <div style="font-size:12px;color:var(--tierra);font-style:italic;line-height:1.65">
-          Ahí muchas veces aparece algo más profundo: <b style="font-style:normal">"No es solo miedo a que no conteste. Es miedo a no ser elegida."</b>
-        </div>
-        <div style="font-size:11px;color:var(--tmed);margin-top:6px">Y desde ahí ya no trabajás solo el vínculo externo, sino la herida que se activó.</div>
+        <div style="font-size:11px;color:var(--tmed)">¿Es un hecho o una interpretación?<br>¿Qué otras posibilidades existen?<br>¿Qué emoción aparece?<br>¿Qué necesito realmente?</div>
       </div>
     </div>
-
+  </div>
+    </div>
   </div>
 
   <div id="len-dolores-list" style="display:flex;flex-direction:column;gap:1.1rem;margin-bottom:1rem"></div>
-  <button onclick="addLenDolor()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer" onmouseover="this.style.borderColor='var(--ambar)';this.style.color='var(--tierra)'" onmouseout="this.style.borderColor='var(--bordem)';this.style.color='var(--tmed)'">+ Agregar dolor</button>
+  <button onclick="addLenDolor()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer" onmouseover="this.style.borderColor='var(--ambar)';this.style.color='var(--tierra)'" onmouseout="this.style.borderColor='var(--bordem)';this.style.color='var(--tmed)'">+ Agregar dolor / traba</button>
 </div>
 
   <div style="margin-bottom:1rem">
@@ -2078,9 +1965,73 @@ canvas{max-width:100%}
       </div>
     </div>
   </div>
-</div>
 
-<div id="view-em-necesidades" class="view">
+  <!-- REFLEXIONES DE COSAS QUE QUIERO (from Vision Board) -->
+  <div style="margin-bottom:1.5rem;margin-top:1rem">
+    <div onclick="toggleVBSection('vb-reflexiones')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde)">
+      <h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:400;flex:1;margin:0">Reflexiones de <em style="color:#B05C3A">cosas que quiero</em></h2>
+      <button id="btn-vb-reflexiones" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="vb-reflexiones" style="display:none;padding-top:.75rem">
+      <div id="abc-reflexiones-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
+      <div id="abc-ref-form" style="display:none;background:#fff;border:0.5px solid var(--borde);border-radius:12px;padding:1rem;margin-bottom:.75rem">
+        <input type="text" id="abc-ref-titulo" placeholder="Título..." maxlength="120" style="width:100%;border:0.5px solid var(--bordem);border-radius:8px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;background:transparent;color:var(--tierra);outline:none;margin-bottom:6px" onfocus="this.style.borderColor='var(--ambar)'" onblur="this.style.borderColor='var(--bordem)'">
+        <div id="abc-ref-descs" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
+        <button onclick="addAbcRefDesc()" style="padding:3px 10px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;margin-bottom:8px">+ agregar descripción</button>
+        <div style="display:flex;gap:8px">
+          <button onclick="guardarAbcRef()" style="padding:6px 14px;border-radius:20px;border:none;background:var(--sol);color:var(--sol-osc);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">Guardar</button>
+          <button onclick="document.getElementById('abc-ref-form').style.display='none';abcRefDescs=[]" style="padding:6px 12px;border-radius:20px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">Cancelar</button>
+        </div>
+      </div>
+      <button onclick="document.getElementById('abc-ref-form').style.display='';document.getElementById('abc-ref-titulo').focus();abcRefDescs=[];document.getElementById('abc-ref-descs').innerHTML=''" style="padding:7px 16px;border-radius:20px;border:none;background:var(--vmusgo);color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar reflexión de algo que quiero</button>
+    </div>
+  </div>
+
+  <!-- MIS LIBROS (from Vision Board) -->
+  <div style="margin-bottom:1.5rem">
+    <div onclick="toggleVBSection('vb-libros')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde)">
+      <h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:400;flex:1;margin:0">Mis <em style="color:var(--ambar)">libros</em></h2>
+      <button id="btn-vb-libros" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="vb-libros" style="display:none;padding-top:.75rem">
+      <div id="libros-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:1rem"></div>
+      <button onclick="addLibro();event.stopPropagation()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar libro</button>
+    </div>
+  </div>
+
+  <!-- MIS LINKS (from Vision Board) -->
+  <div style="margin-bottom:1.5rem">
+    <div onclick="toggleVBSection('vb-links')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde)">
+      <h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:400;flex:1;margin:0">Mis <em style="color:var(--ambar)">links</em></h2>
+      <button id="btn-vb-links" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="vb-links" style="display:none;padding-top:.75rem">
+      <div id="links-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:1rem"></div>
+      <button onclick="addLink();event.stopPropagation()" style="padding:7px 18px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar link</button>
+    </div>
+  </div>
+
+  <!-- VISION BOARD > MI A/B/C (from Vision Board) -->
+  <div style="margin-bottom:1.5rem">
+    <div onclick="toggleVBSection('vb-abc')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde)">
+      <h2 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:400;flex:1;margin:0">Vision Board — <em style="color:var(--ambar)">Mi A/B/C</em></h2>
+      <button id="btn-vb-abc" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="vb-abc" style="display:none;padding-top:1rem">
+      <div style="margin-bottom:.75rem">
+        <div style="padding:.55rem 6px;border-bottom:0.5px solid var(--borde)">
+          <h3 style="font-family:'Playfair Display',serif;font-size:16px;font-weight:400;margin:0">Ver <em style="color:#B05C3A">Áreas</em></h3>
+        </div>
+        <div id="abc-ver-areas" style="display:block;padding-top:.75rem">
+          <p style="font-size:12px;color:var(--tmed);margin-bottom:.75rem;font-style:italic">Definí tu punto de partida (A), tu destino (B) y tu meta ideal (C) en cada área.</p>
+          <div id="abc-areas-list" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem"></div>
+          <button onclick="addAbcArea()" style="padding:6px 16px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer">+ Agregar área</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
   <div class="ph">
     <button onclick="showView('presencia')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver</button>
     <h1>Guía — <em>¿Qué necesita cada emoción?</em></h1>
@@ -2713,7 +2664,37 @@ let curView='tracker';
 let vbCurrentArea=null;
 let chartEmociones=null,chartCirculo=null,chartGastos=null,chartResumen=null;
 
-function save(key,val){try{localStorage.setItem('lav_'+key,JSON.stringify(val));}catch(e){}}
+// Undo stack — stores up to 20 snapshots of (key, previousValue)
+let _undoStack=[];
+const _UNDO_MAX=20;
+function _undoPush(key,prevVal){
+  _undoStack.push({key,val:prevVal,ts:Date.now()});
+  if(_undoStack.length>_UNDO_MAX)_undoStack.shift();
+  updateUndoBtn();
+}
+function updateUndoBtn(){
+  const btn=document.getElementById('undo-global-btn');
+  if(btn){btn.style.display=_undoStack.length?'flex':'none';}
+}
+function undoLastChange(){
+  if(!_undoStack.length){alert('No hay cambios para deshacer.');return;}
+  const last=_undoStack.pop();
+  try{if(last.val===null){localStorage.removeItem('lav_'+last.key);}else{localStorage.setItem('lav_'+last.key,JSON.stringify(last.val));}}catch(e){}
+  updateUndoBtn();
+  // Refresh current view
+  try{showView(curView);}catch(e){}
+  // Re-sync variables from localStorage
+  try{cats=load('cats',DEFAULT_CATS);checks=load('checks',{});emData=load('emdata',{});gastos=load('gastos',[]);vinculos=load('vinculos',{grupos:[],personas:[]});}catch(e){}
+  // Trigger rebuild
+  try{if(window.save&&window.save._supaEnabled&&currentUser){clearTimeout(saveTimer);saveTimer=setTimeout(syncDatosSupabase,800);}}catch(e){}
+}
+
+function save(key,val){
+  // Push previous value to undo stack
+  try{const prev=localStorage.getItem('lav_'+key);_undoPush(key,prev===null?null:JSON.parse(prev));}catch(e){}
+  try{localStorage.setItem('lav_'+key,JSON.stringify(val));}catch(e){}
+}
+function load(key,def){try{const v=localStorage.getItem('lav_'+key);return v?JSON.parse(v):def;}catch(e){return def;}}
 function load(key,def){try{const v=localStorage.getItem('lav_'+key);return v?JSON.parse(v):def;}catch(e){return def;}}
 
 let cats=load('cats',DEFAULT_CATS);
@@ -3593,7 +3574,7 @@ function buildHabitosChart(){
   buildCorrelacionChart();
   buildHeatmap();
   buildHabMesSel();
-  drawTrackerCircles();
+  if(document.getElementById('tracker-circle-hoy'))drawTrackerCircles();
 }
 
 function buildHabsLineChart(){
@@ -6049,6 +6030,29 @@ function toggleValorDia2(mapKey, dayKey){
   buildValoresMapa('valores-mapa-auto');
 }
 
+function buildValoresAutoAll(){
+  // Like buildValoresAuto but includes empty-named entries (for editing new ones)
+  buildValoresMapa('valores-mapa-auto');
+  const cont=document.getElementById('valores-list-auto');if(!cont)return;
+  cont.innerHTML='';
+  valoresData.forEach((v,vi)=>{
+    const card=document.createElement('div');
+    card.style.cssText='background:rgba(255,255,255,0.6);border:0.5px solid var(--bordem);border-radius:10px;overflow:hidden;cursor:grab';
+    card.draggable=true;card.dataset.vi=vi;
+    card.innerHTML=`
+      <div style="padding:.85rem 1.1rem;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:10px">
+        <input type="text" value="${(v.nombre||'').replace(/"/g,'&quot;')}" placeholder="Nombre del valor..." style="flex:1;font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--ambar);border:none;background:transparent;outline:none"
+          oninput="valoresData[${vi}].nombre=this.value;save('valoresdata',valoresData);buildValores()">
+        <button onclick="delValorAuto(${vi})" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+      </div>
+      <div style="padding:.75rem 1.1rem">
+        <textarea rows="2" placeholder="Tu frase o reflexión sobre este valor..." style="width:100%;border:none;outline:none;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);resize:none;line-height:1.6;background:transparent"
+          oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';valoresData[${vi}].frase=this.value;save('valoresdata',valoresData);buildValores()">${v.frase||''}</textarea>
+      </div>`;
+    cont.appendChild(card);
+  });
+}
+
 function buildValoresAuto(){
   // Mapa
   buildValoresMapa('valores-mapa-auto');
@@ -6132,9 +6136,18 @@ function buildValoresAuto(){
   });
 }
 function addValorAuto(){
+  // Ensure 'auto-valores' section is open
+  const sec=document.getElementById('auto-valores');
+  if(sec&&sec.style.display==='none'){
+    const btn=document.getElementById('btn-auto-valores');
+    if(btn)btn.textContent='Cerrar';
+    sec.style.display='';
+  }
   valoresData.push({id:'v'+Date.now(),nombre:'',frase:'',notas:['']});
-  save('valoresdata',valoresData);buildValoresAuto();buildValores();
-  setTimeout(()=>{const inputs=document.querySelectorAll('#valores-list-auto input[type=text]');if(inputs.length)inputs[inputs.length-2].focus();},50);
+  save('valoresdata',valoresData);
+  // Build showing ALL including empty new ones
+  buildValoresAutoAll();buildValores();
+  setTimeout(()=>{const inputs=document.querySelectorAll('#valores-list-auto input[type=text]');if(inputs.length)inputs[inputs.length-2]?.focus();},80);
 }
 function delValorAuto(vi){
   if(!confirm('¿Eliminar este valor?'))return;
@@ -6617,39 +6630,124 @@ function buildLenDolores(){
   cont.innerHTML='';
   dolores.forEach((dolor,di)=>{
     const card=document.createElement('div');
-    card.style.cssText='background:rgba(255,255,255,0.6);border:0.5px solid var(--bordem);border-radius:10px;overflow:hidden';
-    const remembers=(dolor.remembers||[]).map((r,ri)=>{
-      const color=DOLOR_COLORS[ri%DOLOR_COLORS.length];
-      return `<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;background:${color}12;border-left:2px solid ${color};margin-bottom:5px">
-        <div style="flex:1">
-          <textarea rows="2" placeholder="Escribí el remember motivación..."
-            style="width:100%;border:none;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.6"
-            oninput="lenData.dolores[${di}].remembers[${ri}]=this.value;save('lendata',lenData);autoResizeLenDolor(this)"
-            >${r}</textarea>
-        </div>
-        <button onclick="delLenRemember(${di},${ri})" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer;flex-shrink:0;margin-top:4px">✕</button>
-      </div>`;
-    }).join('');
+    card.style.cssText='background:#fff;border:0.5px solid var(--bordem);border-radius:14px;overflow:hidden;margin-bottom:.5rem';
+
+    const q1=dolor.q1||'', q2=dolor.q2||'', q3=dolor.q3||'', q4=dolor.q4||'';
+    const quiebresData=dolor.quiebres||[];
+    const historicos=dolor.historicos||[];
 
     card.innerHTML=`
       <div style="padding:.8rem 1.1rem;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:8px;background:var(--arena)">
         <span style="font-family:'Playfair Display',serif;font-size:15px;color:var(--ambar);font-weight:600;flex-shrink:0">${di+1})</span>
-        <input type="text" value="${dolor.titulo||''}" placeholder="Nombre del dolor (ej: Miedo al rechazo)..."
+        <input type="text" value="${(dolor.titulo||'').replace(/"/g,'&quot;')}" placeholder="Nombre del dolor o traba (ej: Miedo al rechazo)..."
           style="flex:1;font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--ambar);border:none;background:transparent;outline:none"
           oninput="lenData.dolores[${di}].titulo=this.value;save('lendata',lenData)">
         <button onclick="delLenDolor(${di})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
       </div>
-      <div style="padding:.75rem 1.1rem">
-        <div style="font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--tmed);margin-bottom:8px">Desafío — ¿Qué me puede ayudar a cambiar de observador? ¿Qué depende de mí en esta situación?</div>
-        <div id="len-remembers-${di}">${remembers}</div>
-        <button onclick="addLenRemember(${di})" style="padding:3px 10px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;margin-top:4px">+ agregar remember</button>
+      <div style="padding:.9rem 1.1rem;display:flex;flex-direction:column;gap:.75rem">
+        <div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--tmed);margin-bottom:4px">Describí la situación</div>
+          <textarea rows="2" placeholder="¿Qué pasó? ¿Cómo se presenta este dolor o traba?"
+            style="width:100%;border:0.5px solid var(--bordem);border-radius:8px;padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.6;background:transparent"
+            onfocus="this.style.borderColor='var(--ambar)'" onblur="this.style.borderColor='var(--bordem)'"
+            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';lenData.dolores[${di}].q1=this.value;save('lendata',lenData)">${q1}</textarea>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--tmed);margin-bottom:4px">¿Qué depende de mí en esta situación? (en relación a mi deseo)</div>
+          <textarea rows="2" placeholder="¿Qué acciones, actitudes o elecciones tengo yo de mi lado?"
+            style="width:100%;border:0.5px solid var(--bordem);border-radius:8px;padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.6;background:transparent"
+            onfocus="this.style.borderColor='var(--ambar)'" onblur="this.style.borderColor='var(--bordem)'"
+            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';lenData.dolores[${di}].q2=this.value;save('lendata',lenData)">${q2}</textarea>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--tmed);margin-bottom:4px">¿Qué ACCIÓN estoy TOMANDO frente a esto?</div>
+          <textarea rows="2" placeholder="¿Qué estoy haciendo o puedo hacer concretamente?"
+            style="width:100%;border:0.5px solid var(--bordem);border-radius:8px;padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.6;background:transparent"
+            onfocus="this.style.borderColor='var(--ambar)'" onblur="this.style.borderColor='var(--bordem)'"
+            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';lenData.dolores[${di}].q3=this.value;save('lendata',lenData)">${q3}</textarea>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--tmed);margin-bottom:4px">¿Hay algo que pueda ayudarme a cambiar de observador? ¿Alguna herramienta para esto?</div>
+          <textarea rows="2" placeholder="¿Qué herramienta, práctica o cambio de perspectiva podría ayudarme?"
+            style="width:100%;border:0.5px solid var(--bordem);border-radius:8px;padding:7px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.6;background:transparent"
+            onfocus="this.style.borderColor='var(--ambar)'" onblur="this.style.borderColor='var(--bordem)'"
+            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';lenData.dolores[${di}].q4=this.value;save('lendata',lenData)">${q4}</textarea>
+        </div>
+
+        <div style="border-top:0.5px solid var(--borde);padding-top:.75rem;margin-top:.25rem">
+          <button onclick="abrirJugandoQuiebre(${di})" style="padding:8px 18px;border-radius:20px;border:none;background:linear-gradient(135deg,var(--ambar),var(--terra));color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;letter-spacing:.02em">
+            🎲 JUGANDO con tus quiebres…
+          </button>
+        </div>
       </div>`;
     cont.appendChild(card);
-    card.querySelectorAll('textarea').forEach(ta=>autoResizeLenDolor(ta));
+    card.querySelectorAll('textarea').forEach(ta=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';});
   });
 }
 
 function autoResizeLenDolor(ta){ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';}
+
+// Jugando con quiebres
+let curQuiebreIdx=null;
+function abrirJugandoQuiebre(di){
+  curQuiebreIdx=di;
+  const dolor=lenData.dolores[di];
+  const titleEl=document.getElementById('jq-titulo');
+  if(titleEl)titleEl.textContent=dolor.titulo||`Quiebre #${di+1}`;
+  buildJugandoList();
+  buildJugandoHistoricos();
+  showView('jugando-quiebre');
+}
+function buildJugandoList(){
+  if(curQuiebreIdx===null)return;
+  const dolor=lenData.dolores[curQuiebreIdx];
+  if(!dolor.quiebres)dolor.quiebres=[];
+  const cont=document.getElementById('jq-posibilidades-list');if(!cont)return;
+  cont.innerHTML='';
+  dolor.quiebres.forEach((q,qi)=>{
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:flex-start;gap:8px;padding:6px 10px;border-radius:10px;background:'+(['#F0FAF4','#FFF9E6','#F0F4FF','#FFF0F8','#F4FFF0'][qi%5])+';border-left:3px solid '+(['#5C7A4E','#D4903A','#5DADE2','#C4713A','#7AB87E'][qi%5])+';margin-bottom:6px';
+    div.innerHTML=`<textarea rows="1" placeholder="Una posibilidad frente a este quiebre..."
+      style="flex:1;border:none;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.6"
+      oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';lenData.dolores[${curQuiebreIdx}].quiebres[${qi}]=this.value;save('lendata',lenData)">${q}</textarea>
+    <button onclick="lenData.dolores[${curQuiebreIdx}].quiebres.splice(${qi},1);save('lendata',lenData);buildJugandoList()" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer;margin-top:4px">✕</button>`;
+    cont.appendChild(div);
+    div.querySelector('textarea').style.height='auto';
+    div.querySelector('textarea').style.height=div.querySelector('textarea').scrollHeight+'px';
+  });
+}
+function addJugandoPosibilidad(){
+  if(curQuiebreIdx===null)return;
+  if(!lenData.dolores[curQuiebreIdx].quiebres)lenData.dolores[curQuiebreIdx].quiebres=[];
+  lenData.dolores[curQuiebreIdx].quiebres.push('');
+  save('lendata',lenData);buildJugandoList();
+  setTimeout(()=>{const tas=document.querySelectorAll('#jq-posibilidades-list textarea');if(tas.length)tas[tas.length-1].focus();},50);
+}
+function buildJugandoHistoricos(){
+  if(curQuiebreIdx===null)return;
+  const dolor=lenData.dolores[curQuiebreIdx];
+  if(!dolor.historicos)dolor.historicos=[];
+  const cont=document.getElementById('jq-historicos-list');if(!cont)return;
+  cont.innerHTML='';
+  dolor.historicos.forEach((h,hi)=>{
+    const div=document.createElement('div');
+    div.style.cssText='background:#fff;border:0.5px solid var(--borde);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;display:flex;gap:8px;align-items:flex-start';
+    div.innerHTML=`<span style="color:var(--vmusgo);font-size:14px;flex-shrink:0">✦</span>
+    <textarea rows="2" placeholder="Contá un quiebre real que tuviste y qué cosas positivas te dio después..."
+      style="flex:1;border:none;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.6"
+      oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';lenData.dolores[${curQuiebreIdx}].historicos[${hi}]=this.value;save('lendata',lenData)">${h}</textarea>
+    <button onclick="lenData.dolores[${curQuiebreIdx}].historicos.splice(${hi},1);save('lendata',lenData);buildJugandoHistoricos()" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer;margin-top:4px">✕</button>`;
+    cont.appendChild(div);
+    const ta=div.querySelector('textarea');ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';
+  });
+}
+function addJugandoHistorico(){
+  if(curQuiebreIdx===null)return;
+  if(!lenData.dolores[curQuiebreIdx].historicos)lenData.dolores[curQuiebreIdx].historicos=[];
+  lenData.dolores[curQuiebreIdx].historicos.push('');
+  save('lendata',lenData);buildJugandoHistoricos();
+  setTimeout(()=>{const tas=document.querySelectorAll('#jq-historicos-list textarea');if(tas.length)tas[tas.length-1].focus();},50);
+}
 
 function addLenDolor(){
   if(!lenData.dolores)lenData.dolores=[];
@@ -6880,11 +6978,12 @@ function showView(v){
   if(v==='alim-registros')buildAlimRegistros();
   if(v==='alim-obj-historial')buildAlimObjHistorial();
   if(v==='lenguaje'){initSections(['len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildLenguaje();initActitud();}
+  if(v==='jugando-quiebre'){buildJugandoList();buildJugandoHistoricos();}
   if(v==='len-avances-mes')buildLenAvancesMes();
   if(v==='len-registros')buildLenRegistros();
   if(v==='ejercicios')buildEjercicios();
   if(v==='autoconocimiento'){initSections(['auto-artista','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();buildActitudCardsInline();}
-  if(v==='motivacion'){initSections(['auto-valores','auto-remember']);buildValoresAuto();buildRememberHoy();initVBFraseSection();}
+  if(v==='motivacion'){initSections(['auto-valores','auto-remember']);buildValoresAuto();buildRememberHoy();initVBFraseSection();initVBSections();if(vbOpenSections['vb-libros'])buildLibros();if(vbOpenSections['vb-links'])buildLinks();if(vbOpenSections['vb-abc']){buildAbcAreas();buildAbcReflexiones();}if(vbOpenSections['vb-reflexiones'])buildAbcReflexiones();}
   if(v==='terapia-detalle'){}  // built by entrarTerapia
   if(v==='terapia-logros-historial')buildLogrosHistorial();
   if(v==='terapia-sesiones-historial')buildSesionesHistorial();
@@ -6981,7 +7080,7 @@ function render(){
   if(curView==='len-registros')buildLenRegistros();
   if(curView==='ejercicios')buildEjercicios();
   if(curView==='autoconocimiento'){initSections(['auto-artista','auto-terapias','len-objetivos','len-registro','len-declaraciones-wrap','len-dolores-wrap','len-avances']);buildAutoconocimiento();buildTerapiasList();buildLenguaje();initActitud();}
-  if(curView==='motivacion'){initSections(['auto-valores','auto-remember']);buildValoresAuto();buildRememberHoy();initVBFraseSection();}
+  if(curView==='motivacion'){initSections(['auto-valores','auto-remember']);buildValoresAuto();buildRememberHoy();initVBFraseSection();initVBSections();if(vbOpenSections['vb-libros'])buildLibros();if(vbOpenSections['vb-links'])buildLinks();if(vbOpenSections['vb-abc']){buildAbcAreas();buildAbcReflexiones();}if(vbOpenSections['vb-reflexiones'])buildAbcReflexiones();}
   if(curView==='remember-mes')buildRememberMes();
   if(curView==='terapias-mes')buildTerapiasMes();
   if(curView==='resumen')buildResumen();
@@ -7346,9 +7445,10 @@ function toggleVBSection(id){
   // Rebuild content when opening
   if(vbOpenSections[id]){
     if(id==='vb-board')buildVisionBoard();
-    if(id==='vb-abc'){initVBSubSections();buildAbcAreas();buildAbcReflexiones();}
+    if(id==='vb-abc'){buildAbcAreas();buildAbcReflexiones();}
     if(id==='abc-ver-areas')buildAbcAreas();
     if(id==='abc-reflexiones-sec')buildAbcReflexiones();
+    if(id==='vb-reflexiones')buildAbcReflexiones();
     if(id==='vb-frases'){buildFrasesVB();buildFrasesPersonas();buildInspGruposPreview();}
     if(id==='vb-valores'){buildValores();buildValoresMapa();}
     if(id==='vb-libros')buildLibros();
@@ -7356,7 +7456,7 @@ function toggleVBSection(id){
   }
 }
 function initVBSections(){
-  ['vb-board','vb-valores','vb-libros'].forEach(id=>{
+  ['vb-board','vb-valores','vb-libros','vb-links','vb-abc','vb-reflexiones'].forEach(id=>{
     const el=document.getElementById(id);const btn=document.getElementById('btn-'+id);
     const open=vbOpenSections[id]||false;
     if(el)el.style.display=open?'':'none';
@@ -8416,12 +8516,38 @@ function buildSesionesHistorial(){
   const cont=document.getElementById('sesiones-hist-content'); if(!cont) return;
   const sesiones=(t.sesiones||[]).slice().reverse();
   if(!sesiones.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin sesiones registradas.</p>';return;}
-  cont.innerHTML=sesiones.map((s,i)=>{
+  cont.innerHTML='';
+  sesiones.forEach((s,i)=>{
     const ri=t.sesiones.length-1-i;
     const fecha=new Date(s.day+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
-    const descs=(s.descs||[]).map((d,di)=>{const col=NOTA_COLORS[di%NOTA_COLORS.length];return `<div style="padding:5px 8px;border-radius:7px;background:${col}12;border-left:2px solid ${col};font-size:12px;color:${col};line-height:1.5;margin-bottom:4px">${d}</div>`;}).join('');
-    return `<div class="card"><div class="card-top"><div style="flex:1"><div style="font-size:13px;font-weight:500">${s.titulo}</div><div style="font-size:10px;color:var(--tmed);margin-top:2px">${fecha}</div></div><button onclick="delTerapiaSesion(${ri});buildSesionesHistorial()" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button></div>${descs?`<div class="card-body">${descs}</div>`:''}</div>`;
-  }).join('');
+    const card=document.createElement('div');
+    card.className='card';
+    card.style.marginBottom='.75rem';
+
+    const descsHTML=(s.descs||[]).map((d,di)=>{
+      const col=NOTA_COLORS[di%NOTA_COLORS.length];
+      return `<div style="display:flex;gap:6px;align-items:flex-start;margin-bottom:6px;padding:7px 10px;border-radius:8px;background:${col}12;border-left:2px solid ${col}">
+        <textarea rows="2" style="flex:1;border:none;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.5"
+          oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';terapias[terapiaActivaIdx].sesiones[${ri}].descs[${di}]=this.value;save('terapias',terapias)">${d}</textarea>
+        <button onclick="terapias[terapiaActivaIdx].sesiones[${ri}].descs.splice(${di},1);save('terapias',terapias);buildSesionesHistorial()" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer;margin-top:2px">✕</button>
+      </div>`;
+    }).join('');
+
+    card.innerHTML=`<div class="card-top">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500">${s.titulo}</div>
+        <div style="font-size:10px;color:var(--tmed);margin-top:2px">${fecha}</div>
+      </div>
+      <button onclick="delTerapiaSesion(${ri});buildSesionesHistorial()" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+    </div>
+    <div class="card-body">
+      <div id="ses-descs-${ri}">${descsHTML}</div>
+      <button onclick="terapias[terapiaActivaIdx].sesiones[${ri}].descs=terapias[terapiaActivaIdx].sesiones[${ri}].descs||[];terapias[terapiaActivaIdx].sesiones[${ri}].descs.push('');save('terapias',terapias);buildSesionesHistorial()"
+        style="padding:4px 12px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;margin-top:4px">+ agregar descripción</button>
+    </div>`;
+    cont.appendChild(card);
+    card.querySelectorAll('textarea').forEach(ta=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';});
+  });
 }
 
 function buildTerapiasMes(){
@@ -10144,6 +10270,21 @@ function buildCicloHistorial(){
     prevMens=dt;
   });
 
+  // Calculate predicted next period start(s) from last known period
+  const predictedStarts=new Set(); // Set of 'YYYY-MM-DD' strings
+  if(periodStarts.length>0){
+    const lastStart=periodStarts[periodStarts.length-1];
+    // Predict up to 3 future cycles
+    for(let c=1;c<=3;c++){
+      const pred=new Date(lastStart.getFullYear(),lastStart.getMonth(),lastStart.getDate()+(mapaDur*c));
+      for(let offset=0;offset<diasMens;offset++){
+        const pDay=new Date(pred.getFullYear(),pred.getMonth(),pred.getDate()+offset);
+        const pk=`${pDay.getFullYear()}-${String(pDay.getMonth()+1).padStart(2,'0')}-${String(pDay.getDate()).padStart(2,'0')}`;
+        predictedStarts.add(pk);
+      }
+    }
+  }
+
   months.forEach(({y,m})=>{
     const daysInMonth=new Date(y,m+1,0).getDate();
     const monthKey=`${y}-${String(m+1).padStart(2,'0')}`;
@@ -10172,6 +10313,11 @@ function buildCicloHistorial(){
       const isMens=entry.mens===true;
       const isOv=ovDays.has(d)&&!isMens;
       const isToday=y===now.getFullYear()&&m===now.getMonth()&&d===now.getDate();
+      const isPast=new Date(y,m,d)<new Date(now.getFullYear(),now.getMonth(),now.getDate());
+
+      // Predicted period: light red if in future or today; if past and period didn't come → show as lútea
+      const isPredicted=predictedStarts.has(dayKey)&&!isMens;
+      const isPredictedPastNotCame=isPredicted&&isPast;
 
       // Calculate phase from period starts
       let isFol=false, isLut=false;
@@ -10184,12 +10330,30 @@ function buildCicloHistorial(){
         });
       }
 
-      const bg=isMens?'#C0392B':isOv?'#AED6F1':isFol?'#C8E6C9':isLut?'#E1BEE7':'#F0E6FF';
+      let bg;
+      if(isMens) bg='#C0392B';
+      else if(isPredicted&&!isPredictedPastNotCame) bg='#FFCDD2'; // light red = predicted
+      else if(isPredictedPastNotCame) bg='#E1BEE7'; // lutea — didn't come
+      else if(isOv) bg='#AED6F1';
+      else if(isFol) bg='#C8E6C9';
+      else if(isLut) bg='#E1BEE7';
+      else bg='#F0E6FF';
+
       const border=isToday?'2px solid #6C3483':'1px solid rgba(0,0,0,0.06)';
-      html+=`<div onclick="toggleCicloMens('${dayKey}',this)" title="${dayKey}" style="width:14px;height:14px;border-radius:3px;background:${bg};border:${border};flex-shrink:0;cursor:pointer;transition:background .15s"></div>`;
+      const title=isPredicted&&!isPredictedPastNotCame?`${dayKey} — pronóstico período`:`${dayKey}`;
+      html+=`<div onclick="toggleCicloMens('${dayKey}',this)" title="${title}" style="width:14px;height:14px;border-radius:3px;background:${bg};border:${border};flex-shrink:0;cursor:pointer;transition:background .15s"></div>`;
     }
     html+='</div>';
   });
+
+  // Legend
+  html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:10px;color:var(--tmed)">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#C0392B;margin-right:3px;vertical-align:middle"></span>Menstrual</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#FFCDD2;margin-right:3px;vertical-align:middle"></span>Pronóstico período</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#AED6F1;margin-right:3px;vertical-align:middle"></span>Ovulación</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#C8E6C9;margin-right:3px;vertical-align:middle"></span>Folicular</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#E1BEE7;margin-right:3px;vertical-align:middle"></span>Lútea</span>
+  </div>`;
 
   cont.innerHTML=html;
 }
@@ -10296,6 +10460,9 @@ async function onLogin(user){
   ocultarLogin();
   if(u&&u.nombre){var el=document.getElementById("username-display");if(el)el.textContent=u.nombre;}
   if(isAdmin){var b=document.getElementById("admin-btn");if(b)b.style.display="block";}
+  // Restore view if we reloaded to sync data
+  var pendingView=sessionStorage.getItem('lav_pending_view');
+  if(pendingView){sessionStorage.removeItem('lav_pending_view');showView(pendingView);}
 }
 async function cerrarSesion(){
   await supa.auth.signOut();
@@ -10326,6 +10493,9 @@ async function cargarDatosUsuario(){
     // cargar la página de nuevo) que cortaban la navegación del usuario.
     if(huboNuevoDato && !sessionStorage.getItem('lav_synced_once')){
       sessionStorage.setItem('lav_synced_once','1');
+      // Save the current view so we can restore it after reload
+      var pendingView=sessionStorage.getItem('lav_pending_view');
+      if(!pendingView) sessionStorage.setItem('lav_pending_view', curView||'tracker');
       location.reload();
     }
   }
@@ -10382,8 +10552,10 @@ async function toggleUsuario(id,activo){
 // Override save for Supabase sync
 var _origSave=window.save;
 window.save=function(key,val){
+  // The base save function already handles undo stack; just add Supabase sync
   try{localStorage.setItem("lav_"+key,JSON.stringify(val));}catch(e){}
   if(currentUser){clearTimeout(saveTimer);saveTimer=setTimeout(syncDatosSupabase,800);}
+  updateUndoBtn&&updateUndoBtn();
 };
 function flushSyncIfPending(){
   if(currentUser&&saveTimer){
@@ -10412,5 +10584,9 @@ window.addEventListener("load",async function(){
   else{mostrarLogin();}
 });
 </script>
+<!-- BOTÓN FLOTANTE DESHACER -->
+<button id="undo-global-btn" onclick="undoLastChange()" title="Deshacer último cambio" style="display:none;position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;padding:10px 18px;border-radius:30px;border:0.5px solid var(--bordem);background:#fff;color:var(--tierra);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;box-shadow:0 4px 18px rgba(42,32,16,.13);align-items:center;gap:7px;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 6px 22px rgba(42,32,16,.22)'" onmouseout="this.style.boxShadow='0 4px 18px rgba(42,32,16,.13)'">
+  ↩ Deshacer cambios
+</button>
 </body>
 </html>
