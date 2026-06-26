@@ -8106,12 +8106,13 @@ function buildPresRegistros(){
           <button onclick="delPresRegMes('${day}',${origIdx})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer;flex-shrink:0" title="Eliminar">✕</button>
         </div>
         ${r.actividad?`<div><span style="color:var(--tmed)">Actividad:</span> ${r.actividad}</div>`:''}
-        ${menteStr?`<div><span style="color:var(--tmed)">Mente:</span> ${menteStr}</div>`:''}
+        ${r.estadoEM&&!r.actividad?`<div><span style="color:var(--tmed)">Emoción:</span> <span style="font-weight:500;color:var(--ambar)">${r.estadoEM}</span></div>`:''}
         ${r.menteNotas?`<div style="margin-top:3px;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,0.04);font-style:italic;color:var(--tmed);line-height:1.5">· ${r.menteNotas}</div>`:''}
-        ${r.felicidad!=null?`<div><span style="color:var(--tmed)">Felicidad:</span> <span style="color:var(--ambar);font-weight:600">${r.felicidad}/10</span></div>`:''}
+        ${r.felicidad!=null&&r.felicidad!==undefined?`<div><span style="color:var(--tmed)">Felicidad:</span> <span style="color:var(--ambar);font-weight:600">${r.felicidad}/10</span></div>`:''}
         ${subemBars?`<div style="margin-top:4px"><div style="font-size:10px;color:var(--tmed);margin-bottom:2px">Emociones:</div>${subemBars}</div>`:''}
         ${trigStr?`<div><span style="color:var(--tmed)">Triggers:</span> ${trigStr}</div>`:''}
-        ${cuerpoStr?`<div><span style="color:var(--tmed)">Cuerpo:</span> ${cuerpoStr}</div>`:''}
+        ${!trigStr?`<div style="display:flex;align-items:center;gap:6px;margin-top:2px"><span style="font-size:11px;color:var(--tmed)">Trigger:</span> <input type="text" value="${r.trigger||''}" placeholder="— agregá —" style="border:none;border-bottom:0.5px dashed var(--bordem);background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;min-width:100px;max-width:200px" oninput="presData[presKey('${day}')][${origIdx}].trigger=this.value;save('presdata',presData)"></div>`:''}
+        ${r.nota?`<div style="margin-top:3px;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,0.04);font-style:italic;color:var(--tierra);line-height:1.5">📝 ${r.nota}</div>`:''}
         ${r.notasElec?`<div style="margin-top:4px;font-weight:500;color:var(--tierra)">${r.notasElec}</div>`:''}
         ${(r.emNotas&&r.emNotas.length)?r.emNotas.map(n=>`<div style="margin-top:3px;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,0.04);font-style:italic;color:var(--tmed);line-height:1.5">· ${n}</div>`).join(''):''}
         ${esRegEmocion?`<div style="margin-top:4px;display:flex;flex-direction:column;gap:2px">
@@ -10992,7 +10993,7 @@ function toggleChat(){
 function chatWelcome(){
   const hour=new Date().getHours();
   const saludo=hour<12?'¡Buenos días!':hour<18?'¡Buenas tardes!':'¡Buenas noches!';
-  addBotMsg(`${saludo}! 🌱 Soy Vida, tu asistente.\n\nContame lo que quieras registrar:\n• _"Estoy con enojo porque Paz no contestó"_\n• _"Hice bici hoy 45 minutos"_\n• _"Gasté 23000 pesos en comida, en pollo"_\n• _"Dormí bien, me siento tranquila"_\n\nYo lo interpreto y lo guardo donde corresponde. 💪`);
+  addBotMsg(`${saludo}! 🌱 Soy Vida, tu asistente.\n\nContame lo que quieras registrar:\n• _"Estoy con enojo porque Paz no contestó"_\n• _"Hice bici hoy 45 minutos"_\n• _"Gym: prensa 25kg, hip thrust 40kg"_\n• _"Gasté 23000 pesos en comida, en pollo"_\n• _"Nota: hoy me di cuenta que..."_\n\nYo lo interpreto y lo guardo donde corresponde. 💪`);
 }
 
 function addBotMsg(text, saving=false){
@@ -11076,60 +11077,55 @@ async function sendChatMsg(){
   const habCategories=(typeof cats!=='undefined'?cats:[]).map(c=>c.nombre).join(', ');
   const gastoCatsStr=(typeof gastoCats!=='undefined'?gastoCats:[]).join(', ');
 
-  const systemPrompt=`Sos "Vida", la asistente personal de La Actitud de Vida, una app de bienestar y autoconocimiento. El usuario te habla en lenguaje natural y vos interpretás lo que quiere registrar.
+  const trigsList=(typeof presTriggers!=='undefined'&&Array.isArray(presTriggers))?presTriggers.join(', '):'';
+  const systemPrompt=`Sos "Vida", la asistente personal de La Actitud de Vida. El usuario te habla en lenguaje natural y vos interpretás lo que quiere registrar.
 
 Fecha de hoy: ${todayStr}
 Mes actual: ${mesActual}
-Categorías de hábitos: ${habCategories}
+Categorías de hábitos disponibles: ${habCategories}
 Categorías de gastos disponibles: ${gastoCatsStr}
+Triggers cargados por el usuario: ${trigsList}
 
-Tu trabajo es interpretar el mensaje del usuario y responder con:
-1. Un JSON de acciones a guardar
-2. Un mensaje amigable confirmando qué guardaste, en tono cálido y personal (no robótico)
+SECCIONES DONDE PODÉS GUARDAR COSAS:
+1. GASTOS & INGRESOS — cualquier gasto o ingreso en pesos
+2. DEPORTE — actividades físicas del día (bici, caminata, natación, etc.)
+3. GYM (Excel de pesas) — ejercicios con peso en kg (prensa, sentadilla, hip thrust, etc.)
+4. EMOCIONES — cómo te sentís, con quién, qué pasó
+5. NOTA LIBRE — cualquier cosa que quieras dejar anotada
 
-Respondé SIEMPRE con este formato exacto (sin markdown, sin backticks extra):
+Respondé SIEMPRE con este formato (sin backticks):
 ACTIONS:{"actions":[...]}
 MSG:tu mensaje al usuario
 
-Tipos de acciones posibles:
+Tipos de acciones:
 
-1. EMOCION — registrar emoción del día en presData:
-{"type":"emocion","emocion":"nombre de la emoción","trigger":"quién o qué lo causó","nota":"descripción libre","subem":["id_emocion"]}
-Emociones posibles (usar el id): paz, gratitud_p, alegria, amor_p, felicidad_p, entusiasmo, satisfaccion, calma, aceptacion_p, aburrimiento, melancolia_p, confusion_p, frustracion, desaliento, inseguridad, culpa_p, ansiedad_p, soledad_p, miedo, enfado
+{"type":"gasto","desc":"descripción","monto":1234,"cat":"Comida","tipo":"egreso"}
+tipo puede ser "egreso" o "ingreso". cat: Comida, Ropa, Salud, Deporte, Ocio, Hogar, Educación, Otro.
 
-2. GASTO — registrar gasto o ingreso:
-{"type":"gasto","desc":"descripción","monto":1234,"cat":"Comida","tipo":"egreso","pago":"Efectivo"}
-tipo puede ser "egreso" o "ingreso". cat debe ser una de las disponibles o la más cercana.
+{"type":"deporte","actividades":["Bici"],"nota":"3km"}
+Para actividades cardio/físicas generales.
 
-3. DEPORTE — registrar actividad deportiva:
-{"type":"deporte","actividades":["Bici"],"nota":"45 minutos"}
+{"type":"gym","ejercicio":"Prensa","peso":25}
+Para ejercicios de pesas con peso en kg. Siempre un objeto por ejercicio.
 
-4. HABITO — marcar hábito como hecho:
-{"type":"habito","nombre":"nombre del hábito que más se parece"}
+{"type":"emocion","emocion":"Enojo","trigger":"Mi pareja","nota":"me enojé con mi pareja por temas de la casa","subem":["enfado"]}
+Para emociones: extraé la emoción principal. Poné TODO el texto original en "nota". Para "trigger": buscá si alguna palabra del mensaje coincide (aunque sea parcialmente) con alguno de los "Triggers cargados por el usuario" — si coincide usá el nombre exacto de la lista. Si el usuario lo menciona explícitamente ("trigger: X", "con X", "por X") aunque no esté en la lista, usalo igual con 1-3 palabras. Si no es claro, dejá trigger "".
+subem IDs: paz, gratitud_p, alegria, amor_p, entusiasmo, satisfaccion, calma, aburrimiento, melancolia_p, frustracion, inseguridad, ansiedad_p, miedo, enfado
 
-5. NOTA — guardar una nota libre en el diario de emociones:
-{"type":"nota","texto":"texto libre"}
+{"type":"nota","titulo":"título opcional","texto":"texto libre"}
+Guarda en Reflexiones / Camino del artista (Registro Autoconocimiento).
 
-Podés devolver varias acciones en un mismo mensaje si el usuario menciona varias cosas.
-
-Si no entendés qué quiere guardar, respondé sin acciones:
+Si el usuario te pregunta qué podés hacer, qué cosas puede cargar, cómo usarte, o hace preguntas sobre el bot, respondé:
 ACTIONS:{"actions":[]}
-MSG:pregunta de clarificación amigable
+MSG:¡Hola! Puedo guardar estas cosas en tu app 👇\n\n💸 *Gastos & ingresos*\n_"gasté 5000 en comida"_, _"ingresé 50000 de trabajo"_\n\n🏃 *Deporte*\n_"hice bici 3km"_, _"caminé 40 minutos"_\n\n💪 *Gym (pesas)*\n_"prensa 25kg"_, _"hip thrust 40kg, sentadilla 30kg"_\n\n💛 *Emociones*\n_"estoy ansiosa por el trabajo"_, _"me enojé con mi hermana"_\nDetecto automáticamente tus triggers guardados 🎯\n\n📝 *Nota*\n_"nota: hoy me di cuenta que..."_\nVa a Reflexiones / Autoconocimiento\n\n¿Qué querés registrar?
 
-Ejemplos:
-Usuario: "estoy con enojo porque Paz mi hija no me contestó"
-ACTIONS:{"actions":[{"type":"emocion","emocion":"Enojo","trigger":"Paz (hija)","nota":"No me contestó","subem":["enfado"]}]}
-MSG:Guardé que estás con enojo 😤 Trigger: Paz (tu hija). Queda anotado en tus emociones de hoy. ¿Querés agregar algo más?
+Si NO entendés qué quiere guardar, respondé:
+ACTIONS:{"actions":[]}
+MSG:No entendí bien qué querés registrar 😊 Puedo guardar cosas en estas secciones:\n• 💸 *Gastos & ingresos* — "gasté 5000 en comida"\n• 🏃 *Deporte* — "hice bici 3km"\n• 💪 *Gym* — "hice prensa 25kg"\n• 💛 *Emociones* — "estoy ansiosa por el trabajo"\n• 📝 *Nota* — cualquier reflexión o pensamiento (va a Autoconocimiento)\n¿Qué querías anotar?
 
-Usuario: "hice bici hoy 45 minutos"
-ACTIONS:{"actions":[{"type":"deporte","actividades":["Bici"],"nota":"45 minutos"}]}
-MSG:¡Qué bien! 🚴 Anoté bici — 45 minutos. Queda en tu registro deportivo de hoy.
+Podés recibir varias cosas en un mensaje. Ej: "hice gym hoy, prensa 25kg y sentadilla 40kg" → dos acciones gym.
 
-Usuario: "gasté 23000 pesos en comida, en pollo"
-ACTIONS:{"actions":[{"type":"gasto","desc":"Pollo","monto":23000,"cat":"Comida","tipo":"egreso","pago":"Efectivo"}]}
-MSG:Listo ✓ Anoté $23.000 en Comida (pollo). Queda en tus gastos del mes.
-
-Respondé siempre en español rioplatense, tono cercano y cálido.`;
+Respondé siempre en español rioplatense, tono cálido y breve.`;
 
   try{
     const response=await fetch('/api/chat',{
@@ -11184,11 +11180,12 @@ function ejecutarAccion(a){
         presente:'si',
         mente:[],
         menteNotas:'',
-        felicidad:5,
+        felicidad:null,
         subem:a.subem||[],
-        triggers:[a.trigger||''].filter(Boolean),
+        triggers:[],
         trigAlta:[],trigMedia:[],trigBaja:[],
         nota:a.nota||'',
+        trigger:a.trigger||'',
         estadoEM:a.emocion||'',
         rapido:true,
         fuenteChat:true
@@ -11229,7 +11226,20 @@ function ejecutarAccion(a){
       save('depdata',depData);
       if(typeof buildDeporte==='function'&&curView==='deporte')buildDeporte();
     }
-    else if(a.type==='habito'){
+    else if(a.type==='gym'){
+      if(!gymData[todayStr])gymData[todayStr]=[];
+      const regs=gymData[todayStr];
+      // Add to last registro or create new one
+      const lastReg=regs.length>0?regs[regs.length-1]:null;
+      if(lastReg&&typeof lastReg==='object'&&!Array.isArray(lastReg)){
+        lastReg[a.ejercicio]=a.peso+' kg';
+      } else {
+        const newReg={};newReg[a.ejercicio]=a.peso+' kg';regs.push(newReg);
+      }
+      gymData[todayStr]=regs;
+      save('gymdata',gymData);
+      if(typeof buildGymRegistrosHoy==='function'&&curView==='deporte')buildGymRegistrosHoy();
+    }
       // Find closest habit and mark as done
       const hn=(a.nombre||'').toLowerCase();
       let found=null;
@@ -11246,13 +11256,17 @@ function ejecutarAccion(a){
       }
     }
     else if(a.type==='nota'){
-      if(!presData[presKey(todayStr)])presData[presKey(todayStr)]=[];
-      presData[presKey(todayStr)].push({
-        ts:Date.now(),actividad:'',presente:'si',mente:[],menteNotas:'',
-        felicidad:5,subem:[],triggers:[],trigAlta:[],trigMedia:[],trigBaja:[],
-        nota:a.texto||'',rapido:true,fuenteChat:true
+      if(typeof artistaData==='undefined')window.artistaData=load('artistadata',[]);
+      artistaData.push({
+        id:'art'+Date.now(),
+        titulo:a.titulo||'',
+        texto:a.texto||'',
+        day:todayStr,
+        fuenteChat:true
       });
-      save('presdata',presData);
+      save('artistadata',artistaData);
+      if(typeof buildArtistaHistorial==='function'&&curView==='artista-historial')buildArtistaHistorial();
+      if(typeof buildArtista==='function'&&curView==='autoconocimiento')buildArtista();
     }
   }catch(e){console.warn('ejecutarAccion error',e);}
 }
