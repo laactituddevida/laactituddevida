@@ -11276,9 +11276,12 @@ Para emociones: extraé la emoción principal. Poné TODO el texto original en "
 subem IDs: paz, gratitud_p, alegria, amor_p, entusiasmo, satisfaccion, calma, aburrimiento, melancolia_p, frustracion, inseguridad, ansiedad_p, miedo, enfado
 
 {"type":"habito","nombre":"Postura física"}
-Para marcar un hábito como hecho hoy. Buscá el nombre más parecido en "Hábitos disponibles". Si el usuario dice algo vago como "tracker postura", buscá "Postura" en la lista. Si lo encontrás, confirmá con el nombre exacto. Si no encontrás ningún match, devolvé:
-ACTIONS:{"actions":[]}
-MSG:No encontré ese hábito 😊 Tus hábitos disponibles son:\n• [listá todos los de "Hábitos disponibles" separados por salto de línea]
+Usá esto cuando el usuario quiera marcar que hizo un hábito hoy. Se activa con palabras como "hábito", "tracker", "ok", "hice", o el nombre directo del hábito. Buscá el nombre más cercano en "Hábitos disponibles". Ejemplos:
+- "hábitos postura física" → {"type":"habito","nombre":"Postura física"}
+- "ok dormir 8hs" → busca "dormir" en la lista, encuentra "Dormir 7-8 horas"
+- "hice meditación" → busca "meditación"
+- "habito sonreír ok" → busca "sonreír"
+Si encontrás match, confirmá con el nombre exacto que marcaste. Si no encontrás ningún match claro, respondé con ACTIONS vacías y listá todos los hábitos disponibles de "Hábitos disponibles".
 
 {"type":"nota","titulo":"título opcional","texto":"texto libre"}
 Guarda en Reflexiones / Camino del artista (Registro Autoconocimiento).
@@ -11427,36 +11430,34 @@ function ejecutarAccion(a){
     }
     else if(a.type==='habito'){
       const hn=(a.nombre||'').toLowerCase().trim();
-      let found=null;let foundCat='';
-      // Build full list of habits including subs
+      // Build full flat list of all habits including subs
       const allHabits=[];
       (cats||[]).forEach(cat=>{
         (cat.habitos||[]).forEach(h=>{
-          allHabits.push({h,cat:cat.nombre});
-          (h.subs||[]).forEach(s=>allHabits.push({h:s,cat:cat.nombre,parent:h.n}));
+          allHabits.push({h,catNombre:cat.nombre});
+          (h.subs||[]).forEach(s=>allHabits.push({h:s,catNombre:cat.nombre,parent:h.n}));
         });
       });
-      // Try exact match first, then partial
-      found=allHabits.find(x=>x.h.n.toLowerCase()===hn);
+      // Find best match: exact → partial → word match
+      let found=allHabits.find(x=>x.h.n.toLowerCase()===hn);
       if(!found)found=allHabits.find(x=>x.h.n.toLowerCase().includes(hn));
       if(!found)found=allHabits.find(x=>hn.includes(x.h.n.toLowerCase()));
-      // Fuzzy: match any word
       if(!found){
         const words=hn.split(' ').filter(w=>w.length>2);
         found=allHabits.find(x=>words.some(w=>x.h.n.toLowerCase().includes(w)));
       }
       if(found){
-        const k=todayStr+'_'+found.h.id;
-        checks[k]={done:true,ts:Date.now()};
+        // Use correct key format: mes_sem_hid_dayOfWeek
+        const todayDow=(new Date().getDay()+6)%7; // Mon=0
+        const k=ck(curMes,curSem,found.h.id,todayDow);
+        checks[k]=2; // mark as done (score 2 = full check)
         save('checks',checks);
-        if(curView==='tracker'&&typeof buildTrackerHoy==='function')buildTrackerHoy();
-        // Return name for confirmation in MSG
+        if(curView==='tracker'&&typeof buildTable==='function')buildTable();
+        if(curView==='tracker'&&typeof recalc==='function')recalc();
         a._foundName=found.h.n;
-        a._foundCat=found.cat;
+        a._foundCat=found.catNombre;
       } else {
-        // Return list for the bot to show
         a._notFound=true;
-        a._habitList=allHabits.map(x=>(x.cat?x.cat+' → ':'')+x.h.n).join('\n• ');
       }
     }
     else if(a.type==='nota'){
