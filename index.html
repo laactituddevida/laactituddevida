@@ -11145,17 +11145,28 @@ async function sendChatMsg(){
     gastosCtx=`Gastos de hoy: ${listaHoy}. Total gastos del mes: $${totalMesEg.toFixed(0)}. Total ingresos del mes: $${totalMesIng.toFixed(0)}.`;
   }catch(e){}
 
-  // EMOCIONES RECIENTES (últimos 3 días)
+  // EMOCIONES RECIENTES (hoy + últimos 2 días)
   let emCtx='Sin emociones registradas recientemente.';
   try{
-    const emRecientes=[];
+    const emHoy=[];const emAyer=[];const emAnteayer=[];
     for(let i=0;i<3;i++){
       const d=new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()-i);
       const dk=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      const regs=(typeof presData!=='undefined'?presData[presKey(dk)]:null)||[];
-      regs.forEach(r=>{if(r.estadoEM||r.subem?.length)emRecientes.push(`${dk}: ${r.estadoEM||r.subem?.join(',')||''}${r.trigger?' (trigger: '+r.trigger+')':''}${r.nota?' — '+r.nota.slice(0,60):''}`)});
+      const regs=(typeof presData!=='undefined'?presData['pres_'+dk]:null)||[];
+      const resumen=regs.map(r=>{
+        const em=r.estadoEM||r.subem?.[0]||'';
+        const trig=r.trigger||'';
+        return em?(em+(trig?' con '+trig:'')):null;
+      }).filter(Boolean).join(', ');
+      if(i===0&&resumen)emHoy.push(resumen);
+      if(i===1&&resumen)emAyer.push(resumen);
+      if(i===2&&resumen)emAnteayer.push(resumen);
     }
-    if(emRecientes.length)emCtx=emRecientes.join(' | ');
+    const partes=[];
+    if(emHoy.length)partes.push('Hoy: '+emHoy.join(', '));
+    if(emAyer.length)partes.push('Ayer: '+emAyer.join(', '));
+    if(emAnteayer.length)partes.push('Anteayer: '+emAnteayer.join(', '));
+    if(partes.length)emCtx=partes.join(' | ');
   }catch(e){}
 
   // DEPORTE MES
@@ -11191,7 +11202,7 @@ Ejemplos de preguntas y cómo responder:
 - "¿cuándo me viene?" → ACTIONS:{"actions":[]} / MSG: usá los datos del ciclo para responder con fecha exacta y días que faltan
 - "¿qué gasté hoy?" → ACTIONS:{"actions":[]} / MSG: listá todos los gastos de hoy del campo GASTOS con montos y categorías. Si dice "ninguno" decilo claramente.
 - "¿cuánto gasté este mes?" → ACTIONS:{"actions":[]} / MSG: dá el total de gastos e ingresos del mes
-- "¿cómo estuve emocionalmente?" → ACTIONS:{"actions":[]} / MSG: resumí las emociones recientes
+- "¿cómo estuve emocionalmente?" o "¿qué emociones tuve hoy?" → ACTIONS:{"actions":[]} / MSG: listá las emociones de hoy del campo EMOCIONES RECIENTES, en formato simple: "Hoy registraste: Enojo con Río, Alegría con Paz" — si no hay nada decilo claramente.
 - "¿cuántos días hice deporte?" → ACTIONS:{"actions":[]} / MSG: respondé con el dato del mes
 
 Cuando el usuario quiere GUARDAR algo, usá las acciones del sistema.
