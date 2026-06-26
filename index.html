@@ -11102,13 +11102,97 @@ async function sendChatMsg(){
   const gastoCatsStr=(typeof gastoCats!=='undefined'?gastoCats:[]).join(', ');
 
   const trigsList=(typeof presTriggers!=='undefined'&&Array.isArray(presTriggers))?presTriggers.join(', '):'';
-  const systemPrompt=`Sos "Vida", la asistente personal de La Actitud de Vida. El usuario te habla en lenguaje natural y vos interpretás lo que quiere registrar.
+
+  // Build data context for queries
+  // CICLO
+  let cicloCtx='Sin datos de ciclo cargados.';
+  try{
+    const cd=load('ciclodata',{});
+    const cicloDiario=load('ciclodiario',{});
+    const mapaDur=cd.duracion||28;
+    const diasMens=cd.diasMens||5;
+    // Find period starts
+    const starts=[];
+    Object.keys(cicloDiario).sort().forEach(k=>{if(cicloDiario[k]&&cicloDiario[k].mens===true){
+      const prev=starts.length?starts[starts.length-1]:null;
+      const dt=new Date(k+'T12:00:00');
+      if(!prev||Math.round((dt-prev)/(1000*60*60*24))>3)starts.push(dt);
+    }});
+    if(starts.length>0){
+      const last=starts[starts.length-1];
+      const todayD=new Date(todayStr+'T12:00:00');
+      const diaActual=Math.round((todayD-last)/(1000*60*60*24))+1;
+      const proxFecha=new Date(last.getFullYear(),last.getMonth(),last.getDate()+mapaDur);
+      const diasFalta=Math.round((proxFecha-todayD)/(1000*60*60*24));
+      const proxStr=proxFecha.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+      let fase='lútea';
+      const ovDay=Math.round(mapaDur/2);
+      if(diaActual<=diasMens)fase='menstrual';
+      else if(diaActual<=ovDay-2)fase='folicular';
+      else if(diaActual<=ovDay+2)fase='ovulación';
+      cicloCtx=`Duración del ciclo: ${mapaDur} días. Día actual del ciclo: ${diaActual}. Fase actual: ${fase}. Próximo período estimado: ${proxStr} (en ${diasFalta} días).`;
+    }
+  }catch(e){}
+
+  // GASTOS HOY Y MES
+  let gastosCtx='Sin gastos registrados.';
+  try{
+    const gastosHoy=(typeof gastos!=='undefined'?gastos:[]).filter(g=>g.fecha===todayStr);
+    const gastosMes=(typeof gastos!=='undefined'?gastos:[]).filter(g=>g.mes===new Date().getMonth());
+    const totalMesEg=gastosMes.filter(g=>g.tipo==='egreso').reduce((s,g)=>s+g.monto,0);
+    const totalMesIng=gastosMes.filter(g=>g.tipo==='ingreso').reduce((s,g)=>s+g.monto,0);
+    const listaHoy=gastosHoy.length?gastosHoy.map(g=>`${g.tipo==='ingreso'?'+':'-'}$${g.monto} ${g.cat} (${g.desc||''})`).join(', '):'ninguno';
+    gastosCtx=`Gastos de hoy: ${listaHoy}. Total gastos del mes: $${totalMesEg.toFixed(0)}. Total ingresos del mes: $${totalMesIng.toFixed(0)}.`;
+  }catch(e){}
+
+  // EMOCIONES RECIENTES (últimos 3 días)
+  let emCtx='Sin emociones registradas recientemente.';
+  try{
+    const emRecientes=[];
+    for(let i=0;i<3;i++){
+      const d=new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()-i);
+      const dk=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const regs=(typeof presData!=='undefined'?presData[presKey(dk)]:null)||[];
+      regs.forEach(r=>{if(r.estadoEM||r.subem?.length)emRecientes.push(`${dk}: ${r.estadoEM||r.subem?.join(',')||''}${r.trigger?' (trigger: '+r.trigger+')':''}${r.nota?' — '+r.nota.slice(0,60):''}`)});
+    }
+    if(emRecientes.length)emCtx=emRecientes.join(' | ');
+  }catch(e){}
+
+  // DEPORTE MES
+  let depCtx='Sin registros de deporte.';
+  try{
+    const depData=load('depdata',{});
+    const regs=depData.registros||{};
+    const diasDep=Object.keys(regs).filter(k=>k.startsWith(todayStr.slice(0,7))&&regs[k].length>0);
+    const actHoy=regs[todayStr]?regs[todayStr].map(r=>r.actividades?.join(', ')).join(', '):'ninguna';
+    depCtx=`Días de deporte este mes: ${diasDep.length}. Actividad de hoy: ${actHoy}.`;
+  }catch(e){}
+
+  const systemPrompt=`Sos "Vida", la asistente personal de La Actitud de Vida. Tenés dos roles: 1) guardar datos cuando el usuario te lo pide, 2) responder preguntas sobre sus datos.
 
 Fecha de hoy: ${todayStr}
 Mes actual: ${mesActual}
-Categorías de hábitos disponibles: ${habCategories}
-Categorías de gastos disponibles: ${gastoCatsStr}
-Triggers cargados por el usuario: ${trigsList}
+Triggers del usuario: ${trigsList}
+Categorías de hábitos: ${habCategories}
+Categorías de gastos: ${gastoCatsStr}
+
+═══ DATOS ACTUALES DEL USUARIO ═══
+🌙 CICLO: ${cicloCtx}
+💸 GASTOS: ${gastosCtx}
+💛 EMOCIONES RECIENTES: ${emCtx}
+🏃 DEPORTE: ${depCtx}
+═══════════════════════════════════
+
+Cuando el usuario hace una PREGUNTA sobre sus datos, respondé directamente con la información. Ejemplos:
+- "¿cuándo me viene?" → usá los datos del ciclo para responder con fecha exacta y días que faltan
+- "¿qué gasté hoy?" → listá los gastos de hoy con montos
+- "¿cuánto gasté este mes?" → dá el total y un resumen por categoría si podés
+- "¿cómo estuve emocionalmente?" → resumí las emociones recientes
+- "¿cuántos días hice deporte?" → respondé con el dato del mes
+
+Cuando el usuario quiere GUARDAR algo, usá las acciones del sistema.
+
+Podés hacer ambas cosas en un mismo mensaje si corresponde.
 
 SECCIONES DONDE PODÉS GUARDAR COSAS:
 1. GASTOS & INGRESOS — cualquier gasto o ingreso en pesos
