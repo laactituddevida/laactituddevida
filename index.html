@@ -5868,6 +5868,13 @@ function buildGastos(){
 }
 
 function delGasto(id){gastos=gastos.filter(g=>g.id!==id);save('gastos',gastos);buildGastos();if(curView==='gastos-mes')buildGastosMes();}
+function editGasto(id,field,val){
+  const g=gastos.find(x=>x.id===id);if(!g)return;
+  if(field==='monto')g.monto=parseFloat(val)||g.monto;
+  else g[field]=val;
+  save('gastos',gastos);
+  if(curView==='gastos-mes')buildGastosMes();
+}
 
 function buildGastosMes(){
   const lbl=document.getElementById('gastos-mes-lbl');if(lbl)lbl.textContent=MESES[curMes]+' '+today.getFullYear();
@@ -5917,21 +5924,28 @@ function buildGastosMes(){
             <span style="font-size:10px;color:var(--tmed)">${items.length} registros</span>
             <span style="font-size:12px;font-weight:600;color:${col}">${items[0].tipo==='ingreso'?'+':'-'}$${total.toFixed(0)}</span>
           </div>
-          <div>${items.map(g=>`<div style="padding:6px 10px 6px 14px;display:flex;align-items:center;gap:6px;border-top:0.5px solid ${col}20;background:#fff">
+          <div>${items.map(g=>`<div style="padding:6px 10px 6px 14px;display:flex;align-items:center;gap:6px;border-top:0.5px solid ${col}20;background:#fff;flex-wrap:wrap">
             <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
-            <span style="font-size:11px;color:var(--tmed);flex:1">${g.cat}${g.pago?' · '+g.pago:''}</span>
-            <span style="font-size:11px;font-weight:500;color:var(--tierra)">${g.tipo==='ingreso'?'+':'-'}$${g.monto.toFixed(0)}</span>
+            <input type="text" value="${(g.desc||'').replace(/"/g,'&quot;')}" placeholder="descripción"
+              style="flex:1;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;min-width:60px"
+              onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','desc',this.value)">
+            <input type="number" value="${g.monto||0}"
+              style="width:68px;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:11px;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:right"
+              onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','monto',this.value)">
             <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
           </div>`).join('')}</div>
         </div>`;
       } else {
         const g=items[0];
-        html+=`<div style="padding:8px 10px;background:#fff;border-radius:8px;border:0.5px solid ${col}40;border-left:3px solid ${col};display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        html+=`<div style="padding:8px 10px;background:#fff;border-radius:8px;border:0.5px solid ${col}40;border-left:3px solid ${col};display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">
           <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
-          <span style="font-size:11px;font-weight:500;color:${col};min-width:80px">${g.cat}</span>
-          <span style="flex:1;font-size:12px;color:var(--tierra)">${g.desc}</span>
-          <span style="font-size:9px;color:var(--tmed)">${g.pago||''}</span>
-          <span style="font-size:11px;font-weight:600;color:var(--tierra);margin-left:6px">${g.tipo==='ingreso'?'+':'-'}$${g.monto.toFixed(0)}</span>
+          <span style="font-size:11px;font-weight:500;color:${col};min-width:70px">${g.cat}</span>
+          <input type="text" value="${(g.desc||'').replace(/"/g,'&quot;')}" placeholder="descripción"
+            style="flex:1;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;min-width:80px"
+            onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','desc',this.value)">
+          <input type="number" value="${g.monto||0}"
+            style="width:72px;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:right"
+            onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','monto',this.value)">
           <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
         </div>`;
       }
@@ -10839,10 +10853,16 @@ async function cargarDatosUsuario(){
     // cargar la página de nuevo) que cortaban la navegación del usuario.
     if(huboNuevoDato && !sessionStorage.getItem('lav_synced_once')){
       sessionStorage.setItem('lav_synced_once','1');
-      // Save the current view so we can restore it after reload
-      var pendingView=sessionStorage.getItem('lav_pending_view');
-      if(!pendingView) sessionStorage.setItem('lav_pending_view', curView||'tracker');
-      location.reload();
+      // Reload in-memory variables from localStorage without page reload
+      try{cats=load('cats',DEFAULT_CATS);}catch(e){}
+      try{checks=load('checks',{});}catch(e){}
+      try{emData=load('emdata',{});}catch(e){}
+      try{gastos=load('gastos',[]);}catch(e){}
+      try{presData=load('presdata',{});}catch(e){}
+      try{vinculos=load('vinculos',{grupos:[],personas:[]});}catch(e){}
+      try{valoresData=load('valoresdata',[]);}catch(e){}
+      // Refresh current view silently
+      try{if(typeof showView==='function')showView(curView||'tracker');}catch(e){}
     }
   }
 }
@@ -11128,6 +11148,22 @@ ACTIONS:{"actions":[]}
 MSG:No entendí bien qué querés registrar 😊 Puedo guardar cosas en estas secciones:\n• 💸 *Gastos & ingresos* — "gasté 5000 en comida"\n• 🏃 *Deporte* — "hice bici 3km"\n• 💪 *Gym* — "hice prensa 25kg"\n• 💛 *Emociones* — "estoy ansiosa por el trabajo"\n• 📝 *Nota* — cualquier reflexión o pensamiento (va a Autoconocimiento)\n¿Qué querías anotar?
 
 Podés recibir varias cosas en un mensaje. Ej: "hice gym hoy, prensa 25kg y sentadilla 40kg" → dos acciones gym.
+
+Cuando guardás una actividad de deporte o gym, respondé con un mensaje muy entusiasta y personalizado mencionando la actividad específica que hizo. Ejemplo: "¡Muy bien!! 🏊 ¡Qué bueno ese nado de una hora! Tu cuerpo te lo agradece 💪" o "¡Genial!! 🚴 ¡Tremenda bici de 3km! Así se hace!" — usá el emoji que corresponda a la actividad y celebrala de verdad.
+
+Cuando guardás una emoción, además de confirmar el guardado, agregá siempre al final del mensaje una línea con qué necesita esa emoción, basándote en esta guía:
+- Enojo/Bronca → "💡 El enojo necesita: hay un límite cruzado o una necesidad insatisfecha. ¿Cuál es?"
+- Miedo → "💡 El miedo necesita: ser nombrado. ¿A qué exactamente? Luego: ¿qué podés hacer?"
+- Tristeza → "💡 La tristeza necesita: ser sentida, no escapada. Llorá si querés. Pedí acompañamiento."
+- Culpa → "💡 La culpa necesita: ¿podés reparar algo? Si sí, hacelo. Si no, aprendé y soltá."
+- Soledad → "💡 La soledad necesita: conexión real. Llamá a alguien. O primero conectate con vos."
+- Frustración → "💡 La frustración necesita: algo no está saliendo. ¿Qué podés ajustar?"
+- Ansiedad/Preocupación → "💡 La ansiedad necesita: separar lo que depende de vos y lo que no. Actuá en lo primero."
+- Inseguridad/Vergüenza → "💡 La inseguridad necesita: ser hablada con alguien de confianza. La luz la achica."
+- Confusión → "💡 La confusión necesita: claridad. Escribí, preguntá, o simplemente pausá."
+- Aburrimiento → "💡 El aburrimiento necesita: un desafío nuevo. ¿Qué querés aprender o hacer?"
+- Paz/Gratitud/Alegría/Amor → "💡 Esta emoción necesita: ser expresada y compartida. No la guardes sola."
+- Nostalgia/Melancolía → "💡 La nostalgia necesita: honrar ese momento. Luego soltá. Vivís hoy."
 
 Respondé siempre en español rioplatense, tono cálido y breve.`;
 
