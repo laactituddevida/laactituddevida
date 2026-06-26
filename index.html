@@ -11093,7 +11093,7 @@ SECCIONES DONDE PODÉS GUARDAR COSAS:
 4. EMOCIONES — cómo te sentís, con quién, qué pasó
 5. NOTA LIBRE — cualquier cosa que quieras dejar anotada
 
-Respondé SIEMPRE con este formato (sin backticks):
+Respondé SIEMPRE con este formato (sin comillas invertidas):
 ACTIONS:{"actions":[...]}
 MSG:tu mensaje al usuario
 
@@ -11240,6 +11240,7 @@ function ejecutarAccion(a){
       save('gymdata',gymData);
       if(typeof buildGymRegistrosHoy==='function'&&curView==='deporte')buildGymRegistrosHoy();
     }
+    else if(a.type==='habito'){
       // Find closest habit and mark as done
       const hn=(a.nombre||'').toLowerCase();
       let found=null;
