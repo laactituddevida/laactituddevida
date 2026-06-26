@@ -11429,7 +11429,10 @@ function ejecutarAccion(a){
       if(typeof buildGymRegistrosHoy==='function'&&curView==='deporte')buildGymRegistrosHoy();
     }
     else if(a.type==='habito'){
-      const hn=(a.nombre||'').toLowerCase().trim();
+      // Clean trigger words before searching
+      const STOP_WORDS=['ok','hice','hoy','habito','hábito','tracker','marcar','anotar','poner','si','sí','que','en','de','un','una'];
+      const hn=(a.nombre||'').toLowerCase().trim()
+        .split(' ').filter(w=>!STOP_WORDS.includes(w)).join(' ').trim();
       // Build full flat list of all habits including subs
       const allHabits=[];
       (cats||[]).forEach(cat=>{
@@ -11447,10 +11450,9 @@ function ejecutarAccion(a){
         found=allHabits.find(x=>words.some(w=>x.h.n.toLowerCase().includes(w)));
       }
       if(found){
-        // Use correct key format: mes_sem_hid_dayOfWeek
-        const todayDow=(new Date().getDay()+6)%7; // Mon=0
+        const todayDow=(new Date().getDay()+6)%7;
         const k=ck(curMes,curSem,found.h.id,todayDow);
-        checks[k]=2; // mark as done (score 2 = full check)
+        checks[k]=2;
         save('checks',checks);
         if(curView==='tracker'&&typeof buildTable==='function')buildTable();
         if(curView==='tracker'&&typeof recalc==='function')recalc();
