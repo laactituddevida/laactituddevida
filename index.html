@@ -10963,7 +10963,11 @@ window.addEventListener("load",async function(){
 
   <!-- Input -->
   <div style="background:#F0F0F0;padding:8px 10px;display:flex;align-items:flex-end;gap:8px;border-top:0.5px solid #ddd">
-    <textarea id="chat-input" placeholder="Escribí lo que quieras registrar..." rows="1"
+    <button id="chat-mic-btn" onclick="toggleVoz()" title="Hablar"
+      style="width:44px;height:44px;border-radius:50%;border:none;background:#E8E8E8;color:#555;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s">
+      🎤
+    </button>
+    <textarea id="chat-input" placeholder="Escribí o usá el micrófono..." rows="1"
       style="flex:1;border:none;border-radius:20px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:#111;background:#fff;outline:none;resize:none;max-height:100px;line-height:1.45;box-shadow:0 1px 3px rgba(0,0,0,.1)"
       oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"
       onkeydown="if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChatMsg();}"></textarea>
@@ -11099,14 +11103,14 @@ MSG:tu mensaje al usuario
 
 Tipos de acciones:
 
-{"type":"gasto","desc":"descripción","monto":1234,"cat":"Comida","tipo":"egreso"}
-tipo puede ser "egreso" o "ingreso". cat: Comida, Ropa, Salud, Deporte, Ocio, Hogar, Educación, Otro.
+{"type":"gasto","desc":"descripción","monto":1234,"cat":"Comida","tipo":"egreso","pago":"Transferencia"}
+tipo puede ser "egreso" o "ingreso". cat: Comida, Ropa, Salud, Deporte, Ocio, Hogar, Educación, Otro. pago default: "Transferencia", cambiá solo si el usuario menciona efectivo, débito, crédito, etc.
 
 {"type":"deporte","actividades":["Bici"],"nota":"3km"}
 Para actividades cardio/físicas generales.
 
 {"type":"gym","ejercicio":"Prensa","peso":25}
-Para ejercicios de pesas con peso en kg. Siempre un objeto por ejercicio.
+Para ejercicios de pesas. "peso" es SOLO el número en kg, sin texto. Siempre un objeto por ejercicio.
 
 {"type":"emocion","emocion":"Enojo","trigger":"Mi pareja","nota":"me enojé con mi pareja por temas de la casa","subem":["enfado"]}
 Para emociones: extraé la emoción principal. Poné TODO el texto original en "nota". Para "trigger": buscá si alguna palabra del mensaje coincide (aunque sea parcialmente) con alguno de los "Triggers cargados por el usuario" — si coincide usá el nombre exacto de la lista. Si el usuario lo menciona explícitamente ("trigger: X", "con X", "por X") aunque no esté en la lista, usalo igual con 1-3 palabras. Si no es claro, dejá trigger "".
@@ -11202,7 +11206,7 @@ function ejecutarAccion(a){
         cat:a.cat||'Otro',
         tipo:a.tipo||'egreso',
         moneda:'ARS',
-        pago:a.pago||'Efectivo',
+        pago:a.pago||'Transferencia',
         mes:new Date().getMonth(),
         fecha:todayStr
       };
@@ -11231,10 +11235,11 @@ function ejecutarAccion(a){
       const regs=gymData[todayStr];
       // Add to last registro or create new one
       const lastReg=regs.length>0?regs[regs.length-1]:null;
+      const pesoNum=parseFloat(String(a.peso).replace(/[^0-9.]/g,''))||0;
       if(lastReg&&typeof lastReg==='object'&&!Array.isArray(lastReg)){
-        lastReg[a.ejercicio]=a.peso+' kg';
+        lastReg[a.ejercicio]=pesoNum;
       } else {
-        const newReg={};newReg[a.ejercicio]=a.peso+' kg';regs.push(newReg);
+        const newReg={};newReg[a.ejercicio]=pesoNum;regs.push(newReg);
       }
       gymData[todayStr]=regs;
       save('gymdata',gymData);
@@ -11270,6 +11275,46 @@ function ejecutarAccion(a){
       if(typeof buildArtista==='function'&&curView==='autoconocimiento')buildArtista();
     }
   }catch(e){console.warn('ejecutarAccion error',e);}
+}
+
+// ─── VOZ ───────────────────────────────────────────────
+let _recognition=null;let _voiceActive=false;
+function toggleVoz(){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){
+    alert('Tu browser no soporta voz. Usá Chrome.');return;
+  }
+  if(_voiceActive){_recognition&&_recognition.stop();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  _recognition=new SR();
+  _recognition.lang='es-AR';
+  _recognition.continuous=false;
+  _recognition.interimResults=false;
+  _recognition.onstart=()=>{
+    _voiceActive=true;
+    const btn=document.getElementById('chat-mic-btn');
+    if(btn){btn.style.background='#FF4444';btn.style.color='#fff';btn.textContent='⏹';}
+    document.getElementById('chat-status').textContent='Escuchando... 🎤';
+  };
+  _recognition.onresult=e=>{
+    const texto=e.results[0][0].transcript;
+    const inp=document.getElementById('chat-input');
+    if(inp){inp.value=texto;inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,100)+'px';}
+  };
+  _recognition.onend=()=>{
+    _voiceActive=false;
+    const btn=document.getElementById('chat-mic-btn');
+    if(btn){btn.style.background='#E8E8E8';btn.style.color='#555';btn.textContent='🎤';}
+    document.getElementById('chat-status').textContent='Tu asistente personal ✨';
+    const inp=document.getElementById('chat-input');
+    if(inp&&inp.value.trim())setTimeout(sendChatMsg,300);
+  };
+  _recognition.onerror=()=>{
+    _voiceActive=false;
+    const btn=document.getElementById('chat-mic-btn');
+    if(btn){btn.style.background='#E8E8E8';btn.style.color='#555';btn.textContent='🎤';}
+    document.getElementById('chat-status').textContent='Tu asistente personal ✨';
+  };
+  _recognition.start();
 }
 </script>
 
