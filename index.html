@@ -660,7 +660,7 @@ canvas{max-width:100%}
   <!-- EVOLUCIÓN MENSUAL (collapsible) -->
   <div style="margin-bottom:1rem">
     <div onclick="togglePresSection('pres-mes')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;transition:background .15s;margin:0 -6px" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
-      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Evolución mensual — <em style="color:var(--ambar)">gráficos</em></h2>
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Mapa del Mes — <em style="color:var(--ambar)">Mis Emociones</em></h2>
       <button id="btn-pres-mes" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="pres-mes" style="display:none">
@@ -1101,6 +1101,7 @@ canvas{max-width:100%}
   <div style="margin-bottom:1rem">
     <div onclick="toggleSection('gastos-form-wrap')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Nuevo <em style="color:var(--ambar)">registro</em></h2>
+      <button onclick="event.stopPropagation();showView('gastos-mes')" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Ver registros del mes</button>
       <button id="btn-gastos-form-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="gastos-form-wrap" style="display:none;padding-top:.75rem">
@@ -1493,6 +1494,7 @@ canvas{max-width:100%}
   <div style="margin-bottom:1rem">
     <div onclick="toggleSection('dep-actividades-wrap')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Mis actividades <em style="color:var(--ambar)">hoy</em></h2>
+      <button onclick="event.stopPropagation();showView('dep-notas-mes')" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Ver notas del mes</button>
       <button id="btn-dep-actividades-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="dep-actividades-wrap" style="display:none;padding-top:.75rem">
@@ -1544,6 +1546,7 @@ canvas{max-width:100%}
   <div style="margin-bottom:1rem">
     <div onclick="toggleSection('gym-registro-wrap')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Gym <em style="color:var(--ambar)">— Excel</em></h2>
+      <button onclick="event.stopPropagation();showView('gym-reporte')" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Ver registros del mes</button>
       <button id="btn-gym-registro-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="gym-registro-wrap" style="display:none;padding-top:.75rem">
@@ -1858,6 +1861,7 @@ canvas{max-width:100%}
   <div style="margin-bottom:1rem">
     <div onclick="toggleSection('auto-artista')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;margin:0 -6px;transition:background .15s" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Reflexiones / <em style="color:var(--ambar)">camino del artista</em></h2>
+      <button onclick="event.stopPropagation();showView('artista-historial')" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Ver históricas</button>
       <button id="btn-auto-artista" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="auto-artista" style="display:none;padding-top:.75rem">
@@ -6615,22 +6619,43 @@ function buildDepNotasMes(){
   const lbl=document.getElementById('dep-notas-mes-lbl');if(lbl)lbl.textContent=MESES[curMes]+' '+today.getFullYear();
   const cont=document.getElementById('dep-notas-mes-content');if(!cont)return;
   const regs=depData.registros||{};
+  const desafios=depData.desafios||{};
+  const monthKey=today.getFullYear()+'-'+String(curMes+1).padStart(2,'0');
   const entries=Object.entries(regs)
-    .filter(([d])=>d.startsWith(today.getFullYear()+'-'+String(curMes+1).padStart(2,'0')))
+    .filter(([d])=>d.startsWith(monthKey))
     .sort((a,b)=>b[0].localeCompare(a[0]));
-  if(!entries.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin registros este mes.</p>';return;}
-  cont.innerHTML=entries.map(([day,regsDay])=>{
+  // Desafios del mes
+  const desafioEntries=Object.entries(desafios)
+    .filter(([d])=>d.startsWith(monthKey))
+    .sort((a,b)=>b[0].localeCompare(a[0]));
+
+  if(!entries.length&&!desafioEntries.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin registros este mes.</p>';return;}
+
+  let html='';
+  // Merge by day
+  const allDays=[...new Set([...entries.map(([d])=>d),...desafioEntries.map(([d])=>d)])].sort((a,b)=>b.localeCompare(a));
+  allDays.forEach(day=>{
     const fecha=new Date(day+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
-    const rows=regsDay.map(r=>{
+    const regsDay=regs[day]||[];
+    const desDay=desafios[day];
+    let body='';
+    regsDay.forEach(r=>{
       const hora=new Date(r.ts).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-      const chips=r.actividades.map(a=>{const col=getDepColor(a);return `<span style="padding:2px 8px;border-radius:10px;background:${col};color:#fff;font-size:10px">${a}</span>`;}).join(' ');
-      return `<div style="background:var(--fondo);border-radius:8px;padding:8px 10px;font-size:12px;margin-bottom:5px">
+      const chips=(r.actividades||[]).map(a=>{const col=getDepColor(a);return `<span style="padding:2px 8px;border-radius:10px;background:${col};color:#fff;font-size:10px">${a}</span>`;}).join(' ');
+      body+=`<div style="background:var(--fondo);border-radius:8px;padding:8px 10px;font-size:12px;margin-bottom:5px">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="font-size:10px;color:var(--tmed)">🕐 ${hora}</span>${chips}</div>
         ${r.nota?`<div style="color:var(--tierra);line-height:1.5">${r.nota}</div>`:''}
       </div>`;
-    }).join('');
-    return `<div class="card"><div class="card-top"><h3 style="font-size:12px">${fecha}</h3><span>${regsDay.length} registro${regsDay.length!==1?'s':''}</span></div><div class="card-body">${rows}</div></div>`;
-  }).join('');
+    });
+    if(desDay){
+      body+=`<div style="background:#FFF9E6;border-left:3px solid var(--ambar);border-radius:8px;padding:8px 10px;font-size:12px;margin-bottom:5px">
+        <div style="font-size:10px;color:var(--ambar);font-weight:600;margin-bottom:3px">🎯 Desafío del día</div>
+        <div style="color:var(--tierra);line-height:1.5">${desDay}</div>
+      </div>`;
+    }
+    html+=`<div class="card"><div class="card-top"><h3 style="font-size:12px">${fecha}</h3></div><div class="card-body">${body}</div></div>`;
+  });
+  cont.innerHTML=html;
 }
 
 function buildDepMapa(){
@@ -11101,8 +11126,20 @@ async function sendChatMsg(){
   const habCategories=(typeof cats!=='undefined'?cats:[]).map(c=>c.nombre).join(', ');
   const gastoCatsStr=(typeof gastoCats!=='undefined'?gastoCats:[]).join(', ');
 
-  const trigsList=(typeof presTriggers!=='undefined'&&Array.isArray(presTriggers))?presTriggers.join(', '):'';
+  // HÁBITOS disponibles
+  let habitosCtx='';
+  try{
+    const habitList=[];
+    (cats||[]).forEach(cat=>{
+      (cat.habitos||[]).forEach(h=>{
+        habitList.push(cat.nombre+' → '+h.n);
+        (h.subs||[]).forEach(s=>habitList.push(cat.nombre+' → '+h.n+' → '+s.n));
+      });
+    });
+    habitosCtx=habitList.join(', ');
+  }catch(e){}
 
+  const trigsList=(typeof presTriggers!=='undefined'&&Array.isArray(presTriggers))?presTriggers.join(', '):'';
   // Build data context for queries
   // CICLO
   let cicloCtx='Sin datos de ciclo cargados.';
@@ -11184,7 +11221,7 @@ async function sendChatMsg(){
 Fecha de hoy: ${todayStr}
 Mes actual: ${mesActual}
 Triggers del usuario: ${trigsList}
-Categorías de hábitos: ${habCategories}
+Hábitos disponibles (Categoría → Hábito): ${habitosCtx}
 Categorías de gastos: ${gastoCatsStr}
 
 ═══ DATOS ACTUALES DEL USUARIO ═══
@@ -11237,6 +11274,11 @@ Para ejercicios de pesas. "peso" es SOLO el número en kg, sin texto. Siempre un
 {"type":"emocion","emocion":"Enojo","trigger":"Mi pareja","nota":"me enojé con mi pareja por temas de la casa","subem":["enfado"]}
 Para emociones: extraé la emoción principal. Poné TODO el texto original en "nota". Para "trigger": buscá si alguna palabra del mensaje coincide (aunque sea parcialmente) con alguno de los "Triggers cargados por el usuario" — si coincide usá el nombre exacto de la lista. Si el usuario lo menciona explícitamente ("trigger: X", "con X", "por X") aunque no esté en la lista, usalo igual con 1-3 palabras. Si no es claro, dejá trigger "".
 subem IDs: paz, gratitud_p, alegria, amor_p, entusiasmo, satisfaccion, calma, aburrimiento, melancolia_p, frustracion, inseguridad, ansiedad_p, miedo, enfado
+
+{"type":"habito","nombre":"Postura física"}
+Para marcar un hábito como hecho hoy. Buscá el nombre más parecido en "Hábitos disponibles". Si el usuario dice algo vago como "tracker postura", buscá "Postura" en la lista. Si lo encontrás, confirmá con el nombre exacto. Si no encontrás ningún match, devolvé:
+ACTIONS:{"actions":[]}
+MSG:No encontré ese hábito 😊 Tus hábitos disponibles son:\n• [listá todos los de "Hábitos disponibles" separados por salto de línea]
 
 {"type":"nota","titulo":"título opcional","texto":"texto libre"}
 Guarda en Reflexiones / Camino del artista (Registro Autoconocimiento).
@@ -11384,19 +11426,37 @@ function ejecutarAccion(a){
       if(typeof buildGymRegistrosHoy==='function'&&curView==='deporte')buildGymRegistrosHoy();
     }
     else if(a.type==='habito'){
-      // Find closest habit and mark as done
-      const hn=(a.nombre||'').toLowerCase();
-      let found=null;
+      const hn=(a.nombre||'').toLowerCase().trim();
+      let found=null;let foundCat='';
+      // Build full list of habits including subs
+      const allHabits=[];
       (cats||[]).forEach(cat=>{
         (cat.habitos||[]).forEach(h=>{
-          if(!found&&h.n.toLowerCase().includes(hn.split(' ')[0]))found=h;
+          allHabits.push({h,cat:cat.nombre});
+          (h.subs||[]).forEach(s=>allHabits.push({h:s,cat:cat.nombre,parent:h.n}));
         });
       });
+      // Try exact match first, then partial
+      found=allHabits.find(x=>x.h.n.toLowerCase()===hn);
+      if(!found)found=allHabits.find(x=>x.h.n.toLowerCase().includes(hn));
+      if(!found)found=allHabits.find(x=>hn.includes(x.h.n.toLowerCase()));
+      // Fuzzy: match any word
+      if(!found){
+        const words=hn.split(' ').filter(w=>w.length>2);
+        found=allHabits.find(x=>words.some(w=>x.h.n.toLowerCase().includes(w)));
+      }
       if(found){
-        const k=todayStr+'_'+found.id;
+        const k=todayStr+'_'+found.h.id;
         checks[k]={done:true,ts:Date.now()};
         save('checks',checks);
         if(curView==='tracker'&&typeof buildTrackerHoy==='function')buildTrackerHoy();
+        // Return name for confirmation in MSG
+        a._foundName=found.h.n;
+        a._foundCat=found.cat;
+      } else {
+        // Return list for the bot to show
+        a._notFound=true;
+        a._habitList=allHabits.map(x=>(x.cat?x.cat+' → ':'')+x.h.n).join('\n• ');
       }
     }
     else if(a.type==='nota'){
