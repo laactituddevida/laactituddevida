@@ -11132,14 +11132,14 @@ MSG:Listo ✓ Anoté $23.000 en Comida (pollo). Queda en tus gastos del mes.
 Respondé siempre en español rioplatense, tono cercano y cálido.`;
 
   try{
-    const response=await fetch('https://api.anthropic.com/v1/messages',{
+    const response=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-6',
+        model:'claude-haiku-4-5-20251001',
         max_tokens:1000,
         system:systemPrompt,
-        messages:chatHistory.slice(-10) // últimos 10 mensajes de contexto
+        messages:chatHistory.slice(-10)
       })
     });
     const data=await response.json();
