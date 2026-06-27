@@ -11384,7 +11384,7 @@ window.addEventListener("load",async function(){
 let chatOpen=false;
 let chatHistory=[]; // {role, content}
 let chatSaving=false;
-window._lastActionNavIdeas=false;
+window._lastActionNav=null; // {label, view, sectionId, btnId}
 
 function toggleChat(){
   chatOpen=!chatOpen;
@@ -11637,7 +11637,7 @@ Podés hacer ambas cosas en un mismo mensaje si corresponde.
 
 Si no entendés qué quiere (ni guardar ni consultar), respondé:
 ACTIONS:{"actions":[]}
-MSG:No entendí bien 😊\n\nEstas son mis palabras clave:\n💸 *gasté / ingresé* — gastos e ingresos\n🏃 *hice / deporte* — actividad física\n💪 *gym / prensa / sentadilla* — pesas\n💛 *estoy / me siento* — emociones\n😴 *me voy a dormir* — registro de dormir\n✅ *ok [hábito]* — marcar hábito\n💡 *idea: [texto]* — guardar idea\n🔗 *link: [url]* — guardar artículo\n📝 *nota: [texto]* — nota libre\n✨ *motivacion* — frase motivacional\n\n_(A veces fallo — insistí con la palabra clave, o entrá a la página para cargarlo manual)_
+MSG:No entendí bien 😊\n\nEstas son mis palabras clave:\n💸 *gasté / ingresé* — gastos e ingresos\n🏃 *hice / deporte* — actividad física\n💪 *gym / prensa / sentadilla* — pesas\n💛 *estoy / me siento* — emociones\n😴 *me voy a dormir* — registro de dormir\n✅ *ok [hábito]* — marcar hábito\n💡 *idea: [texto]* — guardar idea\n🔗 *link: [url]* — guardar artículo\n📝 *nota: / reflexion:* — nota o reflexión libre\n✨ *motivacion* — frase motivacional\n\n_(A veces fallo — insistí con la palabra clave, o entrá a la página para cargarlo manual)_
 
 SECCIONES DONDE PODÉS GUARDAR COSAS:
 1. GASTOS & INGRESOS — cualquier gasto o ingreso en pesos
@@ -11698,7 +11698,7 @@ No agregues nada más después de guardar una idea. No preguntes si quiere agreg
 Usá esto cuando el usuario diga "guardame este link", "anotame este artículo", "guardá este link en artículos", etc. Si el usuario da una URL, usala como link. Intentá generar un título descriptivo basado en el contexto o la URL. Va a la sección Artículos.
 
 {"type":"nota","titulo":"título opcional","texto":"texto libre"}
-Guarda en Reflexiones / Camino del artista (Registro Autoconocimiento).
+Guarda en Reflexiones / Camino del artista. Se activa con "nota:", "reflexion:", "reflexión:" o cualquier texto reflexivo sin otro contexto claro.
 
 Si el usuario te pregunta qué podés hacer, qué cosas puede cargar, cómo usarte, o hace preguntas sobre el bot, respondé:
 ACTIONS:{"actions":[]}
@@ -11706,7 +11706,7 @@ MSG:¡Hola! Esto es lo que puedo hacer 👇\n\n📋 *REGISTRAR* — arrancá con
 
 Si NO entendés qué quiere guardar, respondé:
 ACTIONS:{"actions":[]}
-MSG:No entendí bien 😊\n\nEstas son mis palabras clave:\n💸 *gasté / ingresé* — gastos e ingresos\n🏃 *hice / deporte* — actividad física\n💪 *gym / prensa / sentadilla* — pesas\n💛 *estoy / me siento* — emociones\n😴 *me voy a dormir* — registro de dormir\n✅ *ok [hábito]* — marcar hábito\n💡 *idea: [texto]* — guardar idea\n🔗 *link: [url]* — guardar artículo\n📝 *nota: [texto]* — nota libre\n✨ *motivacion* — frase motivacional\n\n_(A veces fallo — insistí con la palabra clave, o entrá a la página para cargarlo manual)_
+MSG:No entendí bien 😊\n\nEstas son mis palabras clave:\n💸 *gasté / ingresé* — gastos e ingresos\n🏃 *hice / deporte* — actividad física\n💪 *gym / prensa / sentadilla* — pesas\n💛 *estoy / me siento* — emociones\n😴 *me voy a dormir* — registro de dormir\n✅ *ok [hábito]* — marcar hábito\n💡 *idea: [texto]* — guardar idea\n🔗 *link: [url]* — guardar artículo\n📝 *nota: / reflexion:* — nota o reflexión libre\n✨ *motivacion* — frase motivacional\n\n_(A veces fallo — insistí con la palabra clave, o entrá a la página para cargarlo manual)_
 
 Podés recibir varias cosas en un mensaje. Ej: "hice gym hoy, prensa 25kg y sentadilla 40kg" → dos acciones gym.
 
@@ -11733,7 +11733,7 @@ PALABRAS CLAVE TRIGGER — si el mensaje empieza con estas palabras, sabés exac
 - "ok [nombre]" → hábito
 - "idea: [texto]" → idea
 - "link: [url]" → artículo
-- "nota: [texto]" → nota
+- "nota: [texto]" o "reflexion: [texto]" → nota libre (va a Reflexiones / Camino del artista)
 - "motivacion / frase / ánimo" → motivación
 - "me voy a dormir / dormir" → registro dormir
 
@@ -11772,18 +11772,27 @@ Respondé siempre en español rioplatense, tono cálido y breve.`;
     const botBubble=addBotMsg(botMsg);
     chatHistory.push({role:'assistant',content:botMsg});
 
-    // Add nav button if an idea was saved
-    if(window._lastActionNavIdeas){
-      window._lastActionNavIdeas=false;
+    // Add nav button if a section-specific action was saved
+    if(window._lastActionNav){
+      const nav=window._lastActionNav;
+      window._lastActionNav=null;
       setTimeout(()=>{
         const msgs=document.getElementById('chat-messages');
         if(!msgs)return;
         const lastWrap=msgs.lastElementChild;
         if(!lastWrap)return;
         const btn=document.createElement('button');
-        btn.textContent='→ Ver en Ideas / Proyectos';
+        btn.textContent='→ '+nav.label;
         btn.style.cssText='margin-top:8px;padding:6px 14px;border-radius:14px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-family:\'DM Sans\',sans-serif;font-size:12px;cursor:pointer;display:block';
-        btn.onclick=()=>{toggleChat();showView('proposito');const s=document.getElementById('prop-ideas');const b=document.getElementById('btn-prop-ideas');if(s&&s.style.display==='none'){s.style.display='';if(b)b.textContent='Cerrar';}};
+        btn.onclick=()=>{
+          toggleChat();
+          showView(nav.view);
+          if(nav.sectionId){
+            const s=document.getElementById(nav.sectionId);
+            const b=nav.btnId?document.getElementById(nav.btnId):null;
+            if(s&&s.style.display==='none'){s.style.display='';if(b)b.textContent='Cerrar';}
+          }
+        };
         lastWrap.appendChild(btn);
       },100);
     }
@@ -11823,6 +11832,7 @@ function ejecutarAccion(a){
       presData[presKey(todayStr)].push(reg);
       save('presdata',presData);
       if(typeof buildPresencia==='function'&&curView==='presencia')buildPresencia();
+      window._lastActionNav={label:'Ver en Emociones & Reacciones',view:'presencia',sectionId:'pres-emocion',btnId:'btn-pres-emocion'};
     }
     else if(a.type==='gasto'){
       const newG={
@@ -11839,6 +11849,7 @@ function ejecutarAccion(a){
       gastos.push(newG);
       save('gastos',gastos);
       if(typeof buildGastos==='function'&&curView==='gastos')buildGastos();
+      window._lastActionNav={label:'Ver en Gastos & Ingresos',view:'gastos',sectionId:null};
     }
     else if(a.type==='deporte'){
       if(!depData.registros)depData.registros={};
@@ -11849,17 +11860,16 @@ function ejecutarAccion(a){
         nota:a.nota||'',
         fuenteChat:true
       });
-      // Also add to actSelec temporarily so it shows
       (a.actividades||[]).forEach(act=>{
         if(!depData.actividades.includes(act))depData.actividades.push(act);
       });
       save('depdata',depData);
       if(typeof buildDeporte==='function'&&curView==='deporte')buildDeporte();
+      window._lastActionNav={label:'Ver en Deporte',view:'dep-notas-mes',sectionId:null};
     }
     else if(a.type==='gym'){
       if(!gymData[todayStr])gymData[todayStr]=[];
       const regs=gymData[todayStr];
-      // Add to last registro or create new one
       const lastReg=regs.length>0?regs[regs.length-1]:null;
       const pesoNum=parseFloat(String(a.peso).replace(/[^0-9.]/g,''))||0;
       if(lastReg&&typeof lastReg==='object'&&!Array.isArray(lastReg)){
@@ -11870,6 +11880,7 @@ function ejecutarAccion(a){
       gymData[todayStr]=regs;
       save('gymdata',gymData);
       if(typeof buildGymRegistrosHoy==='function'&&curView==='deporte')buildGymRegistrosHoy();
+      window._lastActionNav={label:'Ver en Gym',view:'gym-reporte',sectionId:null};
     }
     else if(a.type==='habito'){
       // Clean trigger words before searching
@@ -11905,6 +11916,7 @@ function ejecutarAccion(a){
         if(curView==='tracker'&&typeof recalc==='function')recalc();
         a._foundName=found.h.n;
         a._foundCat=found.catNombre;
+        window._lastActionNav={label:'Ver en Tracker de hábitos',view:'tracker',sectionId:null};
       } else {
         a._notFound=true;
       }
@@ -11920,6 +11932,7 @@ function ejecutarAccion(a){
       rec.ts=Date.now();
       save('dormirdata',dormirData);
       if(typeof initDormirForm==='function'&&curView==='presencia')initDormirForm();
+      window._lastActionNav={label:'Ver en Cómo me voy a dormir',view:'dormir-mes',sectionId:null};
     }
     else if(a.type==='idea_desc'){
       // no-op — removed
@@ -11930,9 +11943,8 @@ function ejecutarAccion(a){
         ideasData.unshift({titulo:a.titulo,descripcion:a.descripcion||'',bullets:[],url:''});
         save('ideasdata',ideasData);
         if(typeof buildIdeas==='function'&&curView==='proposito')buildIdeas();
-        // Mark that we should add a nav button after the bot message
         a._showNavIdeas=true;
-        window._lastActionNavIdeas=true;
+        window._lastActionNav={label:'Ver en Ideas / Proyectos',view:'proposito',sectionId:'prop-ideas',btnId:'btn-prop-ideas'};
       }
     }
     else if(a.type==='articulo'){
@@ -11940,6 +11952,7 @@ function ejecutarAccion(a){
       articulosData.push({id:'art'+Date.now(),titulo:a.titulo||a.link||'Sin título',descripcion:a.descripcion||'',link:a.link||''});
       save('articulosdata',articulosData);
       if(typeof buildArticulos==='function'&&curView==='articulos')buildArticulos();
+      window._lastActionNav={label:'Ver en Artículos',view:'articulos',sectionId:null};
     }
     else if(a.type==='nota'){
       if(typeof artistaData==='undefined')window.artistaData=load('artistadata',[]);
@@ -11953,6 +11966,7 @@ function ejecutarAccion(a){
       save('artistadata',artistaData);
       if(typeof buildArtistaHistorial==='function'&&curView==='artista-historial')buildArtistaHistorial();
       if(typeof buildArtista==='function'&&curView==='autoconocimiento')buildArtista();
+      window._lastActionNav={label:'Ver en Reflexiones / Camino del artista',view:'artista-historial',sectionId:null};
     }
   }catch(e){console.warn('ejecutarAccion error',e);}
 }
