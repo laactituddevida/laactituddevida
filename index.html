@@ -1155,14 +1155,22 @@ canvas{max-width:100%}
       </div>
       <div class="chart-wrap"><h4>Gastos por categoría</h4><canvas id="chart-gastos" height="100"></canvas></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem">
-        <div class="chart-wrap"><h4>Distribución de gastos</h4><canvas id="chart-gastos-pie" height="200"></canvas></div>
-        <div class="chart-wrap"><h4>Distribución de ingresos</h4><canvas id="chart-ingresos-pie" height="200"></canvas></div>
+        <div class="chart-wrap">
+          <h4>Distribución de gastos</h4>
+          <canvas id="chart-gastos-pie" height="200"></canvas>
+          <div id="gastos-cat-totales" style="margin-top:.75rem;font-size:11px;display:flex;flex-direction:column;gap:3px"></div>
+        </div>
+        <div class="chart-wrap">
+          <h4>Distribución de ingresos</h4>
+          <canvas id="chart-ingresos-pie" height="200"></canvas>
+          <div id="ingresos-cat-totales" style="margin-top:.75rem;font-size:11px;display:flex;flex-direction:column;gap:3px"></div>
+        </div>
       </div>
 
       <!-- MAPA DEL MES — GASTOS -->
       <div style="margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid var(--borde)">
         <h4 style="font-size:13px;font-weight:500;color:var(--tierra);margin-bottom:.75rem">Mapa del mes — gastos</h4>
-        <div id="gastos-heatmap" style="overflow-x:auto"></div>
+        <div id="gastos-heatmap" style="overflow-x:auto;background:#fff;border-radius:12px;padding:.75rem;border:0.5px solid var(--bordem)"></div>
       </div>
     </div>
   </div>
@@ -1405,7 +1413,9 @@ canvas{max-width:100%}
     <p id="gastos-mes-lbl" style="font-size:12px;color:var(--tmed)"></p>
   </div>
   <!-- FILTER BAR -->
-  <div style="margin-bottom:1rem;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+  <div style="margin-bottom:1rem">
+    <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tmed);margin-bottom:6px">Filtros ›</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
     <select id="gf-cat-sel" onchange="gastosMesCatFiltro=this.value||null;buildGastosMes()"
       style="padding:5px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--tierra);outline:none;cursor:pointer">
       <option value="">Todas las categorías</option>
@@ -1424,6 +1434,7 @@ canvas{max-width:100%}
       <option value="Débito">Débito</option>
       <option value="Crédito">Crédito</option>
     </select>
+    </div>
   </div>
   <div id="gastos-mes-content" style="display:flex;flex-direction:column;gap:6px"></div>
 </div>
@@ -1483,29 +1494,50 @@ canvas{max-width:100%}
 
   <!-- CURSOS ACTIVOS -->
   <div style="margin-bottom:1.5rem">
-    <div style="display:flex;align-items:center;gap:10px;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
+    <div onclick="toggleCursosSection('cursos-activos-body')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Cursos <em style="color:var(--ambar)">activos</em></h2>
-      <button onclick="addCurso('activo')" style="padding:4px 14px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+      <button onclick="event.stopPropagation();addCurso('activo')" style="padding:3px 10px;border-radius:10px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+      <button id="btn-cursos-activos-body" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
-    <div id="cursos-activos-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    <div id="cursos-activos-body" style="display:none">
+      <div id="cursos-activos-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    </div>
   </div>
 
   <!-- CURSOS POR HACER -->
-<div style="margin-bottom:1.5rem">
-    <div style="display:flex;align-items:center;gap:10px;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
+  <div style="margin-bottom:1.5rem">
+    <div onclick="toggleCursosSection('cursos-porhacer-body')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Por <em style="color:var(--vmusgo)">hacer</em></h2>
-      <button onclick="addCurso('porhacer')" style="padding:4px 14px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+      <button onclick="event.stopPropagation();addCurso('porhacer')" style="padding:3px 10px;border-radius:10px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+      <button id="btn-cursos-porhacer-body" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
-    <div id="cursos-porhacer-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    <div id="cursos-porhacer-body" style="display:none">
+      <div id="cursos-porhacer-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    </div>
   </div>
 
-  <!-- CURSOS LEJANOS -->
+  <!-- CURSOS MÁS ADELANTE -->
   <div style="margin-bottom:1.5rem">
-    <div style="display:flex;align-items:center;gap:10px;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
+    <div onclick="toggleCursosSection('cursos-lejanos-body')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Más <em style="color:var(--tmed)">adelante</em></h2>
-      <button onclick="addCurso('lejano')" style="padding:4px 14px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+      <button onclick="event.stopPropagation();addCurso('lejano')" style="padding:3px 10px;border-radius:10px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+      <button id="btn-cursos-lejanos-body" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
-    <div id="cursos-lejanos-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    <div id="cursos-lejanos-body" style="display:none">
+      <div id="cursos-lejanos-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    </div>
+  </div>
+
+  <!-- CURSOS HECHOS -->
+  <div style="margin-bottom:1.5rem">
+    <div onclick="toggleCursosSection('cursos-hechos-body')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">✅ <em style="color:var(--vmusgo)">Hechos</em></h2>
+      <button onclick="event.stopPropagation();addCurso('hechos')" style="padding:3px 10px;border-radius:10px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+      <button id="btn-cursos-hechos-body" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="cursos-hechos-body" style="display:none">
+      <div id="cursos-hechos-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    </div>
   </div>
 </div>
 
@@ -3320,9 +3352,8 @@ function addIdeaBullet(i){ideasData[i].bullets=ideasData[i].bullets||[];ideasDat
 function delIdeaBullet(i,bi){ideasData[i].bullets.splice(bi,1);save('ideasdata',ideasData);buildIdeas();}
 function addIdea(tituloParam){
   const titulo=tituloParam||(prompt('Título de la idea o proyecto:'));if(!titulo||!titulo.trim())return;
-  ideasData.push({titulo:titulo.trim(),descripcion:'',bullets:[],url:''});
+  ideasData.unshift({titulo:titulo.trim(),descripcion:'',bullets:[],url:''});
   save('ideasdata',ideasData);buildIdeas();
-  // Open section if closed
   const sec=document.getElementById('prop-ideas');
   const btn=document.getElementById('btn-prop-ideas');
   if(sec&&sec.style.display==='none'){sec.style.display='';if(btn)btn.textContent='Cerrar';}
@@ -6002,6 +6033,8 @@ function buildGastosMes(){
   const pagoAbbr={'Transferencia':'T','Efectivo':'E','Débito':'D','Crédito':'C'};
 
   function renderItem(g,col){
+    const signo=g.moneda==='USD'?'USD$':'$';
+    const pagoAbbr={'Transferencia':'T','Efectivo':'E','Débito':'D','Crédito':'C'};
     return `<div style="padding:8px 10px;background:#fff;border-radius:8px;border:0.5px solid ${col}40;border-left:3px solid ${col};display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">
       <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
       <select onchange="editGasto('${g.id}','cat',this.value);buildGastosMes()"
@@ -6011,7 +6044,11 @@ function buildGastosMes(){
       <input type="text" value="${(g.desc||'').replace(/"/g,'&quot;')}" placeholder="descripción"
         style="flex:1;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;min-width:60px"
         onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','desc',this.value)">
-      <span style="font-size:9px;color:var(--tmed);opacity:.7" title="${g.pago||''}">${pagoAbbr[g.pago]||g.pago?.charAt(0)||'?'}</span>
+      <select title="${g.pago||'Transferencia'}" onchange="editGasto('${g.id}','pago',this.value)"
+        style="border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--tmed);outline:none;cursor:pointer;width:22px;padding:0;appearance:none;-webkit-appearance:none">
+        ${['Transferencia','Efectivo','Débito','Crédito'].map(p=>`<option value="${p}"${g.pago===p?' selected':''}>${pagoAbbr[p]||p.charAt(0)}</option>`).join('')}
+      </select>
+      <span style="font-size:10px;color:var(--tmed)">${signo}</span>
       <input type="number" value="${g.monto||0}"
         style="width:70px;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:right"
         onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','monto',this.value)">
@@ -6075,6 +6112,16 @@ function buildGastosChart(){
     const pieData=pieCats.map(cat=>gastos.filter(g=>g.mes===curMes&&g.cat===cat&&g.tipo==='egreso').reduce((s,g)=>s+g.monto,0));
     if(chartGastosPie)chartGastosPie.destroy();
     chartGastosPie=new Chart(pieCtx,{type:'doughnut',data:{labels:pieCats,datasets:[{data:pieData,backgroundColor:pieCols,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8}}}}});
+    // Category totals list — sorted desc
+    const totList=document.getElementById('gastos-cat-totales');
+    if(totList){
+      const sorted=pieCats.map((c,i)=>({c,v:pieData[i],col:pieCols[i]})).sort((a,b)=>b.v-a.v);
+      totList.innerHTML=sorted.map(x=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:0.5px solid var(--borde)">
+        <span style="width:8px;height:8px;border-radius:2px;background:${x.col};flex-shrink:0"></span>
+        <span style="flex:1;color:var(--tmed)">${x.c}</span>
+        <span style="font-weight:600;color:var(--tierra)">$${x.v.toLocaleString('es-AR',{maximumFractionDigits:0})}</span>
+      </div>`).join('');
+    }
   }
 
   // Pie — ingresos
@@ -6086,6 +6133,21 @@ function buildGastosChart(){
     const ingData=ingCats.map(cat=>gastos.filter(g=>g.mes===curMes&&g.cat===cat&&g.tipo==='ingreso').reduce((s,g)=>s+g.monto,0));
     if(chartIngresosPie)chartIngresosPie.destroy();
     chartIngresosPie=new Chart(ingCtx,{type:'doughnut',data:{labels:ingCats,datasets:[{data:ingData,backgroundColor:ingCols,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8}}}}});
+    // Ingresos totals — with USD info
+    const ingList=document.getElementById('ingresos-cat-totales');
+    if(ingList){
+      const sorted=ingCats.map((c,i)=>({c,v:ingData[i],col:ingCols[i]})).sort((a,b)=>b.v-a.v);
+      ingList.innerHTML=sorted.map(x=>{
+        const usdItems=gastos.filter(g=>g.mes===curMes&&g.cat===x.c&&g.tipo==='ingreso'&&g.moneda==='USD');
+        const usdTotal=usdItems.reduce((s,g)=>s+g.monto,0);
+        const usdStr=usdTotal>0?` <span style="font-size:10px;color:var(--tmed)">(USD$${usdTotal.toLocaleString('es-AR',{maximumFractionDigits:0})} → $${x.v.toLocaleString('es-AR',{maximumFractionDigits:0})})</span>`:'';
+        return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:0.5px solid var(--borde)">
+          <span style="width:8px;height:8px;border-radius:2px;background:${x.col};flex-shrink:0"></span>
+          <span style="flex:1;color:var(--tmed)">${x.c}</span>
+          <span style="font-weight:600;color:var(--tierra)">$${x.v.toLocaleString('es-AR',{maximumFractionDigits:0})}</span>${usdStr}
+        </div>`;
+      }).join('');
+    }
   }
 
   // USD — gastos
@@ -7263,26 +7325,42 @@ let cursosData=load('cursosdata',{
     {id:'c3',nombre:'Maestría de Coaching',institucion:'Lydia Muradep',notas:[],libros:[]}
   ],
   porhacer:[],
-  lejanos:[]
+  lejanos:[],
+  hechos:[]
 });
 let curCursoId=null;
 
 function saveCursos(){save('cursosdata',cursosData);}
 
+function toggleCursosSection(id){
+  const el=document.getElementById(id);
+  const btn=document.getElementById('btn-'+id);
+  if(!el)return;
+  const open=el.style.display==='none';
+  el.style.display=open?'':'none';
+  if(btn)btn.textContent=open?'Cerrar':'Abrir';
+  if(open){
+    const tipo=id.replace('cursos-','').replace('-body','');
+    buildCursosList(tipo==='activos'?'activo':tipo==='porhacer'?'porhacer':tipo==='lejanos'?'lejano':'hechos');
+  }
+}
+
 function buildCursos(){
   buildCursosList('activo');
   buildCursosList('porhacer');
   buildCursosList('lejano');
+  buildCursosList('hechos');
 }
 
 function buildCursosList(tipo){
-  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':'lejanos';
+  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':tipo==='hechos'?'hechos':'lejanos';
   const elId=`cursos-${key}-list`;
   const cont=document.getElementById(elId);if(!cont)return;
+  if(!cursosData[key])cursosData[key]=[];
   const lista=cursosData[key]||[];
-  if(!lista.length){cont.innerHTML=`<p style="font-size:12px;color:var(--tmed)">Ninguno por ahora.</p>`;return;}
-  const colores={activo:'var(--ambar)',porhacer:'var(--vmusgo)',lejano:'var(--tmed)'};
+  const colores={activo:'var(--ambar)',porhacer:'var(--vmusgo)',lejano:'var(--tmed)',hechos:'#5C7A4E'};
   cont.innerHTML='';
+  if(!lista.length){cont.innerHTML=`<p style="font-size:12px;color:var(--tmed)">Ninguno por ahora.</p>`;return;}
   lista.forEach((c,ci)=>{
     const card=document.createElement('div');
     card.style.cssText='background:#fff;border:0.5px solid var(--bordem);border-left:3px solid '+colores[tipo]+';border-radius:10px;padding:.8rem 1rem;display:flex;align-items:center;gap:10px;cursor:pointer';
@@ -7301,19 +7379,20 @@ function buildCursosList(tipo){
 function addCurso(tipo){
   const nombre=prompt('Nombre del curso:');if(!nombre)return;
   const inst=prompt('Institución / Docente (opcional):');
-  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':'lejanos';
+  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':tipo==='hechos'?'hechos':'lejanos';
+  if(!cursosData[key])cursosData[key]=[];
   cursosData[key].push({id:'c'+Date.now(),nombre,institucion:inst||'',notas:[],libros:[]});
   saveCursos();buildCursosList(tipo);
 }
 
 function delCurso(tipo,ci){
   if(!confirm('¿Eliminar este curso?'))return;
-  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':'lejanos';
+  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':tipo==='hechos'?'hechos':'lejanos';
   cursosData[key].splice(ci,1);saveCursos();buildCursosList(tipo);
 }
 
 function abrirCurso(tipo,ci){
-  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':'lejanos';
+  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':tipo==='hechos'?'hechos':'lejanos';
   const c=cursosData[key][ci];if(!c)return;
   curCursoId={tipo,ci};
   const tit=document.getElementById('curso-det-titulo');if(tit)tit.textContent=c.nombre;
@@ -7324,7 +7403,7 @@ function abrirCurso(tipo,ci){
 
 function getCurActual(){
   if(!curCursoId)return null;
-  const key=curCursoId.tipo==='activo'?'activos':curCursoId.tipo==='porhacer'?'porhacer':'lejanos';
+  const key=curCursoId.tipo==='activo'?'activos':curCursoId.tipo==='porhacer'?'porhacer':curCursoId.tipo==='hechos'?'hechos':'lejanos';
   return cursosData[key][curCursoId.ci];
 }
 
@@ -11277,7 +11356,7 @@ function toggleChat(){
 function chatWelcome(){
   const hour=new Date().getHours();
   const saludo=hour<12?'¡Buenos días!':hour<18?'¡Buenas tardes!':'¡Buenas noches!';
-  addBotMsg(`${saludo}! 🌱 Soy Vida, tu asistente.\n\nContame lo que quieras registrar:\n• _"Estoy con enojo porque Paz no contestó"_\n• _"Hice bici hoy 45 minutos"_\n• _"Gym: prensa 25kg, hip thrust 40kg"_\n• _"Gasté 23000 pesos en comida, en pollo"_\n• _"Nota: hoy me di cuenta que..."_\n\nYo lo interpreto y lo guardo donde corresponde. 💪`);
+  addBotMsg(`${saludo}! 🌱 Soy Vida, tu asistente.\n\nPuedo registrar cosas, responder preguntas sobre tus datos, y también darte motivación cuando la necesitás.\n\nEjemplos:\n• _"gasté 23000 en comida"_\n• _"hice bici hoy"_\n• _"me voy a dormir con amor"_\n• _"dame una frase motivacional"_ ✨\n• _"¿cuándo me viene?"_\n• _"¿qué puedo hacer acá?"_ (para ver todo)\n\n¿Qué necesitás? 💪`);
 }
 
 function addBotMsg(text, saving=false){
@@ -11375,6 +11454,25 @@ async function sendChatMsg(){
   }catch(e){}
 
   const trigsList=(typeof presTriggers!=='undefined'&&Array.isArray(presTriggers))?presTriggers.join(', '):'';
+  // FRASES MOTIVACIONALES disponibles
+  let frasesCtx='';
+  try{
+    const pool=[];
+    if(typeof frasesData!=='undefined'){Object.values(frasesData).forEach(arr=>{(arr||[]).forEach(f=>{if(f&&f.trim())pool.push(f.trim());});});}
+    // Add remember data
+    if(typeof rememberData!=='undefined'){(rememberData||[]).forEach(r=>{if(r&&r.texto)pool.push(r.texto);});}
+    // Add some default frases
+    const defaults=['Todo lo que necesito ya está en mí.','Un pequeño paso hoy es mejor que un plan perfecto mañana.','El antídoto del sufrimiento es el amor y no sentirse solo.','Las personas vitamina regulan tu sistema nervioso. Cuidálas.'];
+    defaults.forEach(d=>{if(!pool.includes(d))pool.push(d);});
+    frasesCtx=pool.slice(0,30).join(' | ');
+  }catch(e){}
+  // EJERCICIOS disponibles
+  let ejerciciosCtx='';
+  try{
+    if(typeof EJERCICIOS_DATA!=='undefined'){
+      ejerciciosCtx=EJERCICIOS_DATA.map((e,i)=>`${i+1}. ${e.n}: ${e.desc}`).join(' | ');
+    }
+  }catch(e){}
   // Build data context for queries
   // CICLO
   let cicloCtx='Sin datos de ciclo cargados.';
@@ -11464,9 +11562,21 @@ Categorías de gastos: ${gastoCatsStr}
 💸 GASTOS: ${gastosCtx}
 💛 EMOCIONES RECIENTES: ${emCtx}
 🏃 DEPORTE: ${depCtx}
+✨ FRASES MOTIVACIONALES: ${frasesCtx}
+🎯 EJERCICIOS DISPONIBLES: ${ejerciciosCtx}
 ═══════════════════════════════════
 
-Cuando el usuario hace una PREGUNTA sobre sus datos, respondé directamente con la información. Para preguntas, usá SIEMPRE:
+Cuando el usuario pide motivación, una frase, algo inspirador o similar:
+- Sacá UNA frase de "FRASES MOTIVACIONALES" que sea relevante al contexto del usuario
+- Respondé con esa frase en formato destacado (entre *asteriscos*)
+- Después preguntá: "¿Querés que te proponga un ejercicio para trabajar esto? 🎯"
+
+Cuando el usuario dice "sí" o "dale" después de la frase motivacional, o pide directamente un ejercicio:
+- Elegí el ejercicio más relevante de "EJERCICIOS DISPONIBLES" según el contexto
+- Presentalo con nombre, descripción y los primeros 2-3 pasos
+- Decile que puede verlo completo en la sección Ejercicios de la app
+
+
 ACTIONS:{"actions":[]}
 MSG:tu respuesta con los datos
 
@@ -11518,15 +11628,16 @@ Usá esto cuando el usuario quiera marcar que hizo un hábito hoy. Se activa con
 - "habito sonreír ok" → busca "sonreír"
 Si encontrás match, confirmá con el nombre exacto que marcaste. Si no encontrás ningún match claro, respondé con ACTIONS vacías y listá todos los hábitos disponibles de "Hábitos disponibles".
 
-{"type":"dormir","emLiders":["Calma","Gratitud"],"sat":"bien","nota":"fue un día muy lindo","estadoEm":8}
-Usá esto cuando el usuario diga algo como "cómo me voy a dormir", "registro de dormir", "dormir". Las emociones deben ser de esta lista: Amor, Ternura, Compasión, Gratitud, Ilusión, Asombro, Admiración, Entusiasmo, Euforia, Alegría, Felicidad, Placer, Alivio, Serenidad, Satisfacción, Orgullo, Calma, Aceptación, Paz, Aburrimiento, Nostalgia, Melancolía, Confusión, Incomprensión, Timidez, Vergüenza, Decepción, Remordimiento, Envidia, Frustración, Irritación, Tensión, Inseguridad, Culpa, Desaliento, Desamparo, Soledad, Miedo, Tristeza, Ira, Ansiedad, Enojo. sat puede ser: "muy bien", "bien", "regular", "mal", "muy mal". estadoEm del 1 al 10.
+{"type":"dormir","emLiders":["Amor"],"sat":"bien","nota":"","estadoEm":7}
+Usá esto cuando el usuario mencione irse a dormir, cómo se va a dormir, o cómo terminó el día emocionalmente al final del día. Ejemplos que DEBEN activar esta acción:
+- "me voy a dormir con amor" → emLiders:["Amor"], sat:"bien"
+- "me voy a dormir tranquila" → emLiders:["Calma","Serenidad"], sat:"bien"
+- "me voy a dormir angustiada" → emLiders:["Ansiedad"], sat:"mal"
+- "me voy a dormir re bien" → sat:"muy bien", emLiders:["Paz"]
+Las emociones deben ser de esta lista: Amor, Ternura, Compasión, Gratitud, Ilusión, Asombro, Admiración, Entusiasmo, Euforia, Alegría, Felicidad, Placer, Alivio, Serenidad, Satisfacción, Orgullo, Calma, Aceptación, Paz, Aburrimiento, Nostalgia, Melancolía, Confusión, Timidez, Vergüenza, Decepción, Remordimiento, Envidia, Frustración, Irritación, Tensión, Inseguridad, Culpa, Desaliento, Desamparo, Soledad, Miedo, Tristeza, Ira, Ansiedad, Enojo.
+sat: "muy bien", "bien", "regular", "mal", "muy mal". estadoEm del 1 al 10.
 
-FLUJO INTERACTIVO para dormir: Si el usuario solo dice "cómo me voy a dormir" o similar SIN dar datos, NO guardes nada y hacé las preguntas de a una:
-1. Primero preguntá: "¿Con qué emoción principal te vas a dormir hoy? 💤"
-2. Cuando responda con la emoción, preguntá: "¿Y cómo calificarías tu día en general? (muy bien / bien / regular / mal / muy mal)"
-3. Cuando responda, preguntá: "¿Querés agregar alguna nota o reflexión del día?"
-4. Cuando responda (o diga "no"), guardá todo con la acción dormir.
-Si el usuario da todos los datos de una (emoción + cómo fue el día + nota), guardá directo sin preguntar.
+FLUJO INTERACTIVO — SOLO si el usuario dice exactamente "cómo me voy a dormir" sin dar datos, hacé las preguntas de a una. Si da datos (emoción, estado), guardá directo.
 
 {"type":"idea","titulo":"nombre de la idea o proyecto","descripcion":"descripción opcional"}
 Usá esto cuando el usuario diga "anotame esta idea", "guardame este proyecto", "nueva idea:", etc. El título es obligatorio.
@@ -11539,7 +11650,7 @@ Guarda en Reflexiones / Camino del artista (Registro Autoconocimiento).
 
 Si el usuario te pregunta qué podés hacer, qué cosas puede cargar, cómo usarte, o hace preguntas sobre el bot, respondé:
 ACTIONS:{"actions":[]}
-MSG:¡Hola! Puedo guardar estas cosas 👇\n\n💸 *Gastos/ingresos* — 'gasté 5000 en comida'\n🏃 *Deporte* — 'hice bici 3km'\n💪 *Gym* — 'prensa 25kg'\n💛 *Emociones* — 'estoy ansiosa'\n😴 *Dormir* — 'cómo me voy a dormir'\n✅ *Hábitos* — 'ok postura física'\n💡 *Ideas* — 'anotame esta idea: podcast'\n🔗 *Links/artículos* — 'guardame este link: https://...'\n📝 *Nota libre* — 'nota: hoy aprendí que...'\n\n¿Qué querés registrar?
+MSG:¡Hola! Esto es lo que puedo hacer 👇\n\n📋 *REGISTRAR*\n💸 Gastos/ingresos — 'gasté 5000 en comida'\n🏃 Deporte — 'hice bici 3km'\n💪 Gym — 'prensa 25kg'\n💛 Emociones — 'estoy ansiosa'\n😴 Dormir — 'me voy a dormir con amor'\n✅ Hábitos — 'ok postura física'\n💡 Ideas — 'anotame esta idea: podcast'\n🔗 Links — 'guardame este link'\n📝 Nota — 'nota: hoy aprendí que...'\n\n📊 *CONSULTAR*\n'¿cuándo me viene?', '¿qué gasté hoy?', '¿qué emociones tuve?'\n\n✨ *MOTIVACIÓN*\n'dame una frase motivacional', 'necesito motivación'\n→ Te doy una frase y te propongo un ejercicio\n\n¿Qué querés?
 
 Si NO entendés qué quiere guardar, respondé:
 ACTIONS:{"actions":[]}
@@ -11681,9 +11792,12 @@ function ejecutarAccion(a){
     }
     else if(a.type==='habito'){
       // Clean trigger words before searching
-      const STOP_WORDS=['ok','hice','hoy','habito','hábito','tracker','marcar','anotar','poner','si','sí','que','en','de','un','una'];
-      const hn=(a.nombre||'').toLowerCase().trim()
-        .split(' ').filter(w=>!STOP_WORDS.includes(w)).join(' ').trim();
+      const STOP_WORDS=['ok','hice','hoy','habito','hábito','tracker','marcar','anotar','poner','si','sí','que','en','de','un','una','el','la','los','las','mi','fue'];
+      let hn=(a.nombre||'').toLowerCase().trim();
+      // If nombre starts with ok or habito, strip it
+      hn=hn.replace(/^(ok|hábito|habito|tracker)\s*/i,'').trim();
+      hn=hn.split(' ').filter(w=>!STOP_WORDS.includes(w)).join(' ').trim();
+      if(!hn){hn=(a.nombre||'').toLowerCase().trim();}// fallback to original
       // Build full flat list of all habits including subs
       const allHabits=[];
       (cats||[]).forEach(cat=>{
@@ -11728,7 +11842,7 @@ function ejecutarAccion(a){
     else if(a.type==='idea'){
       if(a.titulo){
         if(typeof ideasData==='undefined')window.ideasData=load('ideasdata',[]);
-        ideasData.push({titulo:a.titulo,descripcion:a.descripcion||'',bullets:[],url:''});
+        ideasData.unshift({titulo:a.titulo,descripcion:a.descripcion||'',bullets:[],url:''});
         save('ideasdata',ideasData);
         if(typeof buildIdeas==='function'&&curView==='proposito')buildIdeas();
       }
