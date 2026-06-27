@@ -11689,12 +11689,9 @@ Usá cuando el usuario empiece con "mas:", "más:", "desc:" para agregar descrip
 {"type":"idea","titulo":"nombre de la idea o proyecto","descripcion":"descripción opcional"}
 Usá esto cuando el usuario diga "anotame esta idea", "guardame este proyecto", "nueva idea:", "idea:", etc. El título es obligatorio.
 Después de guardar una idea, el MSG debe ser EXACTAMENTE así:
-"✅ Anotado tu idea: *[título]*\n\nSi querés agregar algo más a esta idea escribí \"mas: [lo que querés agregar]\" y lo anoto en la descripción."
+"✅ Anotado tu idea: *[título]*\n\n_(Si querés agregar más detalles, andá a Trabajo → Ideas / Proyectos)_"
 
-Si el usuario en su próximo mensaje empieza con "mas:", "más:", "agregar:", "desc:" seguido de texto, guardalo como descripción adicional de la última idea anotada usando:
-{"type":"idea_desc","texto":"lo que escribió"}
-
-Si dice "no" o algo no relacionado, tratalo como un nuevo mensaje normal.
+No agregues nada más después de guardar una idea. No preguntes si quiere agregar algo.
 
 {"type":"articulo","titulo":"título del artículo o link","link":"https://...","descripcion":"descripción opcional"}
 Usá esto cuando el usuario diga "guardame este link", "anotame este artículo", "guardá este link en artículos", etc. Si el usuario da una URL, usala como link. Intentá generar un título descriptivo basado en el contexto o la URL. Va a la sección Artículos.
@@ -11760,8 +11757,22 @@ Respondé siempre en español rioplatense, tono cálido y breve.`;
     }
 
     hideTyping();
-    addBotMsg(botMsg);
+    const botBubble=addBotMsg(botMsg);
     chatHistory.push({role:'assistant',content:botMsg});
+
+    // Add nav button if an idea was saved
+    if(actMatch){
+      try{
+        const parsed2=JSON.parse(actMatch[1]);
+        if((parsed2.actions||[]).some(a=>a._showNavIdeas)){
+          const btn=document.createElement('button');
+          btn.textContent='→ Ir a Ideas / Proyectos';
+          btn.style.cssText='margin-top:8px;padding:6px 14px;border-radius:14px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-family:\'DM Sans\',sans-serif;font-size:12px;cursor:pointer;display:block';
+          btn.onclick=()=>{toggleChat();showView('proposito');const s=document.getElementById('prop-ideas');const b=document.getElementById('btn-prop-ideas');if(s&&s.style.display==='none'){s.style.display='';if(b)b.textContent='Cerrar';}};
+          botBubble&&botBubble.parentNode&&botBubble.parentNode.appendChild(btn);
+        }
+      }catch(e){}
+    }
 
   }catch(err){
     hideTyping();
@@ -11897,13 +11908,7 @@ function ejecutarAccion(a){
       if(typeof initDormirForm==='function'&&curView==='presencia')initDormirForm();
     }
     else if(a.type==='idea_desc'){
-      if(typeof ideasData==='undefined')window.ideasData=load('ideasdata',[]);
-      if(ideasData.length>0){
-        const last=ideasData[0]; // newest is at index 0 (unshift)
-        last.descripcion=(last.descripcion?last.descripcion+'\n':'')+a.texto;
-        save('ideasdata',ideasData);
-        if(typeof buildIdeas==='function'&&curView==='proposito')buildIdeas();
-      }
+      // no-op — removed
     }
     else if(a.type==='idea'){
       if(a.titulo){
@@ -11911,6 +11916,8 @@ function ejecutarAccion(a){
         ideasData.unshift({titulo:a.titulo,descripcion:a.descripcion||'',bullets:[],url:''});
         save('ideasdata',ideasData);
         if(typeof buildIdeas==='function'&&curView==='proposito')buildIdeas();
+        // Mark that we should add a nav button after the bot message
+        a._showNavIdeas=true;
       }
     }
     else if(a.type==='articulo'){
