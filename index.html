@@ -298,6 +298,7 @@ canvas{max-width:100%}
 
     <button class="nav-btn" onclick="showView('vinculos')"><span class="dot"></span>🤝 Vínculos & socialización</button>
     <button class="nav-btn" onclick="showView('proposito')"><span class="dot"></span>🎯 Trabajo — Propósito & Ikigai</button>
+    <button class="nav-btn" onclick="showView('cursos')"><span class="dot"></span>📚 Cursos</button>
     <button class="nav-btn" onclick="showView('deporte')"><span class="dot"></span>🏃 Deporte</button>
     <button class="nav-btn" onclick="showView('alimentacion')"><span class="dot"></span>🥗 Alimentación</button>
     <button class="nav-btn" onclick="showView('gastos')"><span class="dot"></span>💰 Gastos & ingresos</button>
@@ -480,6 +481,7 @@ canvas{max-width:100%}
   <div style="margin-bottom:1rem">
     <div onclick="togglePresSection('pres-emocion')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;transition:background .15s;margin:0 -6px" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Mis emociones / <em style="color:var(--ambar)">Reacciones de HOY</em></h2>
+      <button onclick="event.stopPropagation();showView('pres-registros')" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Ver registros</button>
       <button id="btn-pres-emocion" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="pres-emocion" style="display:none;padding-top:.75rem">
@@ -605,6 +607,7 @@ canvas{max-width:100%}
   <div style="margin-bottom:1rem">
     <div onclick="togglePresSection('pres-dormir')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;transition:background .15s;margin:0 -6px" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">¿Cómo me voy <em style="color:var(--ambar)">a dormir?</em></h2>
+      <button onclick="event.stopPropagation();showView('pres-registros')" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Ver registros</button>
       <button id="btn-pres-dormir" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="pres-dormir" style="display:none;padding-top:.75rem">
@@ -1155,17 +1158,11 @@ canvas{max-width:100%}
         <div class="chart-wrap"><h4>Distribución de gastos</h4><canvas id="chart-gastos-pie" height="200"></canvas></div>
         <div class="chart-wrap"><h4>Distribución de ingresos</h4><canvas id="chart-ingresos-pie" height="200"></canvas></div>
       </div>
-      <div id="gastos-usd-wrap" style="display:none;margin-top:1.25rem;padding-top:1rem;border-top:0.5px dashed var(--bordem)">
-        <div style="font-size:11px;color:var(--tmed);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">En dólares — este mes</div>
-        <div class="stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:1rem">
-          <div class="stat musgo"><div class="sl">Ingresos USD</div><div class="sv" id="g-ing-total-usd">USD$0</div></div>
-          <div class="stat terra"><div class="sl">Gastos USD</div><div class="sv" id="g-eg-total-usd">USD$0</div></div>
-          <div class="stat sol"><div class="sl">Balance USD</div><div class="sv" id="g-balance-usd">USD$0</div></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-          <div class="chart-wrap"><h4>Gastos en USD</h4><canvas id="chart-gastos-usd-pie" height="200"></canvas></div>
-          <div class="chart-wrap"><h4>Ingresos en USD</h4><canvas id="chart-ingresos-usd-pie" height="200"></canvas></div>
-        </div>
+
+      <!-- MAPA DEL MES — GASTOS -->
+      <div style="margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid var(--borde)">
+        <h4 style="font-size:13px;font-weight:500;color:var(--tierra);margin-bottom:.75rem">Mapa del mes — gastos</h4>
+        <div id="gastos-heatmap" style="overflow-x:auto"></div>
       </div>
     </div>
   </div>
@@ -1408,29 +1405,28 @@ canvas{max-width:100%}
     <p id="gastos-mes-lbl" style="font-size:12px;color:var(--tmed)"></p>
   </div>
   <!-- FILTER BAR -->
-  <div style="margin-bottom:1rem">
-    <div style="font-size:11px;font-weight:500;color:var(--tmed);margin-bottom:6px">Filtrar por categoría:</div>
-    <div id="gastos-mes-filtros" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
-    <div id="gastos-mes-tipo" style="display:flex;gap:6px">
-      <button onclick="gastosMesTipoFiltro=null;buildGastosMes()" id="gf-tipo-todo"
-        style="padding:4px 12px;border-radius:14px;border:0.5px solid var(--bordem);background:var(--tierra);color:#fff;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">
-        Todo
-      </button>
-      <button onclick="gastosMesTipoFiltro='egreso';buildGastosMes()" id="gf-tipo-gasto"
-        style="padding:4px 12px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">
-        Solo gastos
-      </button>
-      <button onclick="gastosMesTipoFiltro='ingreso';buildGastosMes()" id="gf-tipo-ing"
-        style="padding:4px 12px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">
-        Solo ingresos
-      </button>
-    </div>
+  <div style="margin-bottom:1rem;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <select id="gf-cat-sel" onchange="gastosMesCatFiltro=this.value||null;buildGastosMes()"
+      style="padding:5px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--tierra);outline:none;cursor:pointer">
+      <option value="">Todas las categorías</option>
+    </select>
+    <select id="gf-tipo-sel" onchange="gastosMesTipoFiltro=this.value||null;buildGastosMes()"
+      style="padding:5px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--tierra);outline:none;cursor:pointer">
+      <option value="">Gastos e ingresos</option>
+      <option value="egreso">Solo gastos</option>
+      <option value="ingreso">Solo ingresos</option>
+    </select>
+    <select id="gf-pago-sel" onchange="gastosMesPagoFiltro=this.value||null;buildGastosMes()"
+      style="padding:5px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:transparent;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--tierra);outline:none;cursor:pointer">
+      <option value="">Todos los medios</option>
+      <option value="Transferencia">Transferencia</option>
+      <option value="Efectivo">Efectivo</option>
+      <option value="Débito">Débito</option>
+      <option value="Crédito">Crédito</option>
+    </select>
   </div>
   <div id="gastos-mes-content" style="display:flex;flex-direction:column;gap:6px"></div>
 </div>
-
-
-<!-- VISION BOARD -->
 <!-- LINK TIPS SUBVIEW -->
   <div id="view-link-tips" class="view">
     <div class="ph">
@@ -1478,6 +1474,74 @@ canvas{max-width:100%}
   </div>
   <div id="libro-pdf-adjunto"></div>
 </div>
+<!-- CURSOS -->
+<div id="view-cursos" class="view">
+  <div class="ph">
+    <h1>Mis <em>Cursos</em></h1>
+    <p style="font-size:13px;color:var(--tmed)">Todo lo que estás aprendiendo</p>
+  </div>
+
+  <!-- CURSOS ACTIVOS -->
+  <div style="margin-bottom:1.5rem">
+    <div style="display:flex;align-items:center;gap:10px;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Cursos <em style="color:var(--ambar)">activos</em></h2>
+      <button onclick="addCurso('activo')" style="padding:4px 14px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+    </div>
+    <div id="cursos-activos-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+  </div>
+
+  <!-- CURSOS POR HACER -->
+<div style="margin-bottom:1.5rem">
+    <div style="display:flex;align-items:center;gap:10px;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Por <em style="color:var(--vmusgo)">hacer</em></h2>
+      <button onclick="addCurso('porhacer')" style="padding:4px 14px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+    </div>
+    <div id="cursos-porhacer-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+  </div>
+
+  <!-- CURSOS LEJANOS -->
+  <div style="margin-bottom:1.5rem">
+    <div style="display:flex;align-items:center;gap:10px;padding:.6rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
+      <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">Más <em style="color:var(--tmed)">adelante</em></h2>
+      <button onclick="addCurso('lejano')" style="padding:4px 14px;border-radius:14px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar</button>
+    </div>
+    <div id="cursos-lejanos-list" style="display:flex;flex-direction:column;gap:.5rem"></div>
+  </div>
+</div>
+
+<!-- CURSO DETALLE -->
+<div id="view-curso-detalle" class="view">
+  <div class="ph">
+    <button onclick="showView('cursos')" style="font-size:11px;color:var(--tmed);border:none;background:none;cursor:pointer;padding:0;margin-bottom:.75rem;display:block;font-family:'DM Sans',sans-serif">← Volver a Cursos</button>
+    <h1 id="curso-det-titulo" style="font-family:'Playfair Display',serif"></h1>
+    <p id="curso-det-subtitulo" style="font-size:12px;color:var(--tmed);margin-top:2px"></p>
+  </div>
+
+  <!-- NOTAS del curso -->
+  <div style="margin-bottom:1.5rem">
+    <div onclick="toggleCursoSection('curso-notas-wrap')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.5rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
+      <h2 style="font-family:'Playfair Display',serif;font-size:16px;font-weight:400;flex:1;margin:0">📝 <em style="color:var(--ambar)">Notas</em></h2>
+      <button id="btn-curso-notas-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="curso-notas-wrap" style="display:none">
+      <div id="curso-notas-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
+      <button onclick="addCursoNota()" style="padding:6px 16px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar nota</button>
+    </div>
+  </div>
+
+  <!-- LIBROS del curso -->
+  <div style="margin-bottom:1.5rem">
+    <div onclick="toggleCursoSection('curso-libros-wrap')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.5rem 0;border-bottom:0.5px solid var(--borde);margin-bottom:.75rem">
+      <h2 style="font-family:'Playfair Display',serif;font-size:16px;font-weight:400;flex:1;margin:0">📖 <em style="color:var(--ambar)">Libros</em></h2>
+      <button id="btn-curso-libros-wrap" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
+    </div>
+    <div id="curso-libros-wrap" style="display:none">
+      <div id="curso-libros-list" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:.75rem"></div>
+      <button onclick="addCursoLibro()" style="padding:6px 16px;border-radius:20px;border:0.5px dashed var(--bordem);background:transparent;color:var(--tmed);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Agregar libro</button>
+    </div>
+  </div>
+</div>
+
 <!-- DEPORTE -->
 <div id="view-deporte" class="view">
   <div class="ph">
@@ -2795,6 +2859,7 @@ let vinculos=load('vinculos',VIN_AREAS_DEFAULT);
 let gastos=load('gastos',[]);
 let gastosMesCatFiltro=null;
 let gastosMesTipoFiltro=null;
+let gastosMesPagoFiltro=null;
 let vbImages=load('vbimages',{});
 let purposeData=load('purpose',{});
 
@@ -3215,69 +3280,52 @@ function buildIdeas(){
   cont.innerHTML='';
   let dragIdx=null;
   ideasData.forEach((item,i)=>{
-    const bullets=(item.bullets||[]).map((b,bi)=>`
-      <div style="display:flex;align-items:flex-start;gap:5px;margin-bottom:3px">
-        <span style="color:var(--ambar);font-size:10px;margin-top:2px">•</span>
-        <input type="text" value="${b}" placeholder="Punto..." style="flex:1;border:none;border-bottom:0.5px solid var(--bordem);font-size:11px;font-family:'DM Sans',sans-serif;background:transparent;color:var(--tierra);outline:none;padding-bottom:1px"
-          oninput="ideasData[${i}].bullets[${bi}]=this.value;save('ideasdata',ideasData)">
-        <button onclick="delIdeaBullet(${i},${bi})" style="font-size:9px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
-      </div>`).join('');
     const card=document.createElement('div');
     card.draggable=true;
     card.dataset.i=i;
-    card.style.cssText='background:var(--fondo);border-radius:10px;padding:10px 12px;border:0.5px solid var(--bordem);transition:opacity .2s,border-top .15s,border-bottom .15s;border-top:2px solid transparent;border-bottom:2px solid transparent;';
-    card.innerHTML=`<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px">
-      <span style="cursor:grab;color:var(--tmed);font-size:16px;flex-shrink:0;margin-top:2px" title="Arrastrar">⠿</span>
-      <span style="font-size:12px;font-weight:600;color:var(--ambar);flex-shrink:0;margin-top:2px">${i+1})</span>
-      <div style="flex:1">
-        <input type="text" value="${(item.titulo||'').replace(/"/g,'&quot;')}" placeholder="Título..." style="width:100%;font-size:12px;font-weight:500;color:var(--tierra);border:none;border-bottom:0.5px solid var(--bordem);background:transparent;outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px"
+    card.style.cssText='background:#fff;border:0.5px solid var(--bordem);border-radius:14px;overflow:hidden;transition:opacity .2s;margin-bottom:.5rem';
+    card.innerHTML=`
+      <div style="padding:.85rem 1.1rem;border-bottom:0.5px solid var(--borde);display:flex;align-items:center;gap:10px;background:var(--arena)">
+        <span style="cursor:grab;color:var(--tmed);font-size:14px;flex-shrink:0" title="Arrastrar">⠿</span>
+        <span style="font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--ambar);flex-shrink:0">${i+1}</span>
+        <input type="text" value="${(item.titulo||'').replace(/"/g,'&quot;')}" placeholder="Título de la idea o proyecto..."
+          style="flex:1;font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:var(--tierra);border:none;background:transparent;outline:none"
           oninput="ideasData[${i}].titulo=this.value;save('ideasdata',ideasData)">
-        <input type="text" value="${(item.descripcion||'').replace(/"/g,'&quot;')}" placeholder="Descripción breve..." style="width:100%;font-size:11px;color:var(--tmed);border:none;border-bottom:0.5px solid var(--bordem);background:transparent;outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px"
-          oninput="ideasData[${i}].descripcion=this.value;save('ideasdata',ideasData)">
-        <input type="text" value="${(item.url||'').replace(/"/g,'&quot;')}" placeholder="Link a Drive / info..." style="width:100%;font-size:10px;color:var(--ambar);border:none;border-bottom:0.5px solid var(--bordem);background:transparent;outline:none;font-family:'DM Sans',sans-serif;margin-bottom:4px"
-          oninput="ideasData[${i}].url=this.value;save('ideasdata',ideasData)">
-        <div style="margin-top:8px">${bullets}</div>
-        <button onclick="addIdeaBullet(${i})" style="font-size:10px;color:var(--tmed);border:0.5px dashed var(--bordem);background:transparent;border-radius:10px;padding:2px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px">+ descripción</button>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
-        <button onclick="abrirIdeaTips(${i})" style="padding:4px 10px;border-radius:10px;border:0.5px solid var(--vmusgo);background:transparent;color:var(--vmusgo);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif">Más info</button>
+        <button onclick="abrirIdeaTips(${i})" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--vmusgo);background:transparent;color:var(--vmusgo);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Más info</button>
         <button onclick="delIdea(${i})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
       </div>
-    </div>`;
-    // Drag events
-    card.addEventListener('dragstart',e=>{
-      dragIdx=i;setTimeout(()=>card.style.opacity='.4',0);e.dataTransfer.effectAllowed='move';
-    });
-    card.addEventListener('dragend',()=>{
-      card.style.opacity='';
-      document.querySelectorAll('#ideas-list>div').forEach(el=>{el.style.borderTop='2px solid transparent';el.style.borderBottom='2px solid transparent';});
-    });
-    card.addEventListener('dragover',e=>{
-      if(dragIdx===null||dragIdx===i)return;e.preventDefault();
-      document.querySelectorAll('#ideas-list>div').forEach(el=>{el.style.borderTop='2px solid transparent';el.style.borderBottom='2px solid transparent';});
-      const mid=card.getBoundingClientRect().top+card.getBoundingClientRect().height/2;
-      if(e.clientY<mid)card.style.borderTop='2px solid var(--ambar)';
-      else card.style.borderBottom='2px solid var(--ambar)';
-    });
-    card.addEventListener('dragleave',e=>{if(!card.contains(e.relatedTarget)){card.style.borderTop='2px solid transparent';card.style.borderBottom='2px solid transparent';}});
+      <div style="padding:.75rem 1.1rem">
+        <textarea rows="2" placeholder="Descripción de la idea..." style="width:100%;border:none;outline:none;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);resize:none;line-height:1.6;background:transparent"
+          oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';ideasData[${i}].descripcion=this.value;save('ideasdata',ideasData)">${item.descripcion||''}</textarea>
+        ${item.url?`<div style="margin-top:4px"><a href="${item.url}" target="_blank" style="font-size:10px;color:var(--ambar);text-decoration:none">🔗 ${item.url.slice(0,50)}${item.url.length>50?'...':''}</a></div>`:''}
+        <input type="text" value="${(item.url||'').replace(/"/g,'&quot;')}" placeholder="Link opcional..."
+          style="width:100%;border:none;border-bottom:0.5px dashed var(--bordem);font-size:10px;color:var(--ambar);background:transparent;outline:none;font-family:'DM Sans',sans-serif;margin-top:4px"
+          oninput="ideasData[${i}].url=this.value;save('ideasdata',ideasData)">
+      </div>`;
+    // Drag
+    card.addEventListener('dragstart',e=>{dragIdx=i;setTimeout(()=>card.style.opacity='.4',0);e.dataTransfer.effectAllowed='move';});
+    card.addEventListener('dragend',()=>{card.style.opacity='';});
+    card.addEventListener('dragover',e=>{if(dragIdx===null||dragIdx===i)return;e.preventDefault();card.style.borderColor='var(--ambar)';});
+    card.addEventListener('dragleave',()=>{card.style.borderColor='var(--bordem)';});
     card.addEventListener('drop',e=>{
-      if(dragIdx===null||dragIdx===i)return;e.preventDefault();
-      card.style.borderTop='2px solid transparent';card.style.borderBottom='2px solid transparent';
-      const mid=card.getBoundingClientRect().top+card.getBoundingClientRect().height/2;
-      const toIdx=e.clientY<mid?i:i+1;
-      const [moved]=ideasData.splice(dragIdx,1);
-      ideasData.splice(toIdx>dragIdx?toIdx-1:toIdx,0,moved);
+      if(dragIdx===null||dragIdx===i)return;e.preventDefault();card.style.borderColor='var(--bordem)';
+      const [moved]=ideasData.splice(dragIdx,1);ideasData.splice(i,0,moved);
       dragIdx=null;save('ideasdata',ideasData);buildIdeas();
     });
     cont.appendChild(card);
+    const ta=card.querySelector('textarea');if(ta){ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';}
   });
 }
 function addIdeaBullet(i){ideasData[i].bullets=ideasData[i].bullets||[];ideasData[i].bullets.push('');save('ideasdata',ideasData);buildIdeas();}
 function delIdeaBullet(i,bi){ideasData[i].bullets.splice(bi,1);save('ideasdata',ideasData);buildIdeas();}
-function addIdea(){
-  const titulo=prompt('Título de la idea o proyecto:');if(!titulo||!titulo.trim())return;
-  ideasData.push({titulo:titulo.trim(),descripcion:'',bullets:[]});
+function addIdea(tituloParam){
+  const titulo=tituloParam||(prompt('Título de la idea o proyecto:'));if(!titulo||!titulo.trim())return;
+  ideasData.push({titulo:titulo.trim(),descripcion:'',bullets:[],url:''});
   save('ideasdata',ideasData);buildIdeas();
+  // Open section if closed
+  const sec=document.getElementById('prop-ideas');
+  const btn=document.getElementById('btn-prop-ideas');
+  if(sec&&sec.style.display==='none'){sec.style.display='';if(btn)btn.textContent='Cerrar';}
 }
 function delIdea(i){ideasData.splice(i,1);save('ideasdata',ideasData);buildIdeas();}
 let ideaActivaIdx=null;
@@ -5841,8 +5889,45 @@ function delGastoCat(){
   save('gastocats',gastoCats);buildGastoCatSelect();buildGastosChart();
 }
 
+function buildGastosHeatmap(){
+  const cont=document.getElementById('gastos-heatmap');if(!cont)return;
+  const year=today.getFullYear();
+  const daysInMonth=new Date(year,curMes+1,0).getDate();
+  const monthKey=`${year}-${String(curMes+1).padStart(2,'0')}`;
+  // Get all categories with gastos this month
+  const catSet=new Set();
+  gastos.filter(g=>g.tipo==='egreso'&&g.mes===curMes).forEach(g=>catSet.add(g.cat));
+  const cats2=[...catSet];
+  if(!cats2.length){cont.innerHTML='<p style="font-size:11px;color:var(--tmed)">Sin gastos este mes.</p>';return;}
+  const CAT_PALETTE=['#E8C44A','#D4903A','#7AB87E','#5C7A4E','#C4713A','#9B59B6','#3498DB','#1ABC9C','#E91E63','#9A8A60'];
+  const catColor={};cats2.forEach((c,i)=>catColor[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
+  // Day headers
+  const dias=['L','M','M','J','V','S','D'];
+  let html=`<table style="border-collapse:collapse;font-size:10px"><thead><tr><td style="padding:2px 8px;min-width:90px"></td>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const dow=new Date(year,curMes,d).getDay();
+    const isToday=year===today.getFullYear()&&curMes===today.getMonth()&&d===today.getDate();
+    html+=`<td style="padding:2px 3px;text-align:center;color:${isToday?'var(--ambar)':'var(--tmed)'};font-weight:${isToday?'700':'400'}">${d}</td>`;
+  }
+  html+='</tr></thead><tbody>';
+  cats2.forEach(cat=>{
+    const col=catColor[cat];
+    html+=`<tr><td style="padding:3px 8px;white-space:nowrap;color:var(--tierra);font-size:10px;display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${col};flex-shrink:0"></span>${cat}</td>`;
+    for(let d=1;d<=daysInMonth;d++){
+      const dk=`${monthKey}-${String(d).padStart(2,'0')}`;
+      const hasgasto=gastos.some(g=>g.tipo==='egreso'&&g.cat===cat&&g.fecha===dk);
+      const isToday=year===today.getFullYear()&&curMes===today.getMonth()&&d===today.getDate();
+      html+=`<td style="padding:2px 3px;text-align:center"><div style="width:14px;height:14px;border-radius:3px;background:${hasgasto?col:'#F0EDE8'};border:${isToday?'2px solid var(--ambar)':'1px solid rgba(0,0,0,0.06)'};margin:0 auto"></div></td>`;
+    }
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  cont.innerHTML=html;
+}
+
 function buildGastos(){
   buildGastoCatSelect();
+  buildGastosHeatmap();
   const hoy=today.toISOString().slice(0,10);
   const list=document.getElementById('gastos-hoy-list');
   if(list){
@@ -5886,33 +5971,53 @@ function buildGastosMes(){
   let mesGastos=gastos.filter(g=>g.mes===curMes).slice().reverse();
   if(!mesGastos.length){cont.innerHTML='<p style="font-size:13px;color:var(--tmed)">Sin registros este mes.</p>';gastosMesCatFiltro=null;return;}
 
-  // Build category pills
-  const pillsCont=document.getElementById('gastos-mes-filtros');
-  if(pillsCont){
+  // Populate category dropdown
+  const catSel=document.getElementById('gf-cat-sel');
+  if(catSel){
     const allCats=[...new Set(mesGastos.map(g=>g.cat))];
-    pillsCont.innerHTML=`<button onclick="gastosMesCatFiltro=null;buildGastosMes()" style="padding:3px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:${!gastosMesCatFiltro?'var(--tierra)':'transparent'};color:${!gastosMesCatFiltro?'#fff':'var(--tmed)'};font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Todas</button>`+
-    allCats.map(c=>`<button onclick="gastosMesCatFiltro='${c}';buildGastosMes()" style="padding:3px 10px;border-radius:14px;border:0.5px solid var(--bordem);background:${gastosMesCatFiltro===c?'var(--ambar)':'transparent'};color:${gastosMesCatFiltro===c?'#fff':'var(--tmed)'};font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">${c}</button>`).join('');
+    catSel.innerHTML='<option value="">Todas las categorías</option>'+allCats.map(c=>`<option value="${c}"${gastosMesCatFiltro===c?' selected':''}>${c}</option>`).join('');
   }
-  // Update tipo buttons highlight
-  ['todo','gasto','ing'].forEach(t=>{
-    const b=document.getElementById('gf-tipo-'+t);if(!b)return;
-    const active=(t==='todo'&&!gastosMesTipoFiltro)||(t==='gasto'&&gastosMesTipoFiltro==='egreso')||(t==='ing'&&gastosMesTipoFiltro==='ingreso');
-    b.style.background=active?'var(--tierra)':'transparent';
-    b.style.color=active?'#fff':'var(--tmed)';
-  });
+  // Sync tipo and pago selects
+  const tipoSel=document.getElementById('gf-tipo-sel');
+  if(tipoSel)tipoSel.value=gastosMesTipoFiltro||'';
+  const pagoSel=document.getElementById('gf-pago-sel');
+  if(pagoSel)pagoSel.value=gastosMesPagoFiltro||'';
 
   // Apply filters
-  if(gastosMesCatFiltro) mesGastos=mesGastos.filter(g=>g.cat===gastosMesCatFiltro);
-  if(gastosMesTipoFiltro) mesGastos=mesGastos.filter(g=>g.tipo===gastosMesTipoFiltro);
+  if(gastosMesCatFiltro)mesGastos=mesGastos.filter(g=>g.cat===gastosMesCatFiltro);
+  if(gastosMesTipoFiltro)mesGastos=mesGastos.filter(g=>g.tipo===gastosMesTipoFiltro);
+  if(gastosMesPagoFiltro)mesGastos=mesGastos.filter(g=>g.pago===gastosMesPagoFiltro);
 
   const ingresos=mesGastos.filter(g=>g.tipo==='ingreso');
   const egresos=mesGastos.filter(g=>g.tipo==='egreso');
 
   const CAT_PALETTE=['#E8C44A','#D4903A','#7AB87E','#5C7A4E','#C4713A','#9B59B6','#3498DB','#1ABC9C','#E91E63','#9A8A60'];
-  const catColorMap={};
-  [...new Set(gastos.filter(g=>g.mes===curMes&&g.tipo==='egreso').map(g=>g.cat))].forEach((c,i)=>catColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
-  const ingColorMap={};
-  [...new Set(gastos.filter(g=>g.mes===curMes&&g.tipo==='ingreso').map(g=>g.cat))].forEach((c,i)=>ingColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
+  const allCatsEg=[...new Set(gastos.filter(g=>g.mes===curMes&&g.tipo==='egreso').map(g=>g.cat))];
+  const allCatsIng=[...new Set(gastos.filter(g=>g.mes===curMes&&g.tipo==='ingreso').map(g=>g.cat))];
+  const catColorMap={};allCatsEg.forEach((c,i)=>catColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
+  const ingColorMap={};allCatsIng.forEach((c,i)=>ingColorMap[c]=CAT_PALETTE[i%CAT_PALETTE.length]);
+
+  const gastoCatsOpts=(typeof gastoCats!=='undefined'?gastoCats:[]).map(c=>`<option value="${c}">${c}</option>`).join('');
+  const pagoOpts=['Transferencia','Efectivo','Débito','Crédito'].map(p=>`<option value="${p}">${p}</option>`).join('');
+  const pagoAbbr={'Transferencia':'T','Efectivo':'E','Débito':'D','Crédito':'C'};
+
+  function renderItem(g,col){
+    return `<div style="padding:8px 10px;background:#fff;border-radius:8px;border:0.5px solid ${col}40;border-left:3px solid ${col};display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">
+      <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
+      <select onchange="editGasto('${g.id}','cat',this.value);buildGastosMes()"
+        style="border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:${col};outline:none;cursor:pointer;max-width:90px">
+        ${gastoCatsOpts.replace(`value="${g.cat}"`,`value="${g.cat}" selected`)}
+      </select>
+      <input type="text" value="${(g.desc||'').replace(/"/g,'&quot;')}" placeholder="descripción"
+        style="flex:1;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;min-width:60px"
+        onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','desc',this.value)">
+      <span style="font-size:9px;color:var(--tmed);opacity:.7" title="${g.pago||''}">${pagoAbbr[g.pago]||g.pago?.charAt(0)||'?'}</span>
+      <input type="number" value="${g.monto||0}"
+        style="width:70px;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:right"
+        onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','monto',this.value)">
+      <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+    </div>`;
+  }
 
   function groupByName(list,colorMap){
     const groups={};
@@ -5928,30 +6033,10 @@ function buildGastosMes(){
             <span style="font-size:10px;color:var(--tmed)">${items.length} registros</span>
             <span style="font-size:12px;font-weight:600;color:${col}">${items[0].tipo==='ingreso'?'+':'-'}$${total.toFixed(0)}</span>
           </div>
-          <div>${items.map(g=>`<div style="padding:6px 10px 6px 14px;display:flex;align-items:center;gap:6px;border-top:0.5px solid ${col}20;background:#fff;flex-wrap:wrap">
-            <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
-            <input type="text" value="${(g.desc||'').replace(/"/g,'&quot;')}" placeholder="descripción"
-              style="flex:1;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;min-width:60px"
-              onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','desc',this.value)">
-            <input type="number" value="${g.monto||0}"
-              style="width:68px;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:11px;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:right"
-              onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','monto',this.value)">
-            <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
-          </div>`).join('')}</div>
+          <div>${items.map(g=>renderItem(g,col)).join('')}</div>
         </div>`;
       } else {
-        const g=items[0];
-        html+=`<div style="padding:8px 10px;background:#fff;border-radius:8px;border:0.5px solid ${col}40;border-left:3px solid ${col};display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">
-          <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
-          <span style="font-size:11px;font-weight:500;color:${col};min-width:70px">${g.cat}</span>
-          <input type="text" value="${(g.desc||'').replace(/"/g,'&quot;')}" placeholder="descripción"
-            style="flex:1;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;min-width:80px"
-            onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','desc',this.value)">
-          <input type="number" value="${g.monto||0}"
-            style="width:72px;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:right"
-            onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','monto',this.value)">
-          <button onclick="delGasto('${g.id}')" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
-        </div>`;
+        html+=renderItem(items[0],col);
       }
     });
     return html||'<p style="font-size:12px;color:var(--tmed)">Sin registros con este filtro.</p>';
@@ -5959,12 +6044,10 @@ function buildGastosMes(){
 
   const showIngresos=!gastosMesTipoFiltro||gastosMesTipoFiltro==='ingreso';
   const showEgresos=!gastosMesTipoFiltro||gastosMesTipoFiltro==='egreso';
-
-  cont.innerHTML=(showIngresos?`
-    <div style="font-size:11px;font-weight:600;color:var(--vmusgo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Ingresos</div>
+  cont.innerHTML=
+    (showIngresos?`<div style="font-size:11px;font-weight:600;color:var(--vmusgo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Ingresos</div>
     <div style="margin-bottom:1.1rem">${ingresos.length?groupByName(ingresos,ingColorMap):'<p style="font-size:12px;color:var(--tmed)">Sin ingresos.</p>'}</div>`:'')+
-  (showEgresos?`
-    <div style="font-size:11px;font-weight:600;color:var(--terra);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Gastos</div>
+    (showEgresos?`<div style="font-size:11px;font-weight:600;color:var(--terra);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Gastos</div>
     <div>${egresos.length?groupByName(egresos,catColorMap):'<p style="font-size:12px;color:var(--tmed)">Sin gastos.</p>'}</div>`:'');
 }
 
@@ -7172,6 +7255,156 @@ function descargarReporteSector(sector){
   }
 }
 
+/* CURSOS */
+let cursosData=load('cursosdata',{
+  activos:[
+    {id:'c1',nombre:'Biodanza',institucion:'',notas:[],libros:[{id:'l1',titulo:'Cerebro Lúcido',notas:'Recomendado en clase'}]},
+    {id:'c2',nombre:'Health Coach',institucion:'',notas:[],libros:[]},
+    {id:'c3',nombre:'Maestría de Coaching',institucion:'Lydia Muradep',notas:[],libros:[]}
+  ],
+  porhacer:[],
+  lejanos:[]
+});
+let curCursoId=null;
+
+function saveCursos(){save('cursosdata',cursosData);}
+
+function buildCursos(){
+  buildCursosList('activo');
+  buildCursosList('porhacer');
+  buildCursosList('lejano');
+}
+
+function buildCursosList(tipo){
+  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':'lejanos';
+  const elId=`cursos-${key}-list`;
+  const cont=document.getElementById(elId);if(!cont)return;
+  const lista=cursosData[key]||[];
+  if(!lista.length){cont.innerHTML=`<p style="font-size:12px;color:var(--tmed)">Ninguno por ahora.</p>`;return;}
+  const colores={activo:'var(--ambar)',porhacer:'var(--vmusgo)',lejano:'var(--tmed)'};
+  cont.innerHTML='';
+  lista.forEach((c,ci)=>{
+    const card=document.createElement('div');
+    card.style.cssText='background:#fff;border:0.5px solid var(--bordem);border-left:3px solid '+colores[tipo]+';border-radius:10px;padding:.8rem 1rem;display:flex;align-items:center;gap:10px;cursor:pointer';
+    card.onclick=()=>abrirCurso(tipo,ci);
+    card.innerHTML=`
+      <div style="flex:1">
+        <div style="font-family:'Playfair Display',serif;font-size:15px;color:var(--tierra)">${c.nombre}</div>
+        ${c.institucion?`<div style="font-size:11px;color:var(--tmed)">${c.institucion}</div>`:''}
+        <div style="font-size:10px;color:var(--tmed);margin-top:2px">${(c.notas||[]).length} notas · ${(c.libros||[]).length} libros</div>
+      </div>
+      <button onclick="event.stopPropagation();delCurso('${tipo}',${ci})" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>`;
+    cont.appendChild(card);
+  });
+}
+
+function addCurso(tipo){
+  const nombre=prompt('Nombre del curso:');if(!nombre)return;
+  const inst=prompt('Institución / Docente (opcional):');
+  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':'lejanos';
+  cursosData[key].push({id:'c'+Date.now(),nombre,institucion:inst||'',notas:[],libros:[]});
+  saveCursos();buildCursosList(tipo);
+}
+
+function delCurso(tipo,ci){
+  if(!confirm('¿Eliminar este curso?'))return;
+  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':'lejanos';
+  cursosData[key].splice(ci,1);saveCursos();buildCursosList(tipo);
+}
+
+function abrirCurso(tipo,ci){
+  const key=tipo==='activo'?'activos':tipo==='porhacer'?'porhacer':'lejanos';
+  const c=cursosData[key][ci];if(!c)return;
+  curCursoId={tipo,ci};
+  const tit=document.getElementById('curso-det-titulo');if(tit)tit.textContent=c.nombre;
+  const sub=document.getElementById('curso-det-subtitulo');if(sub)sub.textContent=c.institucion||'';
+  showView('curso-detalle');
+  buildCursoNotas();buildCursoLibros();
+}
+
+function getCurActual(){
+  if(!curCursoId)return null;
+  const key=curCursoId.tipo==='activo'?'activos':curCursoId.tipo==='porhacer'?'porhacer':'lejanos';
+  return cursosData[key][curCursoId.ci];
+}
+
+function toggleCursoSection(id){
+  const el=document.getElementById(id);
+  const btn=document.getElementById('btn-'+id);
+  if(!el)return;
+  const open=el.style.display==='none';
+  el.style.display=open?'':'none';
+  if(btn)btn.textContent=open?'Cerrar':'Abrir';
+}
+
+function buildCursoNotas(){
+  const c=getCurActual();if(!c)return;
+  const cont=document.getElementById('curso-notas-list');if(!cont)return;
+  cont.innerHTML='';
+  (c.notas||[]).forEach((n,ni)=>{
+    const div=document.createElement('div');
+    div.style.cssText='background:var(--arena);border-radius:10px;padding:.85rem 1rem;border:0.5px solid var(--bordem)';
+    div.innerHTML=`
+      <input type="text" value="${(n.titulo||'').replace(/"/g,'&quot;')}" placeholder="Título..."
+        style="width:100%;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:var(--ambar);border:none;background:transparent;outline:none;margin-bottom:6px"
+        oninput="const c=getCurActual();if(c)c.notas[${ni}].titulo=this.value;saveCursos()">
+      <textarea rows="3" placeholder="Escribí tu nota..." style="width:100%;border:none;background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.6"
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';const c=getCurActual();if(c)c.notas[${ni}].texto=this.value;saveCursos()">${n.texto||''}</textarea>
+      <div style="text-align:right">
+        <button onclick="const c=getCurActual();if(c){c.notas.splice(${ni},1);saveCursos();buildCursoNotas();}" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕ Eliminar</button>
+      </div>`;
+    cont.appendChild(div);
+    const ta=div.querySelector('textarea');ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';
+  });
+}
+
+function addCursoNota(){
+  const c=getCurActual();if(!c)return;
+  if(!c.notas)c.notas=[];
+  c.notas.push({titulo:'',texto:''});
+  saveCursos();buildCursoNotas();
+  // Open section if closed
+  const wrap=document.getElementById('curso-notas-wrap');
+  const btn=document.getElementById('btn-curso-notas-wrap');
+  if(wrap)wrap.style.display='';
+  if(btn)btn.textContent='Cerrar';
+  setTimeout(()=>{const inputs=document.querySelectorAll('#curso-notas-list input[type=text]');if(inputs.length)inputs[inputs.length-1].focus();},80);
+}
+
+function buildCursoLibros(){
+  const c=getCurActual();if(!c)return;
+  const cont=document.getElementById('curso-libros-list');if(!cont)return;
+  cont.innerHTML='';
+  (c.libros||[]).forEach((l,li)=>{
+    const div=document.createElement('div');
+    div.style.cssText='background:#fff;border:0.5px solid var(--bordem);border-left:3px solid var(--ambar);border-radius:10px;padding:.85rem 1rem';
+    div.innerHTML=`
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:14px">📖</span>
+        <input type="text" value="${(l.titulo||'').replace(/"/g,'&quot;')}" placeholder="Título del libro..."
+          style="flex:1;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:var(--ambar);border:none;background:transparent;outline:none"
+          oninput="const c=getCurActual();if(c)c.libros[${li}].titulo=this.value;saveCursos()">
+        <button onclick="const c=getCurActual();if(c){c.libros.splice(${li},1);saveCursos();buildCursoLibros();}" style="font-size:10px;color:var(--tmed);border:none;background:none;cursor:pointer">✕</button>
+      </div>
+      <textarea rows="2" placeholder="Notas sobre el libro..." style="width:100%;border:none;border-top:0.5px solid var(--borde);background:transparent;padding-top:6px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;resize:none;line-height:1.6"
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';const c=getCurActual();if(c)c.libros[${li}].notas=this.value;saveCursos()">${l.notas||''}</textarea>`;
+    cont.appendChild(div);
+    const ta=div.querySelector('textarea');ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';
+  });
+}
+
+function addCursoLibro(){
+  const c=getCurActual();if(!c)return;
+  if(!c.libros)c.libros=[];
+  c.libros.push({titulo:'',notas:''});
+  saveCursos();buildCursoLibros();
+  const wrap=document.getElementById('curso-libros-wrap');
+  const btn=document.getElementById('btn-curso-libros-wrap');
+  if(wrap)wrap.style.display='';
+  if(btn)btn.textContent='Cerrar';
+  setTimeout(()=>{const inputs=document.querySelectorAll('#curso-libros-list input[type=text]');if(inputs.length)inputs[inputs.length-1].focus();},80);
+}
+
 /* RESUMEN */
 function buildResumen(){
   const lbl=document.getElementById('resumen-lbl');if(lbl)lbl.textContent=MESES[curMes]+' '+today.getFullYear();
@@ -7299,6 +7532,8 @@ function showView(v){
   if(v==='artista-historial')buildArtistaHistorial();
   if(v==='valores-notas')buildValoresNotas();
   if(v==='terapias-mes')buildTerapiasMes();
+  if(v==='cursos')buildCursos();
+  if(v==='curso-detalle'){buildCursoNotas();buildCursoLibros();}
   if(v==='resumen')buildResumen();
   if(v==='articulos')buildArticulos();
   if(v==='mapas-historicos')buildMapasHistoricos();
@@ -11283,12 +11518,28 @@ Usá esto cuando el usuario quiera marcar que hizo un hábito hoy. Se activa con
 - "habito sonreír ok" → busca "sonreír"
 Si encontrás match, confirmá con el nombre exacto que marcaste. Si no encontrás ningún match claro, respondé con ACTIONS vacías y listá todos los hábitos disponibles de "Hábitos disponibles".
 
+{"type":"dormir","emLiders":["Calma","Gratitud"],"sat":"bien","nota":"fue un día muy lindo","estadoEm":8}
+Usá esto cuando el usuario diga algo como "cómo me voy a dormir", "registro de dormir", "dormir". Las emociones deben ser de esta lista: Amor, Ternura, Compasión, Gratitud, Ilusión, Asombro, Admiración, Entusiasmo, Euforia, Alegría, Felicidad, Placer, Alivio, Serenidad, Satisfacción, Orgullo, Calma, Aceptación, Paz, Aburrimiento, Nostalgia, Melancolía, Confusión, Incomprensión, Timidez, Vergüenza, Decepción, Remordimiento, Envidia, Frustración, Irritación, Tensión, Inseguridad, Culpa, Desaliento, Desamparo, Soledad, Miedo, Tristeza, Ira, Ansiedad, Enojo. sat puede ser: "muy bien", "bien", "regular", "mal", "muy mal". estadoEm del 1 al 10.
+
+FLUJO INTERACTIVO para dormir: Si el usuario solo dice "cómo me voy a dormir" o similar SIN dar datos, NO guardes nada y hacé las preguntas de a una:
+1. Primero preguntá: "¿Con qué emoción principal te vas a dormir hoy? 💤"
+2. Cuando responda con la emoción, preguntá: "¿Y cómo calificarías tu día en general? (muy bien / bien / regular / mal / muy mal)"
+3. Cuando responda, preguntá: "¿Querés agregar alguna nota o reflexión del día?"
+4. Cuando responda (o diga "no"), guardá todo con la acción dormir.
+Si el usuario da todos los datos de una (emoción + cómo fue el día + nota), guardá directo sin preguntar.
+
+{"type":"idea","titulo":"nombre de la idea o proyecto","descripcion":"descripción opcional"}
+Usá esto cuando el usuario diga "anotame esta idea", "guardame este proyecto", "nueva idea:", etc. El título es obligatorio.
+
+{"type":"articulo","titulo":"título del artículo o link","link":"https://...","descripcion":"descripción opcional"}
+Usá esto cuando el usuario diga "guardame este link", "anotame este artículo", "guardá este link en artículos", etc. Si el usuario da una URL, usala como link. Intentá generar un título descriptivo basado en el contexto o la URL. Va a la sección Artículos.
+
 {"type":"nota","titulo":"título opcional","texto":"texto libre"}
 Guarda en Reflexiones / Camino del artista (Registro Autoconocimiento).
 
 Si el usuario te pregunta qué podés hacer, qué cosas puede cargar, cómo usarte, o hace preguntas sobre el bot, respondé:
 ACTIONS:{"actions":[]}
-MSG:¡Hola! Puedo guardar estas cosas en tu app 👇\n\n💸 *Gastos & ingresos*\n_"gasté 5000 en comida"_, _"ingresé 50000 de trabajo"_\n\n🏃 *Deporte*\n_"hice bici 3km"_, _"caminé 40 minutos"_\n\n💪 *Gym (pesas)*\n_"prensa 25kg"_, _"hip thrust 40kg, sentadilla 30kg"_\n\n💛 *Emociones*\n_"estoy ansiosa por el trabajo"_, _"me enojé con mi hermana"_\nDetecto automáticamente tus triggers guardados 🎯\n\n📝 *Nota*\n_"nota: hoy me di cuenta que..."_\nVa a Reflexiones / Autoconocimiento\n\n¿Qué querés registrar?
+MSG:¡Hola! Puedo guardar estas cosas 👇\n\n💸 *Gastos/ingresos* — 'gasté 5000 en comida'\n🏃 *Deporte* — 'hice bici 3km'\n💪 *Gym* — 'prensa 25kg'\n💛 *Emociones* — 'estoy ansiosa'\n😴 *Dormir* — 'cómo me voy a dormir'\n✅ *Hábitos* — 'ok postura física'\n💡 *Ideas* — 'anotame esta idea: podcast'\n🔗 *Links/artículos* — 'guardame este link: https://...'\n📝 *Nota libre* — 'nota: hoy aprendí que...'\n\n¿Qué querés registrar?
 
 Si NO entendés qué quiere guardar, respondé:
 ACTIONS:{"actions":[]}
@@ -11461,6 +11712,32 @@ function ejecutarAccion(a){
       } else {
         a._notFound=true;
       }
+    }
+    else if(a.type==='dormir'){
+      if(typeof dormirData==='undefined')window.dormirData=load('dormirdata',[]);
+      let rec=dormirData.find(d=>d.day===todayStr);
+      if(!rec){rec={day:todayStr,ts:Date.now(),emLiders:[],sat:'',nota:'',estadoEm:5};dormirData.push(rec);}
+      if(a.emLiders&&a.emLiders.length)rec.emLiders=a.emLiders;
+      if(a.sat)rec.sat=a.sat;
+      if(a.nota)rec.nota=a.nota;
+      if(a.estadoEm)rec.estadoEm=a.estadoEm;
+      rec.ts=Date.now();
+      save('dormirdata',dormirData);
+      if(typeof initDormirForm==='function'&&curView==='presencia')initDormirForm();
+    }
+    else if(a.type==='idea'){
+      if(a.titulo){
+        if(typeof ideasData==='undefined')window.ideasData=load('ideasdata',[]);
+        ideasData.push({titulo:a.titulo,descripcion:a.descripcion||'',bullets:[],url:''});
+        save('ideasdata',ideasData);
+        if(typeof buildIdeas==='function'&&curView==='proposito')buildIdeas();
+      }
+    }
+    else if(a.type==='articulo'){
+      if(typeof articulosData==='undefined')window.articulosData=load('articulosdata',[]);
+      articulosData.push({id:'art'+Date.now(),titulo:a.titulo||a.link||'Sin título',descripcion:a.descripcion||'',link:a.link||''});
+      save('articulosdata',articulosData);
+      if(typeof buildArticulos==='function'&&curView==='articulos')buildArticulos();
     }
     else if(a.type==='nota'){
       if(typeof artistaData==='undefined')window.artistaData=load('artistadata',[]);
