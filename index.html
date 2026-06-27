@@ -607,7 +607,7 @@ canvas{max-width:100%}
   <div style="margin-bottom:1rem">
     <div onclick="togglePresSection('pres-dormir')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:.6rem 6px;border-bottom:0.5px solid var(--borde);border-radius:6px;transition:background .15s;margin:0 -6px" onmouseover="this.style.background='var(--tsuave)'" onmouseout="this.style.background=''">
       <h2 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:400;flex:1;margin:0">¿Cómo me voy <em style="color:var(--ambar)">a dormir?</em></h2>
-      <button onclick="event.stopPropagation();showView('pres-registros')" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Ver registros</button>
+      <button onclick="event.stopPropagation();showView('dormir-mes')" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Ver registros</button>
       <button id="btn-pres-dormir" style="padding:3px 10px;border-radius:10px;border:0.5px solid var(--bordem);background:transparent;color:var(--tmed);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Abrir</button>
     </div>
     <div id="pres-dormir" style="display:none;padding-top:.75rem">
@@ -6033,7 +6033,6 @@ function buildGastosMes(){
   const pagoAbbr={'Transferencia':'T','Efectivo':'E','Débito':'D','Crédito':'C'};
 
   function renderItem(g,col){
-    const signo=g.moneda==='USD'?'USD$':'$';
     const pagoAbbr={'Transferencia':'T','Efectivo':'E','Débito':'D','Crédito':'C'};
     return `<div style="padding:8px 10px;background:#fff;border-radius:8px;border:0.5px solid ${col}40;border-left:3px solid ${col};display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap">
       <span style="font-size:10px;color:var(--tmed);min-width:50px">${g.fecha||''}</span>
@@ -6048,7 +6047,11 @@ function buildGastosMes(){
         style="border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--tmed);outline:none;cursor:pointer;width:22px;padding:0;appearance:none;-webkit-appearance:none">
         ${['Transferencia','Efectivo','Débito','Crédito'].map(p=>`<option value="${p}"${g.pago===p?' selected':''}>${pagoAbbr[p]||p.charAt(0)}</option>`).join('')}
       </select>
-      <span style="font-size:10px;color:var(--tmed)">${signo}</span>
+      <select title="${g.moneda||'ARS'}" onchange="editGasto('${g.id}','moneda',this.value)"
+        style="border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--tmed);outline:none;cursor:pointer;width:34px;padding:0;appearance:none;-webkit-appearance:none">
+        <option value="ARS"${(g.moneda||'ARS')==='ARS'?' selected':''}>$</option>
+        <option value="USD"${g.moneda==='USD'?' selected':''}>USD</option>
+      </select>
       <input type="number" value="${g.monto||0}"
         style="width:70px;border:none;border-bottom:0.5px solid transparent;background:transparent;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:right"
         onfocus="this.style.borderColor='var(--bordem)'" onblur="this.style.borderColor='transparent';editGasto('${g.id}','monto',this.value)">
@@ -6140,8 +6143,19 @@ function buildGastosChart(){
       ingList.innerHTML=sorted.map(x=>{
         const usdItems=gastos.filter(g=>g.mes===curMes&&g.cat===x.c&&g.tipo==='ingreso'&&g.moneda==='USD');
         const usdTotal=usdItems.reduce((s,g)=>s+g.monto,0);
-        const usdStr=usdTotal>0?` <span style="font-size:10px;color:var(--tmed)">(USD$${usdTotal.toLocaleString('es-AR',{maximumFractionDigits:0})} → $${x.v.toLocaleString('es-AR',{maximumFractionDigits:0})})</span>`:'';
-        return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:0.5px solid var(--borde)">
+        // Get stored TC for this category or auto-calculate
+        const tcKey='tc_usd_'+curMes+'_'+x.c;
+        const storedTc=parseInt(localStorage.getItem('lav_'+tcKey)||0);
+        const autoPesosUsd=usdTotal>0&&x.v>0&&storedTc===0?Math.round(x.v/usdTotal):storedTc;
+        const usdStr=usdTotal>0?`
+          <span style="font-size:10px;color:var(--tmed);margin-left:4px">USD$${usdTotal.toFixed(0)}</span>
+          <span style="font-size:10px;color:var(--tmed)">×</span>
+          <input type="number" placeholder="TC" value="${autoPesosUsd||''}"
+            title="Tipo de cambio USD→ARS"
+            style="width:60px;border:none;border-bottom:0.5px solid var(--bordem);background:transparent;font-size:10px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:center"
+            oninput="localStorage.setItem('lav_${tcKey}',this.value);buildGastos()">
+          <span style="font-size:10px;color:var(--tmed)">=</span>`:' ';
+        return `<div style="display:flex;align-items:center;gap:4px;padding:4px 0;border-bottom:0.5px solid var(--borde);flex-wrap:wrap">
           <span style="width:8px;height:8px;border-radius:2px;background:${x.col};flex-shrink:0"></span>
           <span style="flex:1;color:var(--tmed)">${x.c}</span>
           <span style="font-weight:600;color:var(--tierra)">$${x.v.toLocaleString('es-AR',{maximumFractionDigits:0})}</span>${usdStr}
@@ -10358,8 +10372,13 @@ function updateGlobalDateBar(){
   const d = new Date(curDay+'T12:00:00');
   const txt = d.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   // Update all instances (only the active view is visible so no flicker)
-  document.querySelectorAll('[id="global-fecha-lbl"]').forEach(el=>el.textContent=txt);
-  document.querySelectorAll('[id="global-day-picker"]').forEach(el=>{el.value=curDay;el.max=today.toISOString().slice(0,10);});
+  document.querySelectorAll('[id="global-fecha-lbl"]').forEach(el=>{
+    const isOtherMonth=curMes!==today.getMonth()||d.getFullYear()!==today.getFullYear();
+    el.textContent=txt;
+    el.style.color=isOtherMonth?'var(--ambar)':'var(--tmed)';
+    el.title=isOtherMonth?`Viendo datos de ${MESES[curMes]} ${d.getFullYear()}`:'' ;
+  });
+  document.querySelectorAll('[id="global-day-picker"]').forEach(el=>{el.value=curDay;});
 }
 
 function globalSetDay(val){
@@ -10367,6 +10386,7 @@ function globalSetDay(val){
   if(!val) val = todayStr;
   curDay = val;
   const d = new Date(val+'T12:00:00');
+  const prevMes=curMes;
   curMes = d.getMonth();
   const dayNum = d.getDate();
   curSem = Math.max(0, Math.ceil(dayNum/7)-1);
@@ -10383,6 +10403,16 @@ function globalSetDay(val){
     if(curView==='tracker') render();
     if(curView==='presencia') { buildPresRegistros && buildPresRegistros(); }
     if(curView==='deporte') buildDeporte();
+    if(curView==='gastos') buildGastos();
+    if(curView==='gastos-mes') buildGastosMes();
+    if(curView==='proposito') { if(typeof buildIdeas==='function')buildIdeas(); }
+    if(curView==='vinculos') { if(typeof buildVinculos==='function')buildVinculos(); }
+    if(curView==='autoconocimiento') { if(typeof buildLenDolores==='function')buildLenDolores(); }
+    if(curView==='alimentacion') { if(typeof buildAlimentacion==='function')buildAlimentacion(); }
+    if(curView==='dormir-mes') { if(typeof buildDormirMes==='function')buildDormirMes(); }
+    if(curView==='dep-notas-mes') { if(typeof buildDepNotasMes==='function')buildDepNotasMes(); }
+    if(curView==='gym-reporte') { if(typeof buildGymReporte==='function')buildGymReporte(); }
+    if(curView==='resumen') { if(typeof buildResumen==='function')buildResumen(); }
   }
 }
 
@@ -11566,9 +11596,10 @@ Categorías de gastos: ${gastoCatsStr}
 🎯 EJERCICIOS DISPONIBLES: ${ejerciciosCtx}
 ═══════════════════════════════════
 
-Cuando el usuario pide motivación, una frase, algo inspirador o similar:
-- Sacá UNA frase de "FRASES MOTIVACIONALES" que sea relevante al contexto del usuario
-- Respondé con esa frase en formato destacado (entre *asteriscos*)
+Cuando el usuario pide motivación, una frase, algo inspirador, o escribe solo "motivacion", "motivación", "frase", "ánimo", "necesito motivación":
+- SIEMPRE respondé con ACTIONS:{"actions":[]}
+- Sacá UNA frase de "FRASES MOTIVACIONALES" que sea relevante
+- Presentala en formato: ✨ *"la frase"*
 - Después preguntá: "¿Querés que te proponga un ejercicio para trabajar esto? 🎯"
 
 Cuando el usuario dice "sí" o "dale" después de la frase motivacional, o pide directamente un ejercicio:
@@ -11640,7 +11671,9 @@ sat: "muy bien", "bien", "regular", "mal", "muy mal". estadoEm del 1 al 10.
 FLUJO INTERACTIVO — SOLO si el usuario dice exactamente "cómo me voy a dormir" sin dar datos, hacé las preguntas de a una. Si da datos (emoción, estado), guardá directo.
 
 {"type":"idea","titulo":"nombre de la idea o proyecto","descripcion":"descripción opcional"}
-Usá esto cuando el usuario diga "anotame esta idea", "guardame este proyecto", "nueva idea:", etc. El título es obligatorio.
+Usá esto cuando el usuario diga "anotame esta idea", "guardame este proyecto", "nueva idea:", "idea:", etc. El título es obligatorio.
+Después de guardar una idea, el MSG debe ser EXACTAMENTE así:
+"✅ Anotado tu idea: *[título]*\n\n¿Querés agregar algo más a esta idea? Si sí, decime más y lo agrego. Si no, ¿en qué más te puedo ayudar?"
 
 {"type":"articulo","titulo":"título del artículo o link","link":"https://...","descripcion":"descripción opcional"}
 Usá esto cuando el usuario diga "guardame este link", "anotame este artículo", "guardá este link en artículos", etc. Si el usuario da una URL, usala como link. Intentá generar un título descriptivo basado en el contexto o la URL. Va a la sección Artículos.
@@ -11673,6 +11706,8 @@ Cuando guardás una emoción, además de confirmar el guardado, agregá siempre 
 - Aburrimiento → "💡 El aburrimiento necesita: un desafío nuevo. ¿Qué querés aprender o hacer?"
 - Paz/Gratitud/Alegría/Amor → "💡 Esta emoción necesita: ser expresada y compartida. No la guardes sola."
 - Nostalgia/Melancolía → "💡 La nostalgia necesita: honrar ese momento. Luego soltá. Vivís hoy."
+
+REGLA IMPORTANTE: Cuando guardés cualquier registro (emoción, gasto, deporte, gym, dormir, hábito, idea, nota, artículo), el MSG debe SIEMPRE empezar con "✅ Anotado: [qué guardaste]" en la primera línea. El resto del mensaje (frases motivacionales, preguntas, etc.) va después con un salto de línea.
 
 Respondé siempre en español rioplatense, tono cálido y breve.`;
 
@@ -11793,11 +11828,11 @@ function ejecutarAccion(a){
     else if(a.type==='habito'){
       // Clean trigger words before searching
       const STOP_WORDS=['ok','hice','hoy','habito','hábito','tracker','marcar','anotar','poner','si','sí','que','en','de','un','una','el','la','los','las','mi','fue'];
-      let hn=(a.nombre||'').toLowerCase().trim();
-      // If nombre starts with ok or habito, strip it
-      hn=hn.replace(/^(ok|hábito|habito|tracker)\s*/i,'').trim();
+      const removeAccents=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      let hn=removeAccents((a.nombre||'').toLowerCase().trim());
+      hn=hn.replace(/^(ok|habito|tracker)\s*/i,'').trim();
       hn=hn.split(' ').filter(w=>!STOP_WORDS.includes(w)).join(' ').trim();
-      if(!hn){hn=(a.nombre||'').toLowerCase().trim();}// fallback to original
+      if(!hn){hn=removeAccents((a.nombre||'').toLowerCase().trim());}
       // Build full flat list of all habits including subs
       const allHabits=[];
       (cats||[]).forEach(cat=>{
@@ -11806,13 +11841,14 @@ function ejecutarAccion(a){
           (h.subs||[]).forEach(s=>allHabits.push({h:s,catNombre:cat.nombre,parent:h.n}));
         });
       });
-      // Find best match: exact → partial → word match
-      let found=allHabits.find(x=>x.h.n.toLowerCase()===hn);
-      if(!found)found=allHabits.find(x=>x.h.n.toLowerCase().includes(hn));
-      if(!found)found=allHabits.find(x=>hn.includes(x.h.n.toLowerCase()));
+      // Find best match: exact → partial → word match (all accent-insensitive)
+      const norm=s=>removeAccents(s.toLowerCase());
+      let found=allHabits.find(x=>norm(x.h.n)===hn);
+      if(!found)found=allHabits.find(x=>norm(x.h.n).includes(hn));
+      if(!found)found=allHabits.find(x=>hn.includes(norm(x.h.n)));
       if(!found){
         const words=hn.split(' ').filter(w=>w.length>2);
-        found=allHabits.find(x=>words.some(w=>x.h.n.toLowerCase().includes(w)));
+        found=allHabits.find(x=>words.some(w=>norm(x.h.n).includes(w)));
       }
       if(found){
         const todayDow=(new Date().getDay()+6)%7;
