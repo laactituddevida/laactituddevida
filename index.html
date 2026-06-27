@@ -11384,6 +11384,7 @@ window.addEventListener("load",async function(){
 let chatOpen=false;
 let chatHistory=[]; // {role, content}
 let chatSaving=false;
+window._lastActionNavIdeas=false;
 
 function toggleChat(){
   chatOpen=!chatOpen;
@@ -11636,7 +11637,7 @@ Podés hacer ambas cosas en un mismo mensaje si corresponde.
 
 Si no entendés qué quiere (ni guardar ni consultar), respondé:
 ACTIONS:{"actions":[]}
-MSG:No entendí bien 😊 Podés preguntarme cosas como "¿cuándo me viene?", "¿qué gasté hoy?", o pedirme que guarde algo como "hice bici 30min". ¿Qué necesitás?
+MSG:No entendí bien 😊\n\nEstas son mis palabras clave:\n💸 *gasté / ingresé* — gastos e ingresos\n🏃 *hice / deporte* — actividad física\n💪 *gym / prensa / sentadilla* — pesas\n💛 *estoy / me siento* — emociones\n😴 *me voy a dormir* — registro de dormir\n✅ *ok [hábito]* — marcar hábito\n💡 *idea: [texto]* — guardar idea\n🔗 *link: [url]* — guardar artículo\n📝 *nota: [texto]* — nota libre\n✨ *motivacion* — frase motivacional\n\n_(A veces fallo — insistí con la palabra clave, o entrá a la página para cargarlo manual)_
 
 SECCIONES DONDE PODÉS GUARDAR COSAS:
 1. GASTOS & INGRESOS — cualquier gasto o ingreso en pesos
@@ -11705,7 +11706,7 @@ MSG:¡Hola! Esto es lo que puedo hacer 👇\n\n📋 *REGISTRAR* — arrancá con
 
 Si NO entendés qué quiere guardar, respondé:
 ACTIONS:{"actions":[]}
-MSG:No entendí bien qué querés registrar 😊 Puedo guardar cosas en estas secciones:\n• 💸 *Gastos & ingresos* — "gasté 5000 en comida"\n• 🏃 *Deporte* — "hice bici 3km"\n• 💪 *Gym* — "hice prensa 25kg"\n• 💛 *Emociones* — "estoy ansiosa por el trabajo"\n• 📝 *Nota* — cualquier reflexión o pensamiento (va a Autoconocimiento)\n¿Qué querías anotar?
+MSG:No entendí bien 😊\n\nEstas son mis palabras clave:\n💸 *gasté / ingresé* — gastos e ingresos\n🏃 *hice / deporte* — actividad física\n💪 *gym / prensa / sentadilla* — pesas\n💛 *estoy / me siento* — emociones\n😴 *me voy a dormir* — registro de dormir\n✅ *ok [hábito]* — marcar hábito\n💡 *idea: [texto]* — guardar idea\n🔗 *link: [url]* — guardar artículo\n📝 *nota: [texto]* — nota libre\n✨ *motivacion* — frase motivacional\n\n_(A veces fallo — insistí con la palabra clave, o entrá a la página para cargarlo manual)_
 
 Podés recibir varias cosas en un mensaje. Ej: "hice gym hoy, prensa 25kg y sentadilla 40kg" → dos acciones gym.
 
@@ -11757,7 +11758,7 @@ Respondé siempre en español rioplatense, tono cálido y breve.`;
     // Parse ACTIONS and MSG
     const actMatch=raw.match(/ACTIONS:\s*(\{.*?\})\s*MSG:/s);
     const msgMatch=raw.match(/MSG:([\s\S]*)/);
-    const botMsg=msgMatch?msgMatch[1].trim():'No entendí bien 😊 Podés preguntarme sobre tus datos o pedirme que guarde algo. ¿Qué necesitás?';
+    const botMsg=msgMatch?msgMatch[1].trim():'No entendí bien 😊';
 
     if(actMatch){
       try{
@@ -11772,17 +11773,19 @@ Respondé siempre en español rioplatense, tono cálido y breve.`;
     chatHistory.push({role:'assistant',content:botMsg});
 
     // Add nav button if an idea was saved
-    if(actMatch){
-      try{
-        const parsed2=JSON.parse(actMatch[1]);
-        if((parsed2.actions||[]).some(a=>a._showNavIdeas)){
-          const btn=document.createElement('button');
-          btn.textContent='→ Ir a Ideas / Proyectos';
-          btn.style.cssText='margin-top:8px;padding:6px 14px;border-radius:14px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-family:\'DM Sans\',sans-serif;font-size:12px;cursor:pointer;display:block';
-          btn.onclick=()=>{toggleChat();showView('proposito');const s=document.getElementById('prop-ideas');const b=document.getElementById('btn-prop-ideas');if(s&&s.style.display==='none'){s.style.display='';if(b)b.textContent='Cerrar';}};
-          botBubble&&botBubble.parentNode&&botBubble.parentNode.appendChild(btn);
-        }
-      }catch(e){}
+    if(window._lastActionNavIdeas){
+      window._lastActionNavIdeas=false;
+      setTimeout(()=>{
+        const msgs=document.getElementById('chat-messages');
+        if(!msgs)return;
+        const lastWrap=msgs.lastElementChild;
+        if(!lastWrap)return;
+        const btn=document.createElement('button');
+        btn.textContent='→ Ver en Ideas / Proyectos';
+        btn.style.cssText='margin-top:8px;padding:6px 14px;border-radius:14px;border:0.5px solid var(--ambar);background:transparent;color:var(--ambar);font-family:\'DM Sans\',sans-serif;font-size:12px;cursor:pointer;display:block';
+        btn.onclick=()=>{toggleChat();showView('proposito');const s=document.getElementById('prop-ideas');const b=document.getElementById('btn-prop-ideas');if(s&&s.style.display==='none'){s.style.display='';if(b)b.textContent='Cerrar';}};
+        lastWrap.appendChild(btn);
+      },100);
     }
 
   }catch(err){
@@ -11929,6 +11932,7 @@ function ejecutarAccion(a){
         if(typeof buildIdeas==='function'&&curView==='proposito')buildIdeas();
         // Mark that we should add a nav button after the bot message
         a._showNavIdeas=true;
+        window._lastActionNavIdeas=true;
       }
     }
     else if(a.type==='articulo'){
