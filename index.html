@@ -6133,32 +6133,45 @@ function buildGastosChart(){
   if(!ingCats.length){if(chartIngresosPie){chartIngresosPie.destroy();chartIngresosPie=null;}}
   else{
     const ingCols=ingCats.map((_,i)=>palette[i%palette.length]);
-    const ingData=ingCats.map(cat=>gastos.filter(g=>g.mes===curMes&&g.cat===cat&&g.tipo==='ingreso').reduce((s,g)=>s+g.monto,0));
+    // For each category, calculate peso value using TC if USD
+    const ingData=ingCats.map(cat=>{
+      const items=gastos.filter(g=>g.mes===curMes&&g.cat===cat&&g.tipo==='ingreso');
+      const tcKey='tc_usd_'+curMes+'_'+cat;
+      const storedTc=parseFloat(localStorage.getItem('lav_'+tcKey)||0);
+      return items.reduce((s,g)=>{
+        if(g.moneda==='USD'&&storedTc>0) return s+g.monto*storedTc;
+        return s+g.monto;
+      },0);
+    });
     if(chartIngresosPie)chartIngresosPie.destroy();
     chartIngresosPie=new Chart(ingCtx,{type:'doughnut',data:{labels:ingCats,datasets:[{data:ingData,backgroundColor:ingCols,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8}}}}});
-    // Ingresos totals — with USD info
+    // Ingresos totals — with USD × TC = $ display
     const ingList=document.getElementById('ingresos-cat-totales');
     if(ingList){
       const sorted=ingCats.map((c,i)=>({c,v:ingData[i],col:ingCols[i]})).sort((a,b)=>b.v-a.v);
       ingList.innerHTML=sorted.map(x=>{
         const usdItems=gastos.filter(g=>g.mes===curMes&&g.cat===x.c&&g.tipo==='ingreso'&&g.moneda==='USD');
         const usdTotal=usdItems.reduce((s,g)=>s+g.monto,0);
-        // Get stored TC for this category or auto-calculate
         const tcKey='tc_usd_'+curMes+'_'+x.c;
-        const storedTc=parseInt(localStorage.getItem('lav_'+tcKey)||0);
-        const autoPesosUsd=usdTotal>0&&x.v>0&&storedTc===0?Math.round(x.v/usdTotal):storedTc;
-        const usdStr=usdTotal>0?`
-          <span style="font-size:10px;color:var(--tmed);margin-left:4px">USD$${usdTotal.toFixed(0)}</span>
+        const storedTc=parseFloat(localStorage.getItem('lav_'+tcKey)||0);
+        const pesosTotales=storedTc>0&&usdTotal>0?usdTotal*storedTc:x.v;
+        const usdBlock=usdTotal>0?`
+          <span style="font-size:11px;font-weight:600;color:var(--ambar)">USD$${usdTotal.toFixed(0)}</span>
           <span style="font-size:10px;color:var(--tmed)">×</span>
-          <input type="number" placeholder="TC" value="${autoPesosUsd||''}"
-            title="Tipo de cambio USD→ARS"
-            style="width:60px;border:none;border-bottom:0.5px solid var(--bordem);background:transparent;font-size:10px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:center"
-            oninput="localStorage.setItem('lav_${tcKey}',this.value);buildGastos()">
-          <span style="font-size:10px;color:var(--tmed)">=</span>`:' ';
-        return `<div style="display:flex;align-items:center;gap:4px;padding:4px 0;border-bottom:0.5px solid var(--borde);flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:2px;border:0.5px solid var(--bordem);border-radius:6px;padding:1px 6px;background:#fff">
+            <span style="font-size:9px;color:var(--tmed)">TC</span>
+            <input type="number" placeholder="1400" value="${storedTc||''}"
+              title="Tipo de cambio USD→ARS — afecta el gráfico"
+              style="width:52px;border:none;background:transparent;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--tierra);outline:none;text-align:center;font-weight:500"
+              oninput="localStorage.setItem('lav_${tcKey}',this.value);buildGastos()">
+          </div>
+          <span style="font-size:10px;color:var(--tmed)">=</span>
+          <span style="font-weight:600;color:var(--tierra)">$${pesosTotales.toLocaleString('es-AR',{maximumFractionDigits:0})}</span>`:
+          `<span style="font-weight:600;color:var(--tierra)">$${x.v.toLocaleString('es-AR',{maximumFractionDigits:0})}</span>`;
+        return `<div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:0.5px solid var(--borde);flex-wrap:wrap">
           <span style="width:8px;height:8px;border-radius:2px;background:${x.col};flex-shrink:0"></span>
-          <span style="flex:1;color:var(--tmed)">${x.c}</span>
-          <span style="font-weight:600;color:var(--tierra)">$${x.v.toLocaleString('es-AR',{maximumFractionDigits:0})}</span>${usdStr}
+          <span style="flex:1;color:var(--tmed);font-size:11px">${x.c}</span>
+          ${usdBlock}
         </div>`;
       }).join('');
     }
@@ -11670,10 +11683,18 @@ sat: "muy bien", "bien", "regular", "mal", "muy mal". estadoEm del 1 al 10.
 
 FLUJO INTERACTIVO — SOLO si el usuario dice exactamente "cómo me voy a dormir" sin dar datos, hacé las preguntas de a una. Si da datos (emoción, estado), guardá directo.
 
+{"type":"idea_desc","texto":"descripción adicional"}
+Usá cuando el usuario empiece con "mas:", "más:", "desc:" para agregar descripción a la última idea anotada. No preguntes nada después, solo confirmá con "✅ Agregado a tu idea."
+
 {"type":"idea","titulo":"nombre de la idea o proyecto","descripcion":"descripción opcional"}
 Usá esto cuando el usuario diga "anotame esta idea", "guardame este proyecto", "nueva idea:", "idea:", etc. El título es obligatorio.
 Después de guardar una idea, el MSG debe ser EXACTAMENTE así:
-"✅ Anotado tu idea: *[título]*\n\n¿Querés agregar algo más a esta idea? Si sí, decime más y lo agrego. Si no, ¿en qué más te puedo ayudar?"
+"✅ Anotado tu idea: *[título]*\n\nSi querés agregar algo más a esta idea escribí \"mas: [lo que querés agregar]\" y lo anoto en la descripción."
+
+Si el usuario en su próximo mensaje empieza con "mas:", "más:", "agregar:", "desc:" seguido de texto, guardalo como descripción adicional de la última idea anotada usando:
+{"type":"idea_desc","texto":"lo que escribió"}
+
+Si dice "no" o algo no relacionado, tratalo como un nuevo mensaje normal.
 
 {"type":"articulo","titulo":"título del artículo o link","link":"https://...","descripcion":"descripción opcional"}
 Usá esto cuando el usuario diga "guardame este link", "anotame este artículo", "guardá este link en artículos", etc. Si el usuario da una URL, usala como link. Intentá generar un título descriptivo basado en el contexto o la URL. Va a la sección Artículos.
@@ -11874,6 +11895,15 @@ function ejecutarAccion(a){
       rec.ts=Date.now();
       save('dormirdata',dormirData);
       if(typeof initDormirForm==='function'&&curView==='presencia')initDormirForm();
+    }
+    else if(a.type==='idea_desc'){
+      if(typeof ideasData==='undefined')window.ideasData=load('ideasdata',[]);
+      if(ideasData.length>0){
+        const last=ideasData[0]; // newest is at index 0 (unshift)
+        last.descripcion=(last.descripcion?last.descripcion+'\n':'')+a.texto;
+        save('ideasdata',ideasData);
+        if(typeof buildIdeas==='function'&&curView==='proposito')buildIdeas();
+      }
     }
     else if(a.type==='idea'){
       if(a.titulo){
