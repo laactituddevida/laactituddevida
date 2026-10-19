@@ -2756,11 +2756,11 @@ canvas{max-width:100%}
     <div style="background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 4px 24px rgba(0,0,0,.08)">
       <div style="margin-bottom:1rem">
         <label style="font-size:12px;color:#7A6652;display:block;margin-bottom:4px">Email</label>
-        <input type="email" id="login-email" placeholder="tu@email.com" style="width:100%;padding:10px 12px;border:0.5px solid #D4C5B0;border-radius:8px;font-size:13px;outline:none;background:#FAF7F2;color:#3D2E1E;box-sizing:border-box">
+        <input type="email" id="login-email" name="email" autocomplete="username" placeholder="tu@email.com" style="width:100%;padding:10px 12px;border:0.5px solid #D4C5B0;border-radius:8px;font-size:13px;outline:none;background:#FAF7F2;color:#3D2E1E;box-sizing:border-box">
       </div>
       <div style="margin-bottom:1.25rem">
         <label style="font-size:12px;color:#7A6652;display:block;margin-bottom:4px">Contrasena</label>
-        <input type="password" id="login-password" placeholder="*****" style="width:100%;padding:10px 12px;border:0.5px solid #D4C5B0;border-radius:8px;font-size:13px;outline:none;background:#FAF7F2;color:#3D2E1E;box-sizing:border-box">
+        <input type="password" id="login-password" name="password" autocomplete="current-password" placeholder="*****" style="width:100%;padding:10px 12px;border:0.5px solid #D4C5B0;border-radius:8px;font-size:13px;outline:none;background:#FAF7F2;color:#3D2E1E;box-sizing:border-box">
       </div>
       <p id="login-error" style="font-size:12px;color:#C4713A;margin-bottom:8px;display:none"></p>
       <button id="login-btn" style="width:100%;padding:12px;border-radius:20px;border:none;background:#D4903A;color:#fff;font-size:14px;font-weight:500;cursor:pointer">Entrar</button>
@@ -11495,11 +11495,12 @@ async function doLogin(){
   if(!email||!pass){mostrarError("Completá email y contraseña.");return;}
   var r=await supa.auth.signInWithPassword({email:email,password:pass});
   if(r.error){mostrarError("Email o contraseña incorrectos.");return;}
+  try{localStorage.setItem("lav_last_email",email);}catch(e){}
   await onLogin(r.data.user);
 }
 async function onLogin(user){
   currentUser=user;
-  await cargarDatosUsuario();
+  try{await cargarDatosUsuario();}catch(e){console.warn("cargarDatosUsuario",e);}
   var r=await supa.from("usuarios").select("es_admin,nombre,activo").eq("id",user.id).single();
   var u=r.data;
   if(u&&!u.activo){await supa.auth.signOut();mostrarLogin();mostrarError("Tu cuenta está pausada.");return;}
@@ -11625,15 +11626,24 @@ document.addEventListener("visibilitychange",function(){
 });
 window.addEventListener("pagehide",flushSyncIfPending);
 window.addEventListener("load",async function(){
-  supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+  supa=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
   var loginBtn=document.getElementById("login-btn");
   if(loginBtn)loginBtn.addEventListener("click",doLogin);
   var epw=document.getElementById("login-password");
   if(epw)epw.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
   var eem=document.getElementById("login-email");
   if(eem)eem.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+  try{var le=localStorage.getItem("lav_last_email");if(le&&eem)eem.value=le;}catch(e){}
+  supa.auth.onAuthStateChange(function(ev,session){
+    if(session&&(ev==="SIGNED_IN"||ev==="TOKEN_REFRESHED")&&document.getElementById("login-screen").style.display==="flex"){onLogin(session.user);}
+  });
   var r=await supa.auth.getSession();
-  if(r.data.session){await onLogin(r.data.session.user);}
+  var ses=r.data&&r.data.session;
+  if(!ses){
+    // Antes de pedir la contraseña, intentamos renovar la sesión guardada
+    try{var rr=await supa.auth.refreshSession();ses=rr.data&&rr.data.session;}catch(e){}
+  }
+  if(ses){await onLogin(ses.user);}
   else{mostrarLogin();}
 });
 </script>
